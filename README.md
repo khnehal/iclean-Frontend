@@ -11,11 +11,15 @@
   2. Move to `iclean-frontend` folder and install `npm` dependencies.
   
       npm install 
+          
           or 
+
       yarn install
 
   3. Start the server using
 
       npm start
+      
           or
+
       yarn start
