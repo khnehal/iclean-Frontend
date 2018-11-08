@@ -1,0 +1,16 @@
+.ui.horizontal.segments.OrdersHeaderSection {
+    border: 0;
+    box-shadow: none;
+}
+
+.ui.horizontal.segments.OrdersHeaderSection .ui.segment {
+    border: 0;
+}
+
+.ui.segment.OrdersTitle {
+    text-align: left;
+}
+
+.ui.segment.OrdersSearchSection {
+    text-align: right;
+}

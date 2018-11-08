@@ -1,0 +1,7 @@
+.ui.thin.left.sidebar.SidebarMenu, .ui.thin.right.sidebar.SidebarMenu {
+  width: 200px;
+}
+
+.SidebarMenu.ui.labeled.icon.menu .item>.icon:not(.dropdown) {
+  height: auto;
+}
