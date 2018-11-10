@@ -1,0 +1,12 @@
+.ui.horizontal.segments.items-header-section {
+    border: 0;
+    box-shadow: none;
+}
+
+.ui.horizontal.segments.items-header-section .ui.segment {
+    border: 0;
+}
+
+.ui.segment.items-title {
+    text-align: left;
+}
