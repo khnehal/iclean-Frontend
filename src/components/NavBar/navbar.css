@@ -5,3 +5,26 @@
 .SidebarMenu.ui.labeled.icon.menu .item>.icon:not(.dropdown) {
   height: auto;
 }
+
+.ui.vertical.menu.sidebar.SidebarMenu {
+  background-color: rgb(110, 187, 67);
+}
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .title,
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .title .ui.button {
+  width: 100%;
+  color: #fff;
+  text-align: left;
+  background-color: rgb(59, 165, 0);
+}
+
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .content,
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .content .ui.button {
+  width: 100%;
+  color: #fff;
+  text-align: left;
+  background-color: rgb(90, 178, 40);
+}
+
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .title .ui.button i.icon {
+      background-color: rgb(52, 123, 13);
+}
