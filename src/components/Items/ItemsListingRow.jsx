@@ -14,6 +14,10 @@ class ItemsListingRow extends Component {
     index: PropTypes.number,
   };
 
+  state = {
+    price: this.props.item.price,
+  };
+
   onDeleteItem = (itemId) => {
     // Call the delete api.
     console.log(`Ye Item(${itemId}) ko delete kar re jamaila!!`);
@@ -24,10 +28,18 @@ class ItemsListingRow extends Component {
     console.log(`Ye Item(${itemId}) ko update kar re jamaila!!`);
   }
 
+  handleChange = (e, obj) => {
+    this.setState(obj);
+  }
+
   render() {
     const {
-      item,
+      price,
+    } = this.state;
+
+    const {
       index,
+      item,
     } = this.props;
 
     return (
@@ -35,8 +47,9 @@ class ItemsListingRow extends Component {
         <Table.Cell>{item.name}</Table.Cell>
         <Table.Cell>
           <Input
+            onChange={(e) => this.handleChange(e, {price: e.target.value})}
             type='text'
-            defaultValue={item.price}
+            defaultValue={price}
           />
         </Table.Cell>
         <Table.Cell>
