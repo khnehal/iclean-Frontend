@@ -17,6 +17,11 @@
   background-color: rgb(59, 165, 0);
 }
 
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.title,
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.content .active.item {
+  background: rgba(0,0,0,0.07);
+}
+
 .ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .content,
 .ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .content .ui.button {
   width: 100%;
@@ -27,4 +32,8 @@
 
 .ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .title .ui.button i.icon {
       background-color: rgb(52, 123, 13);
+}
+
+.SidebarMenu.ui.labeled.icon.menu .accordion.ui .item {
+  padding: 0;
 }

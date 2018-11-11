@@ -16,7 +16,7 @@ const store = configureStore({}, history);
 const renderApp = () => (
   <Provider store={store} key={Math.random()}>
     <ConnectedRouter history={history} key={Math.random()}>
-      <div>
+      <div className="container">
         <AppRoutes />
       </div>
     </ConnectedRouter>
