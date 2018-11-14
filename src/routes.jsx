@@ -13,6 +13,8 @@ import CleaningOrders from './components/Orders/CleaningOrders.jsx';
 import AllOrders from './components/Orders/AllOrders.jsx';
 import Items from './components/Items/index.jsx';
 import AddItem from './components/Items/AddItem.jsx';
+import Promotions from './components/Promotions/index.jsx';
+
 
 const RedirectToDashboard = () => <Redirect to={'/homepage/'} />;
 
@@ -28,6 +30,8 @@ const AppRoutes = () => (
 
           <Route exact path={'/items/price-list/'} component={Items} />
           <Route exact path={'/items/add-item/'} component={AddItem} />
+
+          <Route exact path={'/promotions/'} component={Promotions} />
 
           <Route path={'/*'} component={RedirectToDashboard} />
         </Switch>
