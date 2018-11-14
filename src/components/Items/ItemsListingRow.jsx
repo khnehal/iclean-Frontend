@@ -28,8 +28,8 @@ class ItemsListingRow extends Component {
     console.log(`Ye Item(${itemId}) ko update kar re jamaila!!`);
   }
 
-  handleChange = (e, obj) => {
-    this.setState(obj);
+  handleChange = (e) => {
+    this.setState({ price: e.target.value });
   }
 
   render() {
@@ -47,7 +47,7 @@ class ItemsListingRow extends Component {
         <Table.Cell>{item.name}</Table.Cell>
         <Table.Cell>
           <Input
-            onChange={(e) => this.handleChange(e, {price: e.target.value})}
+            onChange={(e) => this.handleChange(e)}
             type='text'
             defaultValue={price}
           />
