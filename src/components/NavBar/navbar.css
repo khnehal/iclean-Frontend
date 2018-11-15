@@ -37,3 +37,7 @@
 .SidebarMenu.ui.labeled.icon.menu .accordion.ui .item {
   padding: 0;
 }
+
+.SidebarMenu.ui.vertical.icon.menu {
+  width: 100%;
+}

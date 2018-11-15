@@ -1,0 +1,20 @@
+
+.Driver .ui.table {
+    font-size: 1.6em;
+}
+
+.driverDayOffDate.ui.table {
+    margin: auto;
+}
+
+.driverDate.ui.table {
+    margin: auto;
+    border: 0;
+    box-shadow: none;
+}
+
+.addDrivers.ui.table {
+    margin: auto;
+    border: 0;
+    box-shadow: none;
+}

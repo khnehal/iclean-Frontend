@@ -12,3 +12,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.ui.sidebar.SidebarMenu {
+  position: relative;
+}
+
+.NavBar {
+  width: 16%;
+  position: fixed;
+  left: 0;
+  height: 100%;
+}
+
+.iCleanContainer {
+  width: 84%;
+  float: right;
+  position: fixed;
+  right: 0;
+}
