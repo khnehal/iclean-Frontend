@@ -62,7 +62,7 @@ class LeftNavbar extends Component {
                 </Accordion.Content>
 
                 <Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick}>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/drivers/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='folder' />
                             Drivers
@@ -70,25 +70,25 @@ class LeftNavbar extends Component {
                     </Menu.Item>
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 1}>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/drivers/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Drivers
                         </Button>
                     </Menu.Item>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/drivers/areas/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Drivers Areas
                         </Button>
                     </Menu.Item>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/drivers/addDrivers/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Add a Driver
                         </Button>
                     </Menu.Item>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/drivers/addDayOff/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Add a Day Off
@@ -120,7 +120,7 @@ class LeftNavbar extends Component {
                 </Accordion.Content>
 
                 <Accordion.Title active={activeIndex === 3} index={3} onClick={this.handleClick}>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/promotions/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='folder' />
                             Promotions
@@ -128,7 +128,7 @@ class LeftNavbar extends Component {
                     </Menu.Item>
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 3}>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/promotions/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Promotions
