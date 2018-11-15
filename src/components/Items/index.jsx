@@ -15,12 +15,12 @@ class Items extends Component {
       data: [
         {
           id: 1,
-          name: 'Chaddi',
+          name: 'vest',
           price: '10.5',
         },
         {
           id: 2,
-          name: 'Kachcha',
+          name: 'shirt',
           price: '15.5',
         },
       ],

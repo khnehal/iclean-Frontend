@@ -8,10 +8,12 @@ class AddItem extends Component {
   constructor() {
     super();
     this.state = {
-      name: '',
-      price: null,
-      category: '',
-      image: '',
+      data: {
+        name: '',
+        price: null,
+        category: '',
+        image: '',
+      }
     };
   };
 
@@ -26,8 +28,10 @@ class AddItem extends Component {
     // Call the add api.
   }
 
-  handleChange = (e, obj) => {
-    this.setState(obj);
+  handleChange = (e, key) => {
+    const { data } = this.state;
+    data[key] = e.target.value;
+    this.setState({ data });
   }
 
   render() {
@@ -56,7 +60,7 @@ class AddItem extends Component {
                   <Table.Cell><h4>Item Name</h4></Table.Cell>
                   <Table.Cell>
                     <Input
-                      onChange={(e) => this.handleChange(e, {name: e.target.value})}
+                      onChange={(e) => this.handleChange(e, 'name')}
                       type='text'
                       defaultValue={name}
                       placeholder={'Item Name'}
@@ -67,7 +71,7 @@ class AddItem extends Component {
                   <Table.Cell><h4>Item Price</h4></Table.Cell>
                   <Table.Cell>
                     <Input
-                      onChange={(e) => this.handleChange(e, {price: e.target.value})}
+                      onChange={(e) => this.handleChange(e, 'price')}
                       type='text'
                       defaultValue={price}
                       placeholder={'Item Price'}
@@ -78,7 +82,7 @@ class AddItem extends Component {
                   <Table.Cell><h4>Select Category</h4></Table.Cell>
                   <Table.Cell>
                     <Dropdown
-                      onChange={(e) => this.handleChange(e, {category: e.target.value})}
+                      onChange={(e) => this.handleChange(e, 'category')}
                       options={this.categoryOptions}
                       defaultValue={category}
                       placeholder={'Select Category'}
@@ -91,7 +95,7 @@ class AddItem extends Component {
                   <Table.Cell><h4>Item Image</h4></Table.Cell>
                   <Table.Cell>
                     <Input
-                      onChange={(e) => this.handleChange(e, {image: e.target.value})}
+                      onChange={(e) => this.handleChange(e, 'image')}
                       type='file'
                       defaultValue={image}
                       placeholder={'Upload Image'}
