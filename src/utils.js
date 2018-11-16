@@ -1,3 +1,6 @@
+import { isEmpty } from 'lodash';
+
+
 // Cookie expire date these many date from today for saving pwd and email
 export const COOKIE_EXPIRE_DAYS = 5;
 
@@ -20,3 +23,13 @@ export const getCookie = (name) => {
   }
   return decodeURIComponent(xsrfCookies[0].split('=')[1]);
 };
+
+export const verifyAuth = () => {
+  /* Verify if Token and user Id exist. */
+  const token = getCookie('token');
+  const userId = getCookie('user_id');
+  if (isEmpty(token) || isEmpty(userId)) {
+    return false;
+  }
+  return true;
+}

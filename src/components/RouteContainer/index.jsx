@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { Route } from 'react-router';
 
 import { Container } from 'semantic-ui-react';
-import { isEmpty } from 'lodash';
 
 import NavBar from '../NavBar/NavBar.jsx';
 // import TopNavbar from '../NavBar/TopNavbar.jsx';
-import { getCookie } from '../../utils.js';
+import { verifyAuth } from '../../utils.js';
 
 
 class RouteContainer extends Component {
@@ -21,21 +20,21 @@ class RouteContainer extends Component {
   };
 
   componentWillMount() {
-    this.verifyAuth();
-  }
-
-  componentWillReceiveProps() {
-    this.verifyAuth();
-  }
-
-  verifyAuth = () => {
-    const token = getCookie('token');
-    const userId = getCookie('user_id');
-    if (isEmpty(token) || isEmpty(userId)) {
+    if (verifyAuth()) {
+      this.setState({ verifyCallDone: true });
+    } else {
       this.setState({ verifyCallDone: false });
       window.location = `${window.location.origin}/login/`;
     }
-    this.setState({ verifyCallDone: true });
+  }
+
+  componentWillReceiveProps() {
+    if (verifyAuth()) {
+      this.setState({ verifyCallDone: true });
+    } else {
+      this.setState({ verifyCallDone: false });
+      window.location = `${window.location.origin}/login/`;
+    }
   }
 
   render() {
