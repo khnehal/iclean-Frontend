@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  // BrowserRouter,
-  Switch,
-  Route,
-  Redirect
-} from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 // Homepage App
 import App from './components/App/index.jsx';
@@ -19,6 +14,7 @@ import Drivers from './components/Drivers/index.jsx';
 import Areas from './components/Drivers/Areas.jsx';
 import AddDrivers from './components/Drivers/AddDrivers.jsx';
 import AddDayOff from './components/Drivers/AddDayOff.jsx';
+import EditDriver from './components/Drivers/EditDriver.jsx';
 
 // Items Landing Page and Sub Page
 import Items from './components/Items/index.jsx';
@@ -31,7 +27,7 @@ import Login from './components/Login/index.jsx';
 import RouteContainer from './components/RouteContainer/index.jsx';
 
 
-const RedirectToDashboard = () => <Redirect to={'/homepage/'} />;
+const RedirectToDashboard = () => <Redirect to={'/orders/waitingOrders/'} />;
 
 const AppRoutes = () => (
     <Switch>
@@ -49,6 +45,7 @@ const AppRoutes = () => (
           <RouteContainer path={'/drivers/areas/'} componentToUse={Areas} />
           <RouteContainer path={'/drivers/addDrivers/'} componentToUse={AddDrivers} />
           <RouteContainer path={'/drivers/addDayOff/'} componentToUse={AddDayOff} />
+          <RouteContainer path={'/drivers/editDriver/'} componentToUse={EditDriver} />
 
           <RouteContainer path={'/items/price-list/'} componentToUse={Items} />
           <RouteContainer path={'/items/add-item/'} componentToUse={AddItem} />

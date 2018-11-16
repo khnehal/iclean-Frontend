@@ -3,9 +3,8 @@ import React, { Component } from 'react';
 import { Input, Checkbox, Button, Container, Grid, Image } from 'semantic-ui-react';
 import { isEmpty } from 'lodash';
 
-import { COOKIE_EXPIRE_DAYS, BACKEND_URL, SESSION_EXPIRE_DAYS, getCookie } from '../../utils.js';
-
 import './login.css'
+import { COOKIE_EXPIRE_DAYS, BACKEND_URL, SESSION_EXPIRE_DAYS, getCookie, verifyAuth } from '../../utils.js';
 
 
 class Login extends Component {
@@ -21,15 +20,21 @@ class Login extends Component {
         loading: false,
         showErrorMessage: false,
         errorMessage: '',
+        showComponent: false,
     };
   };
 
-  componentDidMount() {
-    document.body.style.backgroundColor = '#6ebc43';
-    const pwd = getCookie('pwd');
-    const email = getCookie('email');
-    if (!isEmpty(pwd) && !isEmpty(email)) {
-      this.setState({ pwd, email, checkbox: true });
+  componentWillMount() {
+    if (verifyAuth()) {
+      window.location = `${window.location.origin}/homepage/`;
+    } else {
+      this.setState({ showComponent: true });
+      document.body.style.backgroundColor = '#6ebc43';
+      const pwd = getCookie('pwd');
+      const email = getCookie('email');
+      if (!isEmpty(pwd) && !isEmpty(email)) {
+        this.setState({ pwd, email, checkbox: true });
+      }
     }
   }
 
@@ -143,56 +148,59 @@ class Login extends Component {
   }
 
   render() {
-    const { emailError, pwdError, checkbox, loading, pwd, email } = this.state;
+    const { emailError, pwdError, checkbox, loading, pwd, email, showComponent } = this.state;
     const loginDisabled = isEmpty(pwd) || isEmpty(email);
-    return (
-      <Container className="login-main">
-        <div>
-          <div className="login-inputs">
-            {
-              // showErrorMessage && !isEmpty(errorMessage) &&
-              // <Message negative>
-              //   <Message.Header>{errorMessage}</Message.Header>
-              // </Message>
-            }
-            <Image src={'/icleanlogo.png'} alt="iclean" size="small" centered />
-            <Input
-              value={email}
-              placeholder="Valid Email"
-              onChange={this.emailChange}
-              error={emailError}
-              autoFocus
-            />
-            <br />
-            <Input
-              value={pwd}
-              placeholder="Password"
-              type={'password'}
-              onChange={this.passwordChange}
-              error={pwdError}
-            />
-            <Grid className="login-checkbox-button-container">
-              <Grid.Column floated="left" width={8} className="login-checkbox">
-                <Checkbox
-                  label={'Remember Password'}
-                  checked={checkbox}
-                  onChange={this.checkboxChange}
-                />
-              </Grid.Column>
-              <Grid.Column floated="right" width={5} className="login-button">
-                <Button
-                  positive
-                  content="Login"
-                  onClick={this.loginClick}
-                  loading={loading}
-                  disabled={loading || loginDisabled}
-                />
-              </Grid.Column>
-            </Grid>
+    if (showComponent) {
+      return (
+        <Container className="login-main">
+          <div>
+            <div className="login-inputs">
+              {
+                // showErrorMessage && !isEmpty(errorMessage) &&
+                // <Message negative>
+                //   <Message.Header>{errorMessage}</Message.Header>
+                // </Message>
+              }
+              <Image src={'/icleanlogo.png'} alt="iclean" size="small" centered />
+              <Input
+                value={email}
+                placeholder="Valid Email"
+                onChange={this.emailChange}
+                error={emailError}
+                autoFocus
+              />
+              <br />
+              <Input
+                value={pwd}
+                placeholder="Password"
+                type={'password'}
+                onChange={this.passwordChange}
+                error={pwdError}
+              />
+              <Grid className="login-checkbox-button-container">
+                <Grid.Column floated="left" width={8} className="login-checkbox">
+                  <Checkbox
+                    label={'Remember Password'}
+                    checked={checkbox}
+                    onChange={this.checkboxChange}
+                  />
+                </Grid.Column>
+                <Grid.Column floated="right" width={5} className="login-button">
+                  <Button
+                    positive
+                    content="Login"
+                    onClick={this.loginClick}
+                    loading={loading}
+                    disabled={loading || loginDisabled}
+                  />
+                </Grid.Column>
+              </Grid>
+            </div>
           </div>
-        </div>
-      </Container>
-    );
+        </Container>
+      );
+    }
+    return null;
   }
 }
 
