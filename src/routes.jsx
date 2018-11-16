@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  // BrowserRouter,
-  Switch,
-  Route,
-  Redirect
-} from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 // Homepage App
 import App from './components/App/index.jsx';
@@ -19,6 +14,7 @@ import Drivers from './components/Drivers/index.jsx';
 import Areas from './components/Drivers/Areas.jsx';
 import AddDrivers from './components/Drivers/AddDrivers.jsx';
 import AddDayOff from './components/Drivers/AddDayOff.jsx';
+import EditDriver from './components/Drivers/EditDriver.jsx';
 
 // Items Landing Page and Sub Page
 import Items from './components/Items/index.jsx';
@@ -26,7 +22,7 @@ import AddItem from './components/Items/AddItem.jsx';
 import Promotions from './components/Promotions/index.jsx';
 
 
-const RedirectToDashboard = () => <Redirect to={'/homepage/'} />;
+const RedirectToDashboard = () => <Redirect to={'/orders/waitingOrders/'} />;
 
 const AppRoutes = () => (
     <Switch>
@@ -42,6 +38,7 @@ const AppRoutes = () => (
           <Route exact path={'/drivers/areas/'} component={Areas} />
           <Route exact path={'/drivers/addDrivers/'} component={AddDrivers} />
           <Route exact path={'/drivers/addDayOff/'} component={AddDayOff} />
+          <Route exact path={'/drivers/editDriver/'} component={EditDriver} />
 
           <Route exact path={'/items/price-list/'} component={Items} />
           <Route exact path={'/items/add-item/'} component={AddItem} />

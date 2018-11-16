@@ -1,22 +1,23 @@
-// import {
-//   getScopeAndEstimationProjectInfo,
-// } from 'api/ScopeAndEstimationProjectInfo';
+import {
+  getDrivers,
+} from './../../api/auth.js';
 
-// import {
-//   resultOK,
-// } from 'api/utils';
+import {
+  resultOK,
+} from './../../api/utils.js';
 
-// export const SS_PROJ_INFO = 'SS_PROJ_INFO';
+export const DRIVERS_LIST = 'DRIVERS_LIST';
 
-// export function GET_SCOPE_AND_ESTIMATION_PROJ_INFO(pid) {
-//   return async (dispatch) => {
-//     const result = await getScopeAndEstimationProjectInfo(pid);
-//     if (!resultOK(result)) {
-//       return null;
-//     }
+export function GET_DRIVERS() {
+  return async (dispatch) => {
+    const result = await getDrivers();
+    console.log('ACTIONS', dispatch, result);
+    if (!resultOK(result)) {
+      return null;
+    }
 
-//     dispatch({ type: SS_PROJ_INFO, data: result.data });
+    dispatch({ type: DRIVERS_LIST, data: result.data });
 
-//     return result;
-//   };
-// }
+    return result;
+  };
+}

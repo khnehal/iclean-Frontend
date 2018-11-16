@@ -1,5 +1,5 @@
 export const initialState = {
-  projectInfo: [],
+  driversList: [],
 };
 
-export const getScopeAndEstimationProjInfo = (state = initialState) => state.projectInfo;
+export const getDriversList = (state = initialState) => state.driversList;

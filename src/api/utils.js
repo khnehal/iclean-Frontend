@@ -2,7 +2,8 @@
 // feel free to replace with your code
 // (get, post are used in ApiServices)
 
-import { getLocalToken } from 'api/auth';
+import { getLocalToken } from '../api/auth.js';
+import config from '../../src/config.js';
 import 'whatwg-fetch';
 
 /**
