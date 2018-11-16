@@ -17,6 +17,10 @@
   background-color: #f7e6e6;
   border-color: #e66c6c;
 }
+.login-inputs .ui.message {
+  background-color: #f7e6e6;
+  box-shadow: 0 0 0 1px #e66c6c inset, 0 0 0 0 transparent;
+}
 .login-main .login-inputs .login-checkbox-button-container {
   margin: 0 10px;
 }
