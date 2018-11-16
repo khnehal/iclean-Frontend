@@ -23,6 +23,7 @@ class Login extends Component {
   };
 
   componentDidMount() {
+    document.body.style.backgroundColor = '#6ebc43';
     let pwd = '';
     let email = '';
     const cookies = document.cookie;
@@ -40,6 +41,10 @@ class Login extends Component {
     if (!isEmpty(pwd) && !isEmpty(email)) {
       this.setState({ pwd, email, checkbox: true });
     }
+  }
+
+  componentWillUnmount() {
+    document.body.style.backgroundColor = '';
   }
 
   passwordChange = (e, { value }) => {
@@ -105,10 +110,13 @@ class Login extends Component {
     if (isEmpty(pwd)) {
       this.setState({ pwdError: true });
     }
-    const outData = {
+    const outData = JSON.stringify({
       email,
-      password: pwd
-    }
+      password: pwd,
+      device_type: '2',
+      device_id: '1234',
+      device_token: 'abc'
+    });
     this.setState({ loading: true });
     const result = await this.loginAPI(outData);
     this.setState({ loading: false });
@@ -126,9 +134,8 @@ class Login extends Component {
 
   loginAPI = async (body) => {
     let returnData = null;
-     await fetch(`${BACKEND_URL}/admin/`, {
-      credentials: 'include',
-      method: 'POST',
+     await fetch(`${BACKEND_URL}/user/signin/`, {
+      method: 'post',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json; charset=UTF-8',
@@ -153,6 +160,7 @@ class Login extends Component {
 
   render() {
     const { emailError, pwdError, checkbox, loading, pwd, email } = this.state;
+    const loginDisabled = isEmpty(pwd) || isEmpty(email);
     return (
       <Container className="login-main">
         <div>
@@ -187,7 +195,7 @@ class Login extends Component {
                   content="Login"
                   onClick={this.loginClick}
                   loading={loading}
-                  disabled={loading}
+                  disabled={loading || loginDisabled}
                 />
               </Grid.Column>
             </Grid>

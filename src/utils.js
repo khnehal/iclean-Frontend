@@ -2,4 +2,4 @@
 export const COOKIE_EXPIRE_DAYS = 5;
 
 // BE URL
-export const BACKEND_URL = 'http://52.8.247.60:8000';
+export const BACKEND_URL = 'http://fd60d0d9.ngrok.io';
