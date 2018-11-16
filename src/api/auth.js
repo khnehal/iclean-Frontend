@@ -10,9 +10,9 @@ export function getLocalToken() {
   return localStorage.getItem('token');
 }
 
-// export function setLocalToken(token) {
-localStorage.setItem('token', '5ab19227-e43a-45e9-a05a-027b0018d695');
-// }
+export function setLocalToken(token) {
+  localStorage.setItem('token', token);
+}
 
 export function removeLocalToken() {
   localStorage.removeItem('token');

@@ -74,7 +74,7 @@ function requestWrapper(method) {
       const token = getLocalToken();
 
       if (token) {
-        defaults.headers.Authorization = `Token ${token}`;
+        defaults.headers.Token = `${token}`;
       }
     }
 

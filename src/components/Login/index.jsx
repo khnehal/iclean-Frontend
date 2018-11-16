@@ -126,7 +126,7 @@ class Login extends Component {
 
   loginAPI = async (body) => {
     let returnData = null;
-     await fetch(`${BACKEND_URL}/admin/`, {
+     await fetch(`${BACKEND_URL}/user/signin`, {
       credentials: 'include',
       method: 'POST',
       headers: {

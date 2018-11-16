@@ -17,9 +17,7 @@ const renderApp = () => (
   <Provider store={store} key={Math.random()}>
     <ConnectedRouter history={history} key={Math.random()}>
       <div>
-        <div>
-          <AppRoutes />
-        </div>
+        <AppRoutes />
       </div>
     </ConnectedRouter>
   </Provider>
