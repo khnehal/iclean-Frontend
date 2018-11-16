@@ -21,6 +21,11 @@ import Items from './components/Items/index.jsx';
 import AddItem from './components/Items/AddItem.jsx';
 import Promotions from './components/Promotions/index.jsx';
 
+// Login Page
+import Login from './components/Login/index.jsx';
+// Route Container
+import RouteContainer from './components/RouteContainer/index.jsx';
+
 
 const RedirectToDashboard = () => <Redirect to={'/orders/waitingOrders/'} />;
 
@@ -28,24 +33,26 @@ const AppRoutes = () => (
     <Switch>
       <App>
         <Switch>
-          <Route exact path={'/homepage/'} component={App} />
+          <Route exact path={'/login/'} component={Login} />
 
-          <Route exact path={'/orders/waitingOrders/'} component={Orders} />
-          <Route exact path={'/orders/cleaning/'} component={CleaningOrders} />
-          <Route exact path={'/orders/all/'} component={AllOrders} />
+          <RouteContainer path={'/homepage/'} componentToUse={App} />
 
-          <Route exact path={'/drivers/'} component={Drivers} />
-          <Route exact path={'/drivers/areas/'} component={Areas} />
-          <Route exact path={'/drivers/addDrivers/'} component={AddDrivers} />
-          <Route exact path={'/drivers/addDayOff/'} component={AddDayOff} />
-          <Route exact path={'/drivers/editDriver/'} component={EditDriver} />
+          <RouteContainer path={'/orders/waitingOrders/'} componentToUse={Orders} />
+          <RouteContainer path={'/orders/cleaning/'} componentToUse={CleaningOrders} />
+          <RouteContainer path={'/orders/all/'} componentToUse={AllOrders} />
 
-          <Route exact path={'/items/price-list/'} component={Items} />
-          <Route exact path={'/items/add-item/'} component={AddItem} />
+          <RouteContainer path={'/drivers/'} componentToUse={Drivers} />
+          <RouteContainer path={'/drivers/areas/'} componentToUse={Areas} />
+          <RouteContainer path={'/drivers/addDrivers/'} componentToUse={AddDrivers} />
+          <RouteContainer path={'/drivers/addDayOff/'} componentToUse={AddDayOff} />
+          <RouteContainer path={'/drivers/editDriver/'} componentToUse={EditDriver} />
 
-          <Route exact path={'/promotions/'} component={Promotions} />
+          <RouteContainer path={'/items/price-list/'} componentToUse={Items} />
+          <RouteContainer path={'/items/add-item/'} componentToUse={AddItem} />
 
-          <Route path={'/*'} component={RedirectToDashboard} />
+          <RouteContainer path={'/promotions/'} componentToUse={Promotions} />
+
+          <RouteContainer path={'/*'} componentToUse={RedirectToDashboard} />
         </Switch>
       </App>
     </Switch>
