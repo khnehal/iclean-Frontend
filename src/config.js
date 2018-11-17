@@ -5,7 +5,7 @@ const browser = typeof window !== 'undefined';
 const config = {
   all: {
     env: process.env.HOST_ENV || 'development',
-    apiUrl: process.env.API_URL || 'http://fd60d0d9.ngrok.io',
+    apiUrl: process.env.API_URL || 'http://e763a263.ngrok.io',
     browser
   }
 };

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import { Input, Checkbox, Button, Container, Grid, Image } from 'semantic-ui-react';
 import { isEmpty } from 'lodash';
-
+import { loginAPI } from '../../api/login.js';
 import './login.css'
-import { COOKIE_EXPIRE_DAYS, BACKEND_URL, SESSION_EXPIRE_DAYS, getCookie, verifyAuth } from '../../utils.js';
+import { COOKIE_EXPIRE_DAYS, SESSION_EXPIRE_DAYS, getCookie, verifyAuth } from '../../utils.js';
 
 
 class Login extends Component {
@@ -108,7 +108,7 @@ class Login extends Component {
       device_token: 'abc'
     });
     this.setState({ loading: true });
-    const result = await this.loginAPI(outData);
+    const result = await loginAPI(outData);
     if (result.status === 200) {
       if (checkbox) {
         this.setPwdEmailCookie();
@@ -123,28 +123,6 @@ class Login extends Component {
       this.setState({ pwdError: true, emailError: true, showErrorMessage: true, errorMessage: result.message });
     }
     this.setState({ loading: false });
-  }
-
-  loginAPI = async (body) => {
-    let returnData = null;
-     await fetch(`${BACKEND_URL}/user/signin/`, {
-      method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-        'X-CSRFToken': getCookie('csrftoken'),
-      },
-      body: body,
-    })
-    .then((response) => response.json())
-    .catch(error => console.log(error))
-    .then((data) => {
-      returnData = data;
-    })
-    .catch((error) => {
-      console.log("errror",error);
-    });
-    return returnData;
   }
 
   render() {
