@@ -20,10 +20,10 @@ export async function loginAPI(body) {
   .catch(error => console.log(error))
   .then((data) => {
     result = data;
+    setLocalToken(result.data.token);
   })
   .catch((error) => {
     console.log("errror",error);
   });
-  setLocalToken(result.data.token);
   return result;
 }
