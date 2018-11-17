@@ -4,7 +4,7 @@ import {
   get
 } from './utils';
 
-const apiUrl = 'http://fd60d0d9.ngrok.io';
+const apiUrl = 'http://e763a263.ngrok.io';
 
 export function getLocalToken() {
   return localStorage.getItem('token');

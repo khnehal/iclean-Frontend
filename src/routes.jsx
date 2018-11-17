@@ -1,6 +1,12 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
+// Route Container
+import RouteContainer from './components/RouteContainer/index.jsx';
+
+// Login Page
+import Login from './components/Login/index.jsx';
+
 // Homepage App
 import App from './components/App/index.jsx';
 
@@ -21,10 +27,9 @@ import Items from './components/Items/index.jsx';
 import AddItem from './components/Items/AddItem.jsx';
 import Promotions from './components/Promotions/index.jsx';
 
-// Login Page
-import Login from './components/Login/index.jsx';
-// Route Container
-import RouteContainer from './components/RouteContainer/index.jsx';
+// Customers Page and Sub page
+import Customers from './components/Customers/index.jsx';
+import Noifications from './components/Customers/Notifications.jsx';
 
 
 const RedirectToDashboard = () => <Redirect to={'/orders/waitingOrders/'} />;
@@ -35,17 +40,20 @@ const AppRoutes = () => (
         <Switch>
           <Route exact path={'/login/'} component={Login} />
 
-          <RouteContainer path={'/homepage/'} componentToUse={App} />
+          <RouteContainer path={'/homepage/'} componentToUse={Orders} />
 
           <RouteContainer path={'/orders/waitingOrders/'} componentToUse={Orders} />
           <RouteContainer path={'/orders/cleaning/'} componentToUse={CleaningOrders} />
           <RouteContainer path={'/orders/all/'} componentToUse={AllOrders} />
 
-          <RouteContainer path={'/drivers/'} componentToUse={Drivers} />
+          <RouteContainer path={'/drivers/driversList/'} componentToUse={Drivers} />
           <RouteContainer path={'/drivers/areas/'} componentToUse={Areas} />
           <RouteContainer path={'/drivers/addDrivers/'} componentToUse={AddDrivers} />
           <RouteContainer path={'/drivers/addDayOff/'} componentToUse={AddDayOff} />
           <RouteContainer path={'/drivers/editDriver/'} componentToUse={EditDriver} />
+
+          <RouteContainer path={'/customers/'} componentToUse={Customers} />
+          <RouteContainer path={'/notifications/'} componentToUse={Noifications} />
 
           <RouteContainer path={'/items/price-list/'} componentToUse={Items} />
           <RouteContainer path={'/items/add-item/'} componentToUse={AddItem} />

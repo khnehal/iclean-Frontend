@@ -11,8 +11,6 @@ import { DriversSelector } from '../../store/selectors.js';
 
 import LandingContainer from '../LandingContainer';
 
-// const csrfToken = "5ab19227-e43a-45e9-a05a-027b0018d695";
-
 class Drivers extends Component {
 
   static propTypes = {
@@ -42,7 +40,7 @@ class Drivers extends Component {
   }
 
   render() {
-    console.log('this.props.getDriversList', this.props.getDriversList);
+
     return (
       <div className="Driver">
         <Header as='h1' textAlign='left'> Drivers

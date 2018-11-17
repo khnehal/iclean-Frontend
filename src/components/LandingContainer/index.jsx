@@ -20,6 +20,7 @@ const LandingContainer = (props) => {
   } = props;
 
   const handleRedirection = () => {
+    console.log('historyrrr', history, redirectTo);
     if (redirectTo) {
       history.push(redirectTo);
     }
