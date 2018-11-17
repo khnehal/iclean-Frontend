@@ -33,3 +33,20 @@ export const verifyAuth = () => {
   }
   return true;
 }
+
+export const clearToken = () => {
+  /* Clears all cookie other than email and pwd. */
+  const cookies = document.cookie;
+  const cookieArray = cookies.split('; ');
+  for (let i = 0; i < cookieArray.length; i++) {
+    const cookie = cookieArray[i];
+    const eqPos = cookie.indexOf("=");
+    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+    var newDate = new Date();
+    var currentDate = new Date();
+    newDate.setDate(currentDate.getDate() - 5);
+    if (name !== 'pwd' || name !== 'email') {
+      document.cookie = `${name}=${name}; expires=${newDate}; path=/`;
+    }
+  }
+};

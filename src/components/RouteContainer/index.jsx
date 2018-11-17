@@ -5,7 +5,7 @@ import { Route } from 'react-router';
 import { Container } from 'semantic-ui-react';
 
 import NavBar from '../NavBar/NavBar.jsx';
-// import TopNavbar from '../NavBar/TopNavbar.jsx';
+import TopStickyNavBar from '../NavBar/TopStickyNavBar.jsx';
 import { verifyAuth } from '../../utils.js';
 
 
@@ -47,12 +47,15 @@ class RouteContainer extends Component {
         <Route
           {...this.props}
           render={props => (
-            <div className="container iCleanContainer">
-              <NavBar />
-              <Container className="App">
-                <Component {...props} />
-              </Container>
-            </div>
+            <span>
+              <TopStickyNavBar />
+              <div className="container iCleanContainer">
+                <NavBar />
+                <Container className="App">
+                  <Component {...props} />
+                </Container>
+              </div>
+            </span>
           )}
         />
       );
