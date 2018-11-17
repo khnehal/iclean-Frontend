@@ -4,6 +4,7 @@ import { Route } from 'react-router';
 
 import { Container } from 'semantic-ui-react';
 
+import './style.css'
 import NavBar from '../NavBar/NavBar.jsx';
 import TopStickyNavBar from '../NavBar/TopStickyNavBar.jsx';
 import { verifyAuth } from '../../utils.js';
