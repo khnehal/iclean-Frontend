@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Segment, Table, Button, Input, Icon, Label } from 'semantic-ui-react';
+import { Segment, Header, Table, Button, Input } from 'semantic-ui-react';
 import './promotions.css'
 
 // import moment from 'moment';
-import { GET_PROMOTIONS } from '../../store/actions.js';
-import { PromotionsSelector } from '../../store/selectors.js';
+import { GET_PROMOTIONS } from '../../store/actions';
+import { promotionSelector } from '../../store/selectors';
 
 
 class Promotions extends Component {
@@ -57,126 +57,117 @@ class Promotions extends Component {
       'Remove'
     ];
     return (
-      <div className="promo-section">
-        <Segment.Group horizontal className="promo-header-section">
-          <Segment className="promo-title">
-            <h2>Promotions</h2>
-          </Segment>
-        </Segment.Group>
+      <Segment className="promotions">
+        <Header as='h1' textAlign='left'>
+          Promotions
+          <Header.Subheader>Below you can view promotion details.</Header.Subheader>
+        </Header>
 
-        <Segment.Group horizontal>
-          <Segment className="promo-sub-header">
-              <h4>Below you can view promotion details.</h4>
-          </Segment>
-        </Segment.Group>
-
-        <Segment.Group horizontal>
+        <Segment basic className="promo-section">
           <Segment className="add-promo">
             <div className="promo-code">
-              <h4>Use a generated promo code or type your own</h4>
+              <h5>Use a generated promo code or type your own</h5>
               <Input
                 onChange={(e) => this.handleChange(e, 'promo_code')}
                 type='text'
                 defaultValue={''}
                 placeholder={'Alphanumeric Value'}
               />
-              <Button icon onClick={() => this.onGenerateCode()}>GENERATE CODE</Button>
+              <Button className='generate-code ui button' color='green' onClick={() => this.onGenerateCode()}>GENERATE CODE</Button>
             </div>
 
             <div className="promo-value">
               <Input
                 onChange={(e) => this.handleChange(e, 'promo_value_dollar')}
-                labelPosition='right'
+                label='$'
+                labelPosition='left'
                 type='text'
                 defaultValue={''}
                 placeholder={'Amount'}
-              >
-                <Label basic>$</Label>
-                <input />
-                <Label basic>OFF</Label>
-              </Input>
+              />
               OR
               <Input
                 onChange={(e) => this.handleChange(e, 'promo_value_percent')}
-                labelPosition='right'
+                label='%'
+                labelPosition='left'
                 type='text'
                 defaultValue={''}
                 placeholder={'Percent'}
-              >
-                <Label basic>%</Label>
-                <input />
-                <Label basic>OFF</Label>
-              </Input>
+              />
+              OFF
             </div>
 
             <div className="promo-dates">
               <Input
                 onChange={(e) => this.handleChange(e, 'start_date')}
-                labelPosition='right'
+                label='Start Date'
+                labelPosition='left'
                 type='text'
                 defaultValue={''}
                 placeholder={'MM-DD-YYYY'}
-              >
-                <Label basic>Start Date</Label>
-                <input />
-              </Input>
+              />
 
               <Input
                 onChange={(e) => this.handleChange(e, 'end_date')}
-                labelPosition='right'
+                label='End Date'
+                labelPosition='left'
                 type='text'
                 defaultValue={''}
                 placeholder={'MM-DD-YYYY'}
-              >
-                <Label basic>End Date</Label>
-                <input />
-              </Input>
+              />
             </div>
-            <hr/>
-            <Button icon className={'save-promo'} onClick={() => this.onSavePromo()}>SAVE PROMO CODE</Button>
-          </Segment>
-        </Segment.Group>
 
-        <div className="promo-listing-section">
-          <Segment.Group horizontal>
-            <Segment>
-              <Table>
-                <Table.Header>
-                  <Table.Row>
-                    {
-                      tableHeaders.map((header, i) => {
-                        return (
-                          <Table.Cell key={i + 1}>{header}</Table.Cell>
-                        );
-                      })
-                    }
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {(promotionsList && promotionsList.length > 0) && promotionsList.map((promo, i) => {
-                    return (
-                      <Table.Row key={i + 1}>
-                        <Table.Cell>{promo.created_on}</Table.Cell>
-                        <Table.Cell>{promo.promo_code}</Table.Cell>
-                        <Table.Cell>{promo.amount}</Table.Cell>
-                        <Table.Cell>{promo.start_date}</Table.Cell>
-                        <Table.Cell>{promo.end_date}</Table.Cell>
-                        <Table.Cell><Icon name='close' onClick={() => this.onDeletePromo(promo.id)} /></Table.Cell>
-                      </Table.Row>
-                    );
-                  })}
-                </Table.Body>
-              </Table>
-            </Segment>
-          </Segment.Group>
-        </div>
-      </div>
+            <hr/>
+
+            <Button className='save-promo-btn ui button' color='green' onClick={() => this.onSavePromo()}>SAVE PROMO CODE</Button>
+          </Segment>
+
+          <Segment className="promo-listing-section">
+            <Table striped celled>
+              <Table.Header>
+                <Table.Row>
+                  {
+                    tableHeaders.map((header, i) => {
+                      return (
+                        <Table.Cell key={i + 1}><b>{header}</b></Table.Cell>
+                      );
+                    })
+                  }
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {(promotionsList && promotionsList.length > 0) && promotionsList.map((promo, i) => {
+                  return (
+                    <Table.Row key={i + 1}>
+                      <Table.Cell>{promo.created_date}</Table.Cell>
+                      <Table.Cell>{promo.code}</Table.Cell>
+                      <Table.Cell>{`$${promo.dollar_discount}`}</Table.Cell>
+                      <Table.Cell>{promo.start_date}</Table.Cell>
+                      <Table.Cell>{promo.end_date}</Table.Cell>
+                      <Table.Cell>
+                        <Button
+                          className='delete-item-btn'
+                          basic circular
+                          color={'red'}
+                          size='medium'
+                          icon='delete'
+                          onClick={() => this.onDeletePromo(promo.id)}
+                        />
+                      </Table.Cell>
+                    </Table.Row>
+                  );
+                })}
+              </Table.Body>
+            </Table>
+          </Segment>
+        </Segment>
+      </Segment>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
-  promotionsList: PromotionsSelector.getPromotionsList(state),
+  promotionsList: promotionSelector.getPromotionsList(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

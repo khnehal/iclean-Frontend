@@ -1,0 +1,30 @@
+.add-promo .save-promo-btn,
+.add-promo .generate-code,
+.promo-listing-section .ui.table
+{
+    font-size: 13px;
+}
+
+.promo-listing-section .ui.table td
+{
+    vertical-align: inherit;
+}
+
+.promo-listing-section .ui.table thead td
+{
+    background-color: green;
+    color: white;
+}
+
+.add-promo .input,
+.add-promo .generate-code
+{
+    margin: 10px;
+}
+
+.add-promo .promo-code,
+.add-promo .promo-value,
+.add-promo .promo-dates
+{
+    font-size: 13px;
+}

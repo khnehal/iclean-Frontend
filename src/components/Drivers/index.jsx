@@ -5,8 +5,8 @@ import { withRouter } from 'react-router';
 
 import { Header, Segment } from 'semantic-ui-react';
 
-import { GET_DRIVERS } from '../../store/actions.js';
-import { DriversSelector } from '../../store/selectors.js';
+import { GET_DRIVERS } from '../../store/actions';
+import { driverSelector } from '../../store/selectors';
 
 import LandingContainer from '../LandingContainer';
 import './style.css';
@@ -57,7 +57,7 @@ class Drivers extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  getDriversList: DriversSelector.getDriversList(state),
+  getDriversList: driverSelector.getDriversList(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
