@@ -1,6 +1,6 @@
 import {
   getDrivers,
-} from './../../api/auth.js';
+} from './../../api/drivers.js';
 
 import {
   resultOK,

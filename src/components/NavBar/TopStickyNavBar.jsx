@@ -4,6 +4,7 @@ import { Menu, Image, Button, Icon } from 'semantic-ui-react';
 
 import './navbar.css'
 import { clearToken } from '../../utils.js';
+import { removeLocalToken } from '../../api/auth.js';
 
 
 class TopStickyNavBar extends Component {
@@ -14,6 +15,7 @@ class TopStickyNavBar extends Component {
 
   logout = async () => {
     await clearToken();
+    removeLocalToken();
     window.location = `${window.location.origin}/login/`;
   }
 

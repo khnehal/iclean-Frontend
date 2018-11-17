@@ -50,7 +50,7 @@ const LandingContainer = (props) => {
 
 LandingContainer.propTypes = {
   data: PropTypes.array,
-  hasStatus: PropTypes.true,
+  hasStatus: PropTypes.bool,
   redirectTo: PropTypes.string,
   hasDateAndTime: PropTypes.bool,
   history: PropTypes.object,
