@@ -13,7 +13,7 @@ import './style.css';
 
 class Drivers extends Component {
 
-  static propTypes = {
+  props: {
     history: PropTypes.object,
     getDrivers: PropTypes.func,
     getDriversList: PropTypes.array,
