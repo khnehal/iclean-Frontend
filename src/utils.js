@@ -8,7 +8,7 @@ export const COOKIE_EXPIRE_DAYS = 5;
 export const SESSION_EXPIRE_DAYS = 1;
 
 // BE URL
-export const BACKEND_URL = 'http://e763a263.ngrok.io';
+export const apiUrl = 'http://e763a263.ngrok.io';
 
 export const getCookie = (name) => {
   /* Return cookie if not null. */

@@ -1,5 +1,5 @@
 import {
-  BACKEND_URL,
+  apiUrl,
   getCookie,
 } from '../utils.js';
 import { setLocalToken } from './auth.js';
@@ -7,7 +7,7 @@ import { setLocalToken } from './auth.js';
 
 export async function loginAPI(body) {
   let result = null;
-  await fetch(`${BACKEND_URL}/user/signin/`, {
+  await fetch(`${apiUrl}/user/signin/`, {
     method: 'post',
     headers: {
       'Accept': 'application/json',
