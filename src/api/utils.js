@@ -71,13 +71,13 @@ function requestWrapper(method) {
     };
     // const shouldEscapeToken = url.match(/^http(s)?:\/\/(.)*\/(search|cms-api)\/*/gi);
 
-    if ((url.indexOf('/signin') > -1)) {
+    // if ((url.indexOf('/signin') > -1)) {
       const token = getLocalToken();
 
       if (token) {
         defaults.headers.Token = `${token}`;
       }
-    }
+    // }
 
     if (data) {
       defaults.body = data;
