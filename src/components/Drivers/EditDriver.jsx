@@ -87,9 +87,9 @@ class EditDriver extends Component {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {driver_time_slots.map((item) => {
+          {driver_time_slots.map((item, i) => {
             return (
-              <Table.Row>
+              <Table.Row key={ i + 1 }>
                 <Table.Cell width={4}> {item.time_slot && item.time_slot} </Table.Cell>
                 <Table.Cell width={4}>
                   <Input type='number' value={item.orders_per_hour} onChange={this.handleTimeChange} />

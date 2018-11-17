@@ -1,72 +1,69 @@
 import React, { Component } from 'react';
-
-import { Segment, Table, Menu, Button } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import ItemsListingRow from './ItemsListingRow';
-
+import { Segment, Header, Table, Button, Icon } from 'semantic-ui-react';
 import './items.css'
+
+import ItemsListingRow from './ItemsListingRow';
+import { GET_ITEMS } from '../../store/actions';
+import { itemSelector } from '../../store/selectors';
 
 
 class Items extends Component {
 
-  constructor() {
-    super();
+  static propTypes = {
+    history: PropTypes.object,
+    getItems: PropTypes.func,
+    itemsList: PropTypes.array,
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {
-      data: [
-        {
-          id: 1,
-          name: 'vest',
-          price: '10.5',
-        },
-        {
-          id: 2,
-          name: 'shirt',
-          price: '15.5',
-        },
-      ],
     };
   };
 
+  componentDidMount() {
+    this.props.getItems();
+  }
+
   render() {
-    const { data } = this.state;
+    const { itemsList } = this.props;
 
     return (
-      <div className="items-section">
-        <Segment.Group horizontal className="item-header-section">
-          <Segment className="items-title">
-            <h2>Items Price List</h2>
-          </Segment>
-        </Segment.Group>
+      <Segment className="items">
+        <Segment padded basic textAlign='center'>
+          <Header as='h1' textAlign='left'>
+            Items Price List
+            <Header.Subheader>List of all Items and Prices.</Header.Subheader>
+          </Header>
+          <Button className="add-item-btn" floated='right' color='green' as={NavLink} to={'/items/add-item/'}> <Icon name='plus' /> Add Item </Button>
+        </Segment>
 
-        <div className="items-listing-section">
-          <Segment.Group horizontal>
-            <Segment className="items-sub-header">
-                <h4>List of all Items and Prices.</h4>
-            </Segment>
-
-            <Segment className="add-item">
-              <Menu.Item as={NavLink} to={'/items/add-item/'}>
-                <Button icon>Add Item</Button>
-              </Menu.Item>
-            </Segment>
-          </Segment.Group>
-
-          <Segment.Group horizontal>
-            <Segment>
-              <Table>
-                <Table.Body>
-                  {(data && data.length > 0) && data.map((item, i) => {
-                    return <ItemsListingRow key={i} {...this.state} item={item} index={i} />;
-                  })}
-                </Table.Body>
-              </Table>
-            </Segment>
-          </Segment.Group>
-        </div>
-      </div>
+        <Segment className="items-section" basic textAlign='center'>
+          <Table padded striped>
+            <Table.Body>
+              {(itemsList && itemsList.length > 0) && itemsList.map((item, i) => {
+                return <ItemsListingRow key={i} {...this.state} item={item} index={i} />;
+              })}
+            </Table.Body>
+          </Table>
+        </Segment>
+      </Segment>
     );
   }
 }
 
+const mapStateToProps = (state) => ({
+  itemsList: itemSelector.getItemsList(state),
+});
 
-export default Items;
+const mapDispatchToProps = (dispatch) => ({
+  getItems: async () => {
+    return dispatch(GET_ITEMS());
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Items));

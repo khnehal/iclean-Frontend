@@ -7,6 +7,32 @@
     border: 0;
 }
 
-.ui.segment.items-title {
-    text-align: left;
+.add-item-section .ui.table {
+    margin: auto;
+    font-size: 1.6em;
+    margin-bottom: 30px !important;
+}
+
+.items .items-section .ui.table,
+.items a.add-item-btn,
+.items button.update-item-btn,
+.add-item-wrapper .add-item-section .add-item-btn
+{
+    font-size: 13px;
+}
+
+.items .ui.table td,
+.add-item-section .ui.table td
+{
+    vertical-align: inherit;
+}
+
+.items .items-section {
+    margin-top: 30px;
+}
+
+.add-item-section .ui.table input,
+.add-item-section .ui.table .dropdown
+{
+    width: 300px;
 }

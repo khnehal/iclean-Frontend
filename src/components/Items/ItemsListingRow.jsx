@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import {
   Table,
-  Icon,
   Input,
   Button,
 } from 'semantic-ui-react';
@@ -44,18 +43,36 @@ class ItemsListingRow extends Component {
 
     return (
       <Table.Row key={index + 1}>
-        <Table.Cell>{item.name}</Table.Cell>
-        <Table.Cell>
+        <Table.Cell>{item.item_name}</Table.Cell>
+        <Table.Cell textAlign={'right'}>
           <Input
             onChange={(e) => this.handleChange(e)}
             type='text'
             defaultValue={price}
+            placeholder={'Price'}
           />
         </Table.Cell>
         <Table.Cell>
-          <Button className='ui button' onClick={() => this.onUpdateItem(item.id)}>Update Price</Button>
+          <Button
+            className='update-item-btn ui button'
+            floated='right'
+            color='green'
+            onClick={() => this.onUpdateItem(item.id)}
+          >
+            Update Price
+          </Button>
         </Table.Cell>
-        <Table.Cell><Icon name='close' onClick={() => this.onDeleteItem(item.id)} /></Table.Cell>
+        <Table.Cell>
+          <Button
+            className='delete-item-btn'
+            basic
+            circular
+            color={'red'}
+            size='medium'
+            icon='delete'
+            onClick={() => this.onDeleteItem(item.id)}
+          />
+        </Table.Cell>
       </Table.Row>
     );
   }
