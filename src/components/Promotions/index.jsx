@@ -58,10 +58,12 @@ class Promotions extends Component {
     ];
     return (
       <Segment className="promotions">
-        <Header as='h1' textAlign='left'>
-          Promotions
-          <Header.Subheader>Below you can view promotion details.</Header.Subheader>
-        </Header>
+        <Segment padded basic textAlign='center'>
+          <Header as='h1' textAlign='left'>
+            Promotions
+            <Header.Subheader>Below you can view promotion details.</Header.Subheader>
+          </Header>
+        </Segment>
 
         <Segment basic className="promo-section">
           <Segment className="add-promo">
@@ -121,7 +123,7 @@ class Promotions extends Component {
 
             <Button className='save-promo-btn ui button' color='green' onClick={() => this.onSavePromo()}>SAVE PROMO CODE</Button>
           </Segment>
-
+          <br/>
           <Segment className="promo-listing-section">
             <Table striped celled>
               <Table.Header>

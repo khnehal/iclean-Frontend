@@ -1,6 +1,9 @@
 .add-promo .save-promo-btn,
 .add-promo .generate-code,
-.promo-listing-section .ui.table
+.promo-listing-section .ui.table,
+.add-promo .promo-code,
+.add-promo .promo-value,
+.add-promo .promo-dates
 {
     font-size: 13px;
 }
@@ -20,11 +23,4 @@
 .add-promo .generate-code
 {
     margin: 10px;
-}
-
-.add-promo .promo-code,
-.add-promo .promo-value,
-.add-promo .promo-dates
-{
-    font-size: 13px;
 }
