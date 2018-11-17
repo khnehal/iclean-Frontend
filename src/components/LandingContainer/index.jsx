@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Segment,
   Table,
   Icon,
 } from 'semantic-ui-react';
@@ -27,7 +26,7 @@ const LandingContainer = (props) => {
   };
 
   return (
-    <Segment className="landing-container">
+    <div className="landing-container">
       <Table padded selectable>
         <Table.Body>
           {(data && data.length > 0) && data.map((item, i) => {
@@ -44,7 +43,7 @@ const LandingContainer = (props) => {
           })}
         </Table.Body>
       </Table>
-    </Segment>
+    </div>
   )
 };
 

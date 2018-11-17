@@ -48,7 +48,7 @@ class RouteContainer extends Component {
         <Route
           {...this.props}
           render={props => (
-            <span>
+            <div>
               <TopStickyNavBar />
               <div className="container iCleanContainer">
                 <NavBar />
@@ -56,7 +56,7 @@ class RouteContainer extends Component {
                   <Component {...props} />
                 </Container>
               </div>
-            </span>
+            </div>
           )}
         />
       );

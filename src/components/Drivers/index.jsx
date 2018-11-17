@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import './style.css';
 
-import { Header } from 'semantic-ui-react'; //eslint-disable-line
+import { Header, Segment } from 'semantic-ui-react';
 
 import { GET_DRIVERS } from '../../store/actions.js';
 import { DriversSelector } from '../../store/selectors.js';
 
 import LandingContainer from '../LandingContainer';
+import './style.css';
 
 class Drivers extends Component {
 
@@ -42,7 +42,7 @@ class Drivers extends Component {
   render() {
 
     return (
-      <div className="Driver">
+      <Segment className="Driver">
         <Header as='h1' textAlign='left'> Drivers
           <Header.Subheader> Below you can view all the drivers details. </Header.Subheader>
         </Header>
@@ -51,7 +51,7 @@ class Drivers extends Component {
           history={this.props.history}
           redirectTo={'/drivers/editDriver/'}
         />
-      </div>
+      </Segment>
     );
   }
 }

@@ -37,7 +37,7 @@ class Orders extends Component {
 
   render() {
     return (
-      <div className="OrdersSection">
+      <Segment basic className="OrdersSection">
         <Segment.Group horizontal className="OrdersHeaderSection">
           <Segment className="OrdersTitle">
             <h2> Waiting For Cleaning </h2>
@@ -47,7 +47,7 @@ class Orders extends Component {
           </Segment>
         </Segment.Group>
         <LandingContainer {...this.state} history={this.props.history} />
-      </div>
+      </Segment>
     );
   }
 }

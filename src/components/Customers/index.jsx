@@ -30,7 +30,7 @@ class Customers extends Component {
     return (
       <Segment className="CustomersSection">
         <Grid className="CustomersHeaderSection">
-          <Grid.Column mobile={16} tablet={8} computer={10} className="CustomersTitle">
+          <Grid.Column mobile={16} tablet={8} computer={10} textAlign={'left'} className="CustomersTitle">
             <h2> Customers List </h2>
           </Grid.Column>
           <Grid.Column mobile={16} tablet={8} computer={6} className="CustomersSearchSection">

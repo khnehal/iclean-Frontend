@@ -87,23 +87,21 @@ class AddDayOff extends Component {
   render() {
 
     return (
-      <div className="Driver">
-        <Segment>
-          <Segment padded basic>
-            <Header as='h1' textAlign='left'> Add Day Off </Header>
-            <Button floated='right' color='green'> Done </Button>
-          </Segment>
-          <Segment basic textAlign='center'>
-            {this.renderDateTable()}
-          </Segment>
-          <Segment basic textAlign='center'>
-            <Header as='h2' textAlign='center'>Delivery (Pickup / Dropoff) has been disabled for the following days.</Header>
-          </Segment>
-          <Segment basic textAlign='center'>
-            {this.renderDayOffsTable()}
-          </Segment>
+      <Segment className="Driver">
+        <Segment padded basic>
+          <Header as='h1' textAlign='left'> Add Day Off </Header>
+          <Button floated='right' color='green'> Done </Button>
         </Segment>
-      </div>
+        <Segment basic textAlign='center'>
+          {this.renderDateTable()}
+        </Segment>
+        <Segment basic textAlign='center'>
+          <Header as='h2' textAlign='center'>Delivery (Pickup / Dropoff) has been disabled for the following days.</Header>
+        </Segment>
+        <Segment basic textAlign='center'>
+          {this.renderDayOffsTable()}
+        </Segment>
+      </Segment>
     );
   }
 }

@@ -1,3 +1,5 @@
+// Storing Login Token
+
 export function getLocalToken() {
   return localStorage.getItem('token');
 }
