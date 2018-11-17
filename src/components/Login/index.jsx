@@ -132,6 +132,7 @@ class Login extends Component {
       return (
         <Container className="login-main">
           <div>
+            <Image src={'/login_bg.png'} alt="iclean" centered />
             <div className="login-inputs">
               {
                 // showErrorMessage && !isEmpty(errorMessage) &&
@@ -139,7 +140,6 @@ class Login extends Component {
                 //   <Message.Header>{errorMessage}</Message.Header>
                 // </Message>
               }
-              <Image src={'/icleanlogo.png'} alt="iclean" size="small" centered />
               <Input
                 value={email}
                 placeholder="Valid Email"
