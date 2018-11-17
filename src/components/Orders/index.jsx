@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import LandingContainer from '../LandingContainer';
 import { Segment, Input, Tab } from 'semantic-ui-react';
@@ -15,6 +16,10 @@ const panes = [
 const TabExampleLoading = () => <Tab panes={panes} /> //eslint-disable-line
 
 class Orders extends Component {
+
+  static propTypes = {
+    history: PropTypes.object,
+  };
 
   constructor() {
     super();
@@ -41,7 +46,7 @@ class Orders extends Component {
             <Input icon='search' placeholder='Search...' />
           </Segment>
         </Segment.Group>
-        <LandingContainer {...this.state} />
+        <LandingContainer {...this.state} history={this.props.history} />
       </div>
     );
   }

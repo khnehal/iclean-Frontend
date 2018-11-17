@@ -1,0 +1,27 @@
+.ui.horizontal.segments.CustomersHeaderSection,
+.ui.segments.CustomersSection {
+    border: 0;
+    box-shadow: none;
+}
+
+.ui.table.addNotifications {
+    border: 0;
+    margin: auto;
+    box-shadow: none;
+}
+
+.ui.horizontal.segments.CustomersHeaderSection .ui.segment {
+    border: 0;
+}
+
+.ui.segment.CustomersTitle {
+    text-align: left;
+}
+
+.ui.segment.CustomersSearchSection {
+    text-align: right;
+}
+
+.CustomerSection .ui.table, .CustomerSection .ui.radio label {
+    font-size: 1.6em;
+}

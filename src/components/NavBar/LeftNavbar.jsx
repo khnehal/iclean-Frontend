@@ -62,7 +62,7 @@ class LeftNavbar extends Component {
                 </Accordion.Content>
 
                 <Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick}>
-                    <Menu.Item as={NavLink} to={'/drivers/'}>
+                    <Menu.Item as={NavLink} to={'/drivers/driversList/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='folder' />
                             Drivers
@@ -70,7 +70,7 @@ class LeftNavbar extends Component {
                     </Menu.Item>
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 1}>
-                    <Menu.Item as={NavLink} to={'/drivers/'}>
+                    <Menu.Item as={NavLink} to={'/drivers/driversList/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Drivers
@@ -97,7 +97,7 @@ class LeftNavbar extends Component {
                 </Accordion.Content>
 
                 <Accordion.Title active={activeIndex === 2} index={2} onClick={this.handleClick}>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/customers/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='folder' />
                             Customers
@@ -105,13 +105,13 @@ class LeftNavbar extends Component {
                     </Menu.Item>
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 2}>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/notifications/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Notifications
                         </Button>
                     </Menu.Item>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/customers/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Customers List
