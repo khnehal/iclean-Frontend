@@ -9,11 +9,14 @@
 
 .add-item-section .ui.table {
     margin: auto;
-    font-size: 1.6em;
-    margin-bottom: 30px !important;
+    margin-bottom: 25px;
 }
 
-.items .items-section .ui.table,
+.add-item-section .ui.table td {
+    font-size: 1.6em;
+}
+
+.items .items-section .ui.table td,
 .items a.add-item-btn,
 .items button.update-item-btn,
 .add-item-wrapper .add-item-section .add-item-btn
@@ -31,8 +34,8 @@
     margin-top: 30px;
 }
 
-.add-item-section .ui.table input,
+.add-item-section .ui.table .input,
 .add-item-section .ui.table .dropdown
 {
-    width: 300px;
+    width: 100%;
 }
