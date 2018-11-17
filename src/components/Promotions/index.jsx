@@ -1,35 +1,32 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Segment, Table, Button, Input, Icon, Label } from 'semantic-ui-react';
-// import moment from 'moment';
 import './promotions.css'
+
+// import moment from 'moment';
+import { GET_PROMOTIONS } from '../../store/actions.js';
+import { PromotionsSelector } from '../../store/selectors.js';
 
 
 class Promotions extends Component {
 
-  constructor() {
-    super();
+  static propTypes = {
+    history: PropTypes.object,
+    getPromotions: PropTypes.func,
+    promotionsList: PropTypes.array,
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {
-      data: [
-        {
-          created_on: '08-08-2018',
-          promo_code: 'YELP10',
-          amount: '$20',
-          start_date: '2018-08-08',
-          end_date: '2018-08-31',
-          id: 1,
-        },
-        {
-          created_on: '08-08-2018',
-          promo_code: 'LHEKH2',
-          amount: '$30',
-          start_date: '2018-08-08',
-          end_date: '2018-08-31',
-          id: 2,
-        },
-      ],
     };
   };
+
+  componentDidMount() {
+    this.props.getPromotions();
+  }
 
   onDeletePromo = (promoId) => {
     // Call the delete api.
@@ -50,7 +47,7 @@ class Promotions extends Component {
   }
 
   render() {
-    const { data } = this.state;
+    const { promotionsList } = this.props;
     const tableHeaders = [
       'Date Created',
       'Promo Code',
@@ -156,7 +153,7 @@ class Promotions extends Component {
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {(data && data.length > 0) && data.map((promo, i) => {
+                  {(promotionsList && promotionsList.length > 0) && promotionsList.map((promo, i) => {
                     return (
                       <Table.Row key={i + 1}>
                         <Table.Cell>{promo.created_on}</Table.Cell>
@@ -178,5 +175,14 @@ class Promotions extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  promotionsList: PromotionsSelector.getPromotionsList(state),
+});
 
-export default Promotions;
+const mapDispatchToProps = (dispatch) => ({
+  getPromotions: async () => {
+    return dispatch(GET_PROMOTIONS());
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Promotions));

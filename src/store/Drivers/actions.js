@@ -17,7 +17,6 @@ export function GET_DRIVERS() {
     }
 
     dispatch({ type: DRIVERS_LIST, data: result.data });
-
     return result;
   };
 }
