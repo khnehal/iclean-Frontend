@@ -37,7 +37,7 @@ class Orders extends Component {
 
   render() {
     return (
-      <Segment basic className="OrdersSection">
+      <Segment className="OrdersSection">
         <Segment.Group horizontal className="OrdersHeaderSection">
           <Segment className="OrdersTitle">
             <h2> Waiting For Cleaning </h2>

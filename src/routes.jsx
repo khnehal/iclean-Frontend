@@ -31,6 +31,9 @@ import Promotions from './components/Promotions/index.jsx';
 import Customers from './components/Customers/index.jsx';
 import Noifications from './components/Customers/Notifications.jsx';
 
+// Wash Settings
+import CustomerWashSettings from './components/Customers/CustomerWashSettings.jsx';
+
 
 const RedirectToDashboard = () => <Redirect to={'/orders/waitingOrders/'} />;
 
@@ -53,6 +56,7 @@ const AppRoutes = () => (
           <RouteContainer path={'/drivers/editDriver/'} componentToUse={EditDriver} />
 
           <RouteContainer path={'/customers/'} componentToUse={Customers} />
+          <RouteContainer path={'/customerWashSettings/'} componentToUse={CustomerWashSettings} />
           <RouteContainer path={'/notifications/'} componentToUse={Noifications} />
 
           <RouteContainer path={'/items/price-list/'} componentToUse={Items} />

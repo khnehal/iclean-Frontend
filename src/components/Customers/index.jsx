@@ -37,7 +37,11 @@ class Customers extends Component {
             <Input icon='search' placeholder='Search...' />
           </Grid.Column>
         </Grid>
-        <LandingContainer {...this.state} history={this.props.history} />
+        <LandingContainer
+          {...this.state}
+          history={this.props.history}
+          redirectTo={'/customerWashSettings/'}
+        />
       </Segment>
     );
   }
