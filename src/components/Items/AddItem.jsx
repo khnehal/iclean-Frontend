@@ -2,10 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Segment, Header, Input, Table, Dropdown, Button } from 'semantic-ui-react';
+import { Segment, Header, Input, Table, Dropdown, Button, Message } from 'semantic-ui-react';
 import './items.css'
 
-import { GET_CATEGORIES } from '../../store/actions';
+import {
+  GET_CATEGORIES,
+  SAVE_ITEM,
+  ITEM_SAVED,
+  ITEM_ERRORS,
+} from '../../store/actions';
 import { itemSelector } from '../../store/selectors';
 
 
@@ -14,6 +19,10 @@ class AddItem extends Component {
   props: {
     getCategories: PropTypes.func,
     categoriesList: PropTypes.array,
+    itemSaved: PropTypes.string,
+    itemErrors: PropTypes.array,
+    saveItem: PropTypes.func,
+    resetData: PropTypes.func,
   };
 
   constructor(props) {
@@ -34,7 +43,7 @@ class AddItem extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { categoriesList } = nextProps;
+    const { categoriesList, itemSaved } = nextProps;
     if (categoriesList && categoriesList.length > 0) {
       const { data } = this.state;
       const categoryOptions = [];
@@ -45,13 +54,40 @@ class AddItem extends Component {
           text: category[1],
         });
       });
+
+      if (itemSaved) {
+        // this.fadeOutMessage();
+      }
       data.category = categoryOptions[0].value;
       this.setState({ categoryOptions, data });
     }
   }
 
+  fadeOutMessage = () => {
+    const {
+      resetData
+    } = this.props;
+    window.setTimeout(() => {
+      resetData(ITEM_SAVED);
+      resetData(ITEM_ERRORS);
+    }, 3000);
+  }
+
   onAddItem = (itemData) => {
-    // Call the add api.
+    const {
+      name,
+      price,
+      category,
+      image,
+    } = this.state.data;
+
+    const data = {
+      "item_name": name,
+      "price": price,
+      "item_category": category,
+      "item_image": image,
+    }
+    this.props.saveItem(data);
   }
 
   handleChange = (e, { value, name }) => {
@@ -69,6 +105,11 @@ class AddItem extends Component {
     } = this.state.data;
 
     const {
+      itemSaved,
+      itemErrors,
+    } = this.props;
+
+    const {
       categoryOptions
     } = this.state;
 
@@ -83,6 +124,22 @@ class AddItem extends Component {
         </Segment>
 
         <Segment basic textAlign='center' className="add-item-section">
+          { itemSaved &&
+            <Message size={'large'} info>
+              <Message.Header>{`${itemSaved}`}</Message.Header>
+              {
+                (itemErrors && itemErrors.length > 0) &&
+                <Message.List>
+                  {
+                    itemErrors.map((error) => {
+                      return <Message.Item>{`${error}`}</Message.Item>;
+                    })
+                  }
+                </Message.List>
+              }
+            </Message>
+          }
+
           <Table collapsing>
             <Table.Body>
               <Table.Row>
@@ -148,11 +205,19 @@ class AddItem extends Component {
 
 const mapStateToProps = (state) => ({
   categoriesList: itemSelector.getCategoriesList(state),
+  itemSaved: itemSelector.itemSaved(state),
+  itemErrors: itemSelector.getItemErrors(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getCategories: async () => {
     return dispatch(GET_CATEGORIES());
+  },
+  saveItem: async (data) => {
+    return dispatch(SAVE_ITEM(data));
+  },
+  resetData: async (type) => {
+    return dispatch({ type, data: false });
   },
 });
 

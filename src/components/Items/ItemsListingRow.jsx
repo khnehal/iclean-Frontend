@@ -1,30 +1,53 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Table, Input, Button } from 'semantic-ui-react';
 
 import {
-  Table,
-  Input,
-  Button,
-} from 'semantic-ui-react';
+  DELETE_ITEM,
+  UPDATE_ITEM,
+} from '../../store/actions';
+import { itemSelector } from '../../store/selectors';
+
 
 class ItemsListingRow extends Component {
   props: {
     item: PropTypes.object,
     index: PropTypes.number,
+    deleteItem: PropTypes.func,
+    reloadItems: PropTypes.bool,
+    resetAndReload: PropTypes.func,
+    updateItem: PropTypes.func,
+    fadeOutMessage: PropTypes.func,
   };
 
   state = {
     price: this.props.item.price,
   };
 
+  componentWillReceiveProps(nextProps) {
+    const {
+      reloadItems,
+      resetAndReload,
+    } = nextProps;
+
+    if (reloadItems) {
+      resetAndReload();
+    }
+  }
+
   onDeleteItem = (itemId) => {
-    // Call the delete api.
+    const {
+      deleteItem
+    } = this.props;
     console.log(`Ye Item(${itemId}) ko delete kar re jamaila!!`);
+    deleteItem(itemId);
   }
 
   onUpdateItem = (itemId) => {
-    // Call the update api.
-    console.log(`Ye Item(${itemId}) ko update kar re jamaila!!`);
+    this.props.updateItem(itemId, { price: this.state.price });
+    this.props.fadeOutMessage();
   }
 
   handleChange = (e, { value }) => {
@@ -80,4 +103,20 @@ class ItemsListingRow extends Component {
 };
 
 
-export default ItemsListingRow;
+const mapStateToProps = (state) => ({
+  reloadItems: itemSelector.reloadItems(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  deleteItem:  async (id) => {
+    return dispatch(DELETE_ITEM(id));
+  },
+  resetData: async (type) => {
+    return dispatch({ type, data: false });
+  },
+  updateItem: async (id, data) => {
+    return dispatch(UPDATE_ITEM(id, data));
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ItemsListingRow));
