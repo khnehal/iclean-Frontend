@@ -5,22 +5,36 @@ import { withRouter } from 'react-router';
 import { Segment, Header, Table, Button, Input } from 'semantic-ui-react';
 import './promotions.css'
 
-// import moment from 'moment';
-import { GET_PROMOTIONS } from '../../store/actions';
+import moment from 'moment';
+import {
+  GET_PROMOTIONS,
+  GET_PROMO_CODE,
+  DELETE_PROMOTION,
+} from '../../store/actions';
 import { promotionSelector } from '../../store/selectors';
 
 
 class Promotions extends Component {
 
-  static propTypes = {
+  props: {
     history: PropTypes.object,
     getPromotions: PropTypes.func,
     promotionsList: PropTypes.array,
+    generatePromoCode: PropTypes.func,
+    generatedPromoCode: PropTypes.string,
+    deletePromotion: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
     this.state = {
+      data: {
+        promoCode: '',
+        dollarValue: '',
+        percentValue: '',
+        startDate: '',
+        endDate: '',
+      }
     };
   };
 
@@ -28,26 +42,47 @@ class Promotions extends Component {
     this.props.getPromotions();
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { generatedPromoCode } = nextProps;
+    console.log(generatedPromoCode);
+    if (generatedPromoCode) {
+      const { data } = this.state;
+      data.promoCode = generatedPromoCode;
+      this.setState({ data });
+    }
+  }
+
   onDeletePromo = (promoId) => {
     // Call the delete api.
     console.log(`Ye promo(${promoId}) ko delete kar re jamaila!!`);
-  }
-
-  onGenerateCode = () => {
-    // Call the generate api.
+    this.props.deletePromotion(promoId);
   }
 
   onSavePromo = () => {
     // Call the save promo api.
+    console.log(this.state);
   }
 
-  handleChange = (e, field) => {
-    console.log(`Ye promo(${field}) ko delete kar re jamaila!!`);
-    // this.setState(obj);
+  handleChange = (e, { value, name }) => {
+    const { data } = this.state;
+    data[name] = value;
+    this.setState({ data });
   }
 
   render() {
-    const { promotionsList } = this.props;
+    const {
+      promotionsList,
+      generatePromoCode
+     } = this.props;
+
+    const {
+      promoCode,
+      dollarValue,
+      percentValue,
+      startDate,
+      endDate,
+    } = this.state.data;
+
     const tableHeaders = [
       'Date Created',
       'Promo Code',
@@ -56,6 +91,9 @@ class Promotions extends Component {
       'End Date',
       'Remove'
     ];
+
+    const minDate = moment().format('YYYY-MM-DD');
+
     return (
       <Segment className="promotions">
         <Segment padded basic textAlign='center'>
@@ -70,52 +108,59 @@ class Promotions extends Component {
             <div className="promo-code">
               <h5>Use a generated promo code or type your own</h5>
               <Input
-                onChange={(e) => this.handleChange(e, 'promo_code')}
+                onChange={this.handleChange}
                 type='text'
-                defaultValue={''}
+                value={promoCode}
                 placeholder={'Alphanumeric Value'}
+                name={'promoCode'}
               />
-              <Button className='generate-code ui button' color='green' onClick={() => this.onGenerateCode()}>GENERATE CODE</Button>
+              <Button className='generate-code ui button' color='green' onClick={() => generatePromoCode()}>GENERATE CODE</Button>
             </div>
 
             <div className="promo-value">
               <Input
-                onChange={(e) => this.handleChange(e, 'promo_value_dollar')}
+                onChange={this.handleChange}
                 label='$'
                 labelPosition='left'
-                type='text'
-                defaultValue={''}
+                type='number'
+                value={dollarValue}
                 placeholder={'Amount'}
+                name={'dollarValue'}
               />
               OR
               <Input
-                onChange={(e) => this.handleChange(e, 'promo_value_percent')}
+                onChange={this.handleChange}
                 label='%'
                 labelPosition='left'
-                type='text'
-                defaultValue={''}
+                type='number'
+                value={percentValue}
                 placeholder={'Percent'}
+                name={'percentValue'}
               />
               OFF
             </div>
 
             <div className="promo-dates">
               <Input
-                onChange={(e) => this.handleChange(e, 'start_date')}
+                onChange={this.handleChange}
                 label='Start Date'
                 labelPosition='left'
-                type='text'
-                defaultValue={''}
+                type='date'
+                min={minDate}
+                value={startDate}
                 placeholder={'MM-DD-YYYY'}
+                name={'startDate'}
               />
 
               <Input
-                onChange={(e) => this.handleChange(e, 'end_date')}
+                onChange={this.handleChange}
                 label='End Date'
                 labelPosition='left'
-                type='text'
-                defaultValue={''}
+                type='date'
+                min={minDate}
+                value={endDate}
                 placeholder={'MM-DD-YYYY'}
+                name={'endDate'}
               />
             </div>
 
@@ -125,7 +170,7 @@ class Promotions extends Component {
           </Segment>
           <br/>
           <Segment className="promo-listing-section">
-            <Table striped celled>
+            <Table striped celled textAlign={'center'}>
               <Table.Header>
                 <Table.Row>
                   {
@@ -141,11 +186,11 @@ class Promotions extends Component {
                 {(promotionsList && promotionsList.length > 0) && promotionsList.map((promo, i) => {
                   return (
                     <Table.Row key={i + 1}>
-                      <Table.Cell>{promo.created_date}</Table.Cell>
+                      <Table.Cell>{moment(promo.created_date).format('DD-MM-YYYY')}</Table.Cell>
                       <Table.Cell>{promo.code}</Table.Cell>
                       <Table.Cell>{`$${promo.dollar_discount}`}</Table.Cell>
-                      <Table.Cell>{promo.start_date}</Table.Cell>
-                      <Table.Cell>{promo.end_date}</Table.Cell>
+                      <Table.Cell>{moment(promo.start_date).format('YYYY-MM-DD')}</Table.Cell>
+                      <Table.Cell>{moment(promo.end_date).format('YYYY-MM-DD')}</Table.Cell>
                       <Table.Cell>
                         <Button
                           className='delete-item-btn'
@@ -170,11 +215,21 @@ class Promotions extends Component {
 
 const mapStateToProps = (state) => ({
   promotionsList: promotionSelector.getPromotionsList(state),
+  generatedPromoCode: promotionSelector.getGeneratedPromoCode(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getPromotions: async () => {
     return dispatch(GET_PROMOTIONS());
+  },
+  generatePromoCode:  async () => {
+    return dispatch(GET_PROMO_CODE());
+  },
+  deletePromotion:  async (id) => {
+    const result = await DELETE_PROMOTION(id);
+    dispatch(result);
+    dispatch(GET_PROMOTIONS());
+    // return dispatch(DELETE_PROMOTION());
   },
 });
 

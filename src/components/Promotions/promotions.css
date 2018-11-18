@@ -24,3 +24,20 @@
 {
     margin: 10px;
 }
+
+.add-promo .promo-code button.generate-code,
+.add-promo .promo-code button.generate-code:focus
+{
+    background-color: grey;
+}
+
+.add-promo .promo-code button.generate-code:hover:active
+{
+    background-color: #198f35;
+}
+
+.add-promo .promo-code button.generate-code:hover
+{
+    background-color: #16ab39;
+}
+
