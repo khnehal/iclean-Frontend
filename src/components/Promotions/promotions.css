@@ -1,6 +1,9 @@
 .add-promo .save-promo-btn,
 .add-promo .generate-code,
-.promo-listing-section .ui.table
+.promo-listing-section .ui.table,
+.add-promo .promo-code,
+.add-promo .promo-value,
+.add-promo .promo-dates
 {
     font-size: 13px;
 }
@@ -22,9 +25,19 @@
     margin: 10px;
 }
 
-.add-promo .promo-code,
-.add-promo .promo-value,
-.add-promo .promo-dates
+.add-promo .promo-code button.generate-code,
+.add-promo .promo-code button.generate-code:focus
 {
-    font-size: 13px;
+    background-color: grey;
 }
+
+.add-promo .promo-code button.generate-code:hover:active
+{
+    background-color: #198f35;
+}
+
+.add-promo .promo-code button.generate-code:hover
+{
+    background-color: #16ab39;
+}
+

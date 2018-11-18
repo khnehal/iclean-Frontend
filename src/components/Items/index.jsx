@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import { Segment, Header, Table, Button, Icon } from 'semantic-ui-react';
 import './items.css'
 
@@ -13,8 +13,7 @@ import { itemSelector } from '../../store/selectors';
 
 class Items extends Component {
 
-  static propTypes = {
-    history: PropTypes.object,
+  props: {
     getItems: PropTypes.func,
     itemsList: PropTypes.array,
   };
@@ -39,7 +38,7 @@ class Items extends Component {
             Items Price List
             <Header.Subheader>List of all Items and Prices.</Header.Subheader>
           </Header>
-          <Button className="add-item-btn" floated='right' color='green' as={NavLink} to={'/items/add-item/'}> <Icon name='plus' /> Add Item </Button>
+          <Button className="add-item-btn" floated='right' color='green' as={NavLink} to={'/items/add-item'}> <Icon name='plus' /> Add Item </Button>
         </Segment>
 
         <Segment className="items-section" basic textAlign='center'>

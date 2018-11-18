@@ -68,9 +68,9 @@ class AddDayOff extends Component {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {dayOffDates.map((item) => {
+          {dayOffDates.map((item, i) => {
             return (
-              <Table.Row>
+              <Table.Row key={i + 1}>
                 <Table.Cell width={4}> {item.day_off_date && item.day_off_date} </Table.Cell>
                 <Table.Cell width={4}>
                   <Button basic circular color={'red'} size='medium' icon='delete'></Button>
