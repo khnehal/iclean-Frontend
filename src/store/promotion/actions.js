@@ -2,6 +2,7 @@ import {
   getPromotions,
   generatePromoCode,
   deletePromotion,
+  savePromotion,
 } from './../../api/promotions.js';
 
 import {
@@ -12,6 +13,8 @@ import {
 export const PROMOTIONS_LIST = 'PROMOTIONS_LIST';
 export const GENERATED_PROMO_CODE = 'GENERATED_PROMO_CODE';
 export const PROMOTION_DELETED= 'PROMOTION_DELETED';
+export const PROMOTION_SAVED= 'PROMOTION_SAVED';
+export const RELOAD_PROMOTIONS = 'RELOAD_PROMOTIONS';
 
 
 export function GET_PROMOTIONS() {
@@ -39,7 +42,21 @@ export function GET_PROMO_CODE() {
 export function DELETE_PROMOTION(id) {
   return async (dispatch) => {
     const result = await deletePromotion(id);
-    console.log(result);
-    dispatch({ type: PROMOTION_DELETED, data: true });
+    // returns status= 0 or 404 when promo is deleted or doesn't exist(already deleted).
+    const validStates = [0, 404];
+    const status = (result.status in validStates) ? true : false;
+    dispatch({ type: PROMOTION_DELETED, data: status });
+    dispatch({ type: RELOAD_PROMOTIONS, data: status });
+  }
+}
+
+export function SAVE_PROMOTION(data) {
+  return async (dispatch) => {
+    const result = await savePromotion(data);
+    if (!resultOK(result)) {
+      return null;
+    }
+    dispatch({ type: PROMOTION_SAVED, data: true });
+    dispatch({ type: RELOAD_PROMOTIONS, data: true });
   }
 }

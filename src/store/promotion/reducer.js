@@ -3,7 +3,10 @@ import {
   PROMOTIONS_LIST,
   GENERATED_PROMO_CODE,
   PROMOTION_DELETED,
+  PROMOTION_SAVED,
+  RELOAD_PROMOTIONS,
 } from './actions';
+
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -21,6 +24,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         promotionDeleted: action.data,
+      };
+    case PROMOTION_SAVED:
+      return {
+        ...state,
+        promotionSaved: action.data,
+      };
+    case RELOAD_PROMOTIONS:
+      return {
+        ...state,
+        reloadPromotions: action.data,
       };
     default:
       return state;
