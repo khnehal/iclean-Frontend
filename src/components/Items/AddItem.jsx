@@ -1,36 +1,62 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Segment, Header, Input, Table, Dropdown, Button } from 'semantic-ui-react';
-
 import './items.css'
 
+import { GET_CATEGORIES } from '../../store/actions';
+import { itemSelector } from '../../store/selectors';
+
+
 class AddItem extends Component {
-  constructor() {
-    super();
+
+  props: {
+    getCategories: PropTypes.func,
+    categoriesList: PropTypes.array,
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {
       data: {
         name: '',
-        price: null,
+        price: '',
         category: '',
         image: '',
-      }
+      },
+      categoryOptions: [],
     };
   };
 
-  categoryOptions = [
-    { key: '', text: 'Select Category', value: 0, _id: null},
-    { key: 'Dry Cleaning', text: 'Dry Cleaning', value: 0, _id: null},
-    { key: 'Laundary', text: 'Laundary', value: 0, _id: null},
-    { key: 'Households', text: 'Households', value: 0, _id: null},
-  ]
+  componentDidMount() {
+    this.props.getCategories();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { categoriesList } = nextProps;
+    if (categoriesList && categoriesList.length > 0) {
+      const { data } = this.state;
+      const categoryOptions = [];
+      categoriesList.map((category) => {
+        return categoryOptions.push({
+          key: category[0],
+          value: category[0],
+          text: category[1],
+        });
+      });
+      data.category = categoryOptions[0].value;
+      this.setState({ categoryOptions, data });
+    }
+  }
 
   onAddItem = (itemData) => {
     // Call the add api.
   }
 
-  handleChange = (e, key) => {
+  handleChange = (e, { value, name }) => {
     const { data } = this.state;
-    data[key] = e.target.value;
+    data[name] = value;
     this.setState({ data });
   }
 
@@ -40,6 +66,10 @@ class AddItem extends Component {
       price,
       category,
       image,
+    } = this.state.data;
+
+    const {
+      categoryOptions
     } = this.state;
 
     const columnWidth = 4;
@@ -59,10 +89,11 @@ class AddItem extends Component {
                 <Table.Cell width={columnWidth}><b>Item Name</b></Table.Cell>
                 <Table.Cell textAlign={'right'}>
                   <Input
-                    onChange={(e) => this.handleChange(e, 'name')}
+                    onChange={this.handleChange}
                     type='text'
                     defaultValue={name}
                     placeholder={'Item Name'}
+                    name={'name'}
                   />
                 </Table.Cell>
               </Table.Row>
@@ -70,10 +101,12 @@ class AddItem extends Component {
                 <Table.Cell width={columnWidth}><b>Item Price</b></Table.Cell>
                 <Table.Cell textAlign={'right'}>
                   <Input
-                    onChange={(e) => this.handleChange(e, 'price')}
-                    type='text'
-                    defaultValue={price}
+                    onChange={this.handleChange}
+                    type='number'
+                    step={0.01}
+                    value={price}
                     placeholder={'Item Price'}
+                    name={'price'}
                   />
                 </Table.Cell>
               </Table.Row>
@@ -81,12 +114,12 @@ class AddItem extends Component {
                 <Table.Cell width={columnWidth}><b>Select Category</b></Table.Cell>
                 <Table.Cell textAlign={'right'}>
                   <Dropdown
-                    onChange={(e) => this.handleChange(e, 'category')}
-                    options={this.categoryOptions}
-                    defaultValue={category}
+                    onChange={this.handleChange}
+                    options={categoryOptions}
+                    value={category}
                     placeholder={'Select Category'}
-                    button
-                    basic
+                    selection
+                    name={'category'}
                   />
                 </Table.Cell>
               </Table.Row>
@@ -94,10 +127,11 @@ class AddItem extends Component {
                 <Table.Cell width={columnWidth}><b>Item Image</b></Table.Cell>
                 <Table.Cell textAlign={'right'}>
                   <Input
-                    onChange={(e) => this.handleChange(e, 'image')}
+                    onChange={this.handleChange}
                     type='file'
                     defaultValue={image}
                     placeholder={'Upload Image'}
+                    name={'image'}
                   />
                 </Table.Cell>
               </Table.Row>
@@ -111,4 +145,15 @@ class AddItem extends Component {
   }
 }
 
-export default AddItem;
+
+const mapStateToProps = (state) => ({
+  categoriesList: itemSelector.getCategoriesList(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getCategories: async () => {
+    return dispatch(GET_CATEGORIES());
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AddItem));

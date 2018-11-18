@@ -1,5 +1,5 @@
 import { apiUrl } from '../utils';
-import { get } from './utils';
+import { get, del } from './utils';
 
 
 export async function getPromotions() {
@@ -14,6 +14,6 @@ export async function savePromotion() {
   return get(`${apiUrl}/customer-service/promocodes/`);
 }
 
-export async function deletePromotion() {
-  return get(`${apiUrl}/customer-service/promocodes/`);
+export async function deletePromotion(id) {
+  return del(`${apiUrl}/customer-service/promocode/${id}/`);
 }
