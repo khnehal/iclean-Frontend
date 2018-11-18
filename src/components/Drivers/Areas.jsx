@@ -48,9 +48,6 @@ class Areas extends Component {
           { "zip_code": "90012" },
         ],
       }],
-      data: [
-        { zip_code: '90067' }
-      ],
     };
   };
 
@@ -99,39 +96,6 @@ class Areas extends Component {
     resetData(RELOAD_AREAS, false);
     getAreas();
   }
-
-  handleChange = (e, { value }) => {
-    this.setState({ zip_code: value });
-  };
-
-  renderDriverBlocks = (area, index) => {
-    return (
-      <Grid.Column key={ index + 1 } mobile={16} tablet={8} computer={8}>
-        <Segment>
-          <Grid>
-            <Grid.Column mobile={16} tablet={8} computer={10}>
-              <Input
-                fluid
-                size='large'
-                type={'number'}
-                placeholder={'Please enter zipcode here...'}
-                onChange={this.handleChange}
-              />
-            </Grid.Column>
-            <Grid.Column mobile={16} tablet={8} computer={6}>
-              <Button fluid floated='right' color='green' as={NavLink} to={'/drivers/addDrivers'}> <Icon name='plus' /> Add Zip Code </Button>
-            </Grid.Column>
-          </Grid>
-          <Grid>
-            <Grid.Column mobile={16} tablet={8} computer={5}>
-              <Button basic circular color={'red'} size='medium' icon='delete'></Button>
-              <span>888909</span>
-            </Grid.Column>
-          </Grid>
-        </Segment>
-      </Grid.Column>
-    );
-  };
 
   render() {
     const {
