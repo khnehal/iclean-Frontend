@@ -33,6 +33,7 @@ class AddItem extends Component {
         price: '',
         category: '',
         image: '',
+        file: {},
       },
       categoryOptions: [],
     };
@@ -43,23 +44,24 @@ class AddItem extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { categoriesList, itemSaved } = nextProps;
+    const { categoriesList, itemSaved, itemErrors } = nextProps;
     if (categoriesList && categoriesList.length > 0) {
       const { data } = this.state;
       const categoryOptions = [];
       categoriesList.map((category) => {
         return categoryOptions.push({
-          key: category[0],
-          value: category[0],
-          text: category[1],
+          key: category.value,
+          value: category.value,
+          text: category.text,
         });
       });
 
-      if (itemSaved) {
-        // this.fadeOutMessage();
-      }
       data.category = categoryOptions[0].value;
       this.setState({ categoryOptions, data });
+    }
+
+    if (itemSaved && !(itemErrors || itemErrors.length > 0)) {
+      this.fadeOutMessage();
     }
   }
 
@@ -68,31 +70,36 @@ class AddItem extends Component {
       resetData
     } = this.props;
     window.setTimeout(() => {
-      resetData(ITEM_SAVED);
-      resetData(ITEM_ERRORS);
+      resetData(ITEM_SAVED, '');
+      resetData(ITEM_ERRORS, []);
     }, 3000);
   }
 
-  onAddItem = (itemData) => {
+  onAddItem = () => {
     const {
       name,
       price,
       category,
-      image,
+      file,
     } = this.state.data;
 
     const data = {
       "item_name": name,
       "price": price,
       "item_category": category,
-      "item_image": image,
+      "item_image": file,
     }
     this.props.saveItem(data);
   }
 
   handleChange = (e, { value, name }) => {
     const { data } = this.state;
-    data[name] = value;
+    if (name === 'image') {
+      const file = e.target.files[0];
+      data.file = { file };
+    } else {
+      data[name] = value;
+    }
     this.setState({ data });
   }
 
@@ -131,8 +138,8 @@ class AddItem extends Component {
                 (itemErrors && itemErrors.length > 0) &&
                 <Message.List>
                   {
-                    itemErrors.map((error) => {
-                      return <Message.Item>{`${error}`}</Message.Item>;
+                    itemErrors.map((error, i) => {
+                      return <Message.Item key={ i + 1 }>{`${error}`}</Message.Item>;
                     })
                   }
                 </Message.List>
@@ -216,8 +223,8 @@ const mapDispatchToProps = (dispatch) => ({
   saveItem: async (data) => {
     return dispatch(SAVE_ITEM(data));
   },
-  resetData: async (type) => {
-    return dispatch({ type, data: false });
+  resetData: async (type, data) => {
+    return dispatch({ type, data });
   },
 });
 
