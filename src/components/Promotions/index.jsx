@@ -10,6 +10,10 @@ import {
   GET_PROMOTIONS,
   GET_PROMO_CODE,
   DELETE_PROMOTION,
+  SAVE_PROMOTION,
+  // PROMOTION_DELETED,
+  // PROMOTION_SAVED,
+  RELOAD_PROMOTIONS,
 } from '../../store/actions';
 import { promotionSelector } from '../../store/selectors';
 
@@ -23,6 +27,11 @@ class Promotions extends Component {
     generatePromoCode: PropTypes.func,
     generatedPromoCode: PropTypes.string,
     deletePromotion: PropTypes.func,
+    savePromotion: PropTypes.func,
+    // promotionDeleted: PropTypes.bool,
+    // promotionSaved: PropTypes.bool,
+    reloadPromotions: PropTypes.bool,
+    resetData: PropTypes.func,
   };
 
   constructor(props) {
@@ -43,24 +52,47 @@ class Promotions extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { generatedPromoCode } = nextProps;
-    console.log(generatedPromoCode);
+    const {
+      generatedPromoCode,
+      reloadPromotions,
+      resetData,
+      getPromotions,
+    } = nextProps;
     if (generatedPromoCode) {
       const { data } = this.state;
       data.promoCode = generatedPromoCode;
       this.setState({ data });
     }
-  }
 
-  onDeletePromo = (promoId) => {
-    // Call the delete api.
-    console.log(`Ye promo(${promoId}) ko delete kar re jamaila!!`);
-    this.props.deletePromotion(promoId);
+    if (reloadPromotions) {
+      resetData(RELOAD_PROMOTIONS);
+      getPromotions();
+    }
   }
 
   onSavePromo = () => {
-    // Call the save promo api.
-    console.log(this.state);
+    const {
+      promoCode,
+      dollarValue,
+      percentValue,
+      startDate,
+      endDate,
+    } = this.state.data;
+
+    let discountType = 'dollar_discount';
+    if (!dollarValue && percentValue) {
+      discountType = 'percentage_discount';
+    }
+
+    const data = {
+      "code": promoCode,
+      "discount_type": discountType,
+      "dollar_discount": dollarValue,
+      "percentage_discount": percentValue,
+      "start_date": startDate && moment(startDate).format('YYYY-MM-DD'),
+      "end_date": endDate && moment(endDate).format('YYYY-MM-DD'),
+    }
+    this.props.savePromotion(data);
   }
 
   handleChange = (e, { value, name }) => {
@@ -71,8 +103,9 @@ class Promotions extends Component {
 
   render() {
     const {
+      generatePromoCode,
       promotionsList,
-      generatePromoCode
+      deletePromotion,
      } = this.props;
 
     const {
@@ -170,42 +203,44 @@ class Promotions extends Component {
           </Segment>
           <br/>
           <Segment className="promo-listing-section">
-            <Table striped celled textAlign={'center'}>
-              <Table.Header>
-                <Table.Row>
-                  {
-                    tableHeaders.map((header, i) => {
-                      return (
-                        <Table.Cell key={i + 1}><b>{header}</b></Table.Cell>
-                      );
-                    })
-                  }
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {(promotionsList && promotionsList.length > 0) && promotionsList.map((promo, i) => {
-                  return (
-                    <Table.Row key={i + 1}>
-                      <Table.Cell>{moment(promo.created_date).format('DD-MM-YYYY')}</Table.Cell>
-                      <Table.Cell>{promo.code}</Table.Cell>
-                      <Table.Cell>{`$${promo.dollar_discount}`}</Table.Cell>
-                      <Table.Cell>{moment(promo.start_date).format('YYYY-MM-DD')}</Table.Cell>
-                      <Table.Cell>{moment(promo.end_date).format('YYYY-MM-DD')}</Table.Cell>
-                      <Table.Cell>
-                        <Button
-                          className='delete-item-btn'
-                          basic circular
-                          color={'red'}
-                          size='medium'
-                          icon='delete'
-                          onClick={() => this.onDeletePromo(promo.id)}
-                        />
-                      </Table.Cell>
-                    </Table.Row>
-                  );
-                })}
-              </Table.Body>
-            </Table>
+            { (promotionsList && promotionsList.length > 0) ?
+              <Table striped celled textAlign={'center'}>
+                <Table.Header>
+                  <Table.Row>
+                    {
+                      tableHeaders.map((header, i) => {
+                        return (
+                          <Table.Cell key={i + 1}><b>{header}</b></Table.Cell>
+                        );
+                      })
+                    }
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  { promotionsList.map((promo, i) => {
+                    return (
+                      <Table.Row key={i + 1}>
+                        <Table.Cell>{moment(promo.created_date).format('DD-MM-YYYY')}</Table.Cell>
+                        <Table.Cell>{promo.code}</Table.Cell>
+                        <Table.Cell>{`$${promo.dollar_discount}`}</Table.Cell>
+                        <Table.Cell>{moment(promo.start_date).format('YYYY-MM-DD')}</Table.Cell>
+                        <Table.Cell>{moment(promo.end_date).format('YYYY-MM-DD')}</Table.Cell>
+                        <Table.Cell>
+                          <Button
+                            className='delete-item-btn'
+                            basic circular
+                            color={'red'}
+                            size='medium'
+                            icon='delete'
+                            onClick={() => deletePromotion(promo.id)}
+                          />
+                        </Table.Cell>
+                      </Table.Row>
+                    );
+                  })}
+                </Table.Body>
+              </Table> : (<h4>No promotions to display.</h4>)
+            }
           </Segment>
         </Segment>
       </Segment>
@@ -216,6 +251,9 @@ class Promotions extends Component {
 const mapStateToProps = (state) => ({
   promotionsList: promotionSelector.getPromotionsList(state),
   generatedPromoCode: promotionSelector.getGeneratedPromoCode(state),
+  // promotionDeleted: promotionSelector.isPromotionDeleted(state),
+  // promotionSaved: promotionSelector.isPromotionSaved(state),
+  reloadPromotions: promotionSelector.reloadPromotions(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -226,10 +264,13 @@ const mapDispatchToProps = (dispatch) => ({
     return dispatch(GET_PROMO_CODE());
   },
   deletePromotion:  async (id) => {
-    const result = await DELETE_PROMOTION(id);
-    dispatch(result);
-    dispatch(GET_PROMOTIONS());
-    // return dispatch(DELETE_PROMOTION());
+    return dispatch(DELETE_PROMOTION(id));
+  },
+  resetData: async (type) => {
+    return dispatch({ type, data: false });
+  },
+  savePromotion: async (data) => {
+    return dispatch(SAVE_PROMOTION(data));
   },
 });
 

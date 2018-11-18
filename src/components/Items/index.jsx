@@ -3,11 +3,15 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Segment, Header, Table, Button, Icon } from 'semantic-ui-react';
+import { Segment, Header, Table, Button, Icon, Message } from 'semantic-ui-react';
 import './items.css'
 
 import ItemsListingRow from './ItemsListingRow';
-import { GET_ITEMS } from '../../store/actions';
+import {
+  GET_ITEMS,
+  RELOAD_ITEMS,
+  ITEM_UPDATED,
+} from '../../store/actions';
 import { itemSelector } from '../../store/selectors';
 
 
@@ -16,6 +20,7 @@ class Items extends Component {
   props: {
     getItems: PropTypes.func,
     itemsList: PropTypes.array,
+    itemUpdated: PropTypes.string,
   };
 
   constructor(props) {
@@ -28,8 +33,31 @@ class Items extends Component {
     this.props.getItems();
   }
 
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps.itemUpdated);
+  }
+
+  fadeOutMessage = () => {
+    const {
+      resetData
+    } = this.props;
+    window.setTimeout(() => {
+      resetData(ITEM_UPDATED);
+    }, 2000);
+  }
+
+  resetAndReload = () => {
+    const {
+      getItems,
+      resetData,
+    } = this.props;
+
+    resetData(RELOAD_ITEMS);
+    getItems();
+  }
+
   render() {
-    const { itemsList } = this.props;
+    const { itemsList, itemUpdated } = this.props;
 
     return (
       <Segment className="items">
@@ -38,17 +66,28 @@ class Items extends Component {
             Items Price List
             <Header.Subheader>List of all Items and Prices.</Header.Subheader>
           </Header>
+
+          { itemUpdated &&
+            <Message info size={'large'}>
+              <Message.Content>
+                {`${itemUpdated}`}
+              </Message.Content>
+            </Message>
+          }
+
           <Button className="add-item-btn" floated='right' color='green' as={NavLink} to={'/items/add-item'}> <Icon name='plus' /> Add Item </Button>
         </Segment>
 
-        <Segment className="items-section" basic textAlign='center'>
-          <Table padded striped>
-            <Table.Body>
-              {(itemsList && itemsList.length > 0) && itemsList.map((item, i) => {
-                return <ItemsListingRow key={i} {...this.state} item={item} index={i} />;
-              })}
-            </Table.Body>
-          </Table>
+        <Segment className="items-section" textAlign='center'>
+          { (itemsList && itemsList.length > 0) ?
+            <Table padded striped>
+              <Table.Body>
+                { itemsList.map((item, i) => {
+                  return <ItemsListingRow key={i} {...this.state} resetAndReload={this.resetAndReload} fadeOutMessage={this.fadeOutMessage} item={item} index={i} />;
+                })}
+              </Table.Body>
+            </Table> : (<h4>No items to display.</h4>)
+          }
         </Segment>
       </Segment>
     );
@@ -57,11 +96,15 @@ class Items extends Component {
 
 const mapStateToProps = (state) => ({
   itemsList: itemSelector.getItemsList(state),
+  itemUpdated: itemSelector.itemUpdated(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getItems: async () => {
     return dispatch(GET_ITEMS());
+  },
+  resetData: async (type) => {
+    return dispatch({ type, data: false });
   },
 });
 
