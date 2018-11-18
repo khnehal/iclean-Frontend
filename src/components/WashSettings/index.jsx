@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 // import { connect } from 'react-redux';
 // import { withRouter } from 'react-router';
 
-import { Header, Segment, Grid, Button, Checkbox } from 'semantic-ui-react';
+import { Header, Segment, Grid, Button, Checkbox, TextArea, Loader } from 'semantic-ui-react';
+
+import './wash.css';
 
 class WashSettings extends Component {
 
   static propTypes = {
     data: PropTypes.object,
-    history: PropTypes.object,
+    isLoading: PropTypes.bool,
   };
 
   constructor(props) {
@@ -18,18 +20,103 @@ class WashSettings extends Component {
   };
 
   renderDryCleanDetails = () => {
+    const { data } = this.props;
+    const options = [ { name: 'Use Fabric Softner', isChecked: data && data.fabric_softner },
+                      { name: 'Use Unscented / Hypoallergenic Detergent', isChecked: data && data.unscented_detergent},
+                      { name: 'Cold Wash', isChecked: data && data.wash_cold},
+                      { name: 'Warm Wash', isChecked: data && data.wash_warm},
+                      { name: 'Hot Wash', isChecked: data && data.wash_hot} ];
+
+    const dryOptions = [ { name: 'Low', isChecked: data && data.dry_low },
+                    { name: 'Medium', isChecked: data && data.dry_medium },
+                    { name: 'High', isChecked: data && data.dry_high },
+                    { name: 'Hand Dry', isChecked: data && data.dry_hang_dry } ];
+
+    const specialInstructions = data.special_instructions ? data.special_instructions : '';
+
     return (
-      <Segment basic>
-        <Checkbox />
-      </Segment>
+      <div>
+        <Segment basic textAlign='left'>
+        {
+          options.map((item, i) => {
+            return (
+              <div key={i + 1}>
+                <Checkbox
+                  disabled
+                  label={<label><b>{item.name}</b></label>}
+                  checked={item.isChecked}
+                />
+              </div>
+            )
+          })
+        }
+        <Header as={'h3'}> Dry Option </Header>
+        {
+          dryOptions.map((item, i) => {
+            return (
+              <div key={i + 1}>
+                <Checkbox
+                  disabled
+                  label={<label><b>{item.name}</b></label>}
+                  checked={item.isChecked}
+                />
+              </div>
+            )
+          })
+        }
+        <br /> <br />
+        <TextArea disabled value={specialInstructions} placeholder={'Special pickup Instructions'} />
+        </Segment>
+      </div>
     );
   };
 
   renderLaundryDetails =  () =>{
+    const { data } = this.props;
+    const options = [ { name: 'Hypoallergenic', isChecked: false },
+                      { name: 'Detergent', isChecked: false },
+                      { name: 'On Hanger', isChecked: data && data.package_hanger },
+                      { name: 'Boxed - add $1', isChecked: data && data.package_boxed } ];
+
+    const starchOptions = [ { name: 'None', isChecked: data && data.starch_none },
+                         { name: 'Light', isChecked: data && data.starch_light },
+                         { name: 'Medium', isChecked: data && data.starch_medium },
+                         { name: 'Heavy', isChecked: data && data.starch_heavy } ];
+
     return (
-      <Segment basic>
-        <Checkbox />
-      </Segment>
+      <div>
+        <Segment basic textAlign='left'>
+          {
+            options.map((item, i) => {
+              return (
+                <div key={i + 1}>
+                  <Checkbox
+                    disabled
+                    label={<label><b>{item.name}</b></label>}
+                    checked={item.isChecked}
+                  />
+                </div>
+              )
+            })
+          }
+          <Header as={'h3'}> Starch </Header>
+          {
+            starchOptions.map((item, i) => {
+              return (
+                <div key={i + 1}>
+                  <Checkbox
+                    disabled
+                    label={<label><b> {item.name} </b></label>}
+                    checked={item.isChecked}
+                  />
+                </div>
+              )
+            })
+          }
+          <br /> <br />
+          <TextArea disabled value={''} placeholder={'Special drop off Instructions'} />
+        </Segment>
+      </div>
     );
   };
 
@@ -40,6 +127,7 @@ class WashSettings extends Component {
     if(data && Object.keys(data).length > 0) {
       return (
         <div>
+          <Loader inverted>Loading</Loader>
           <Segment secondary className="WashSettings">
             <Grid padded>
               <Grid.Column mobile={16} tablet={16} computer={8}>

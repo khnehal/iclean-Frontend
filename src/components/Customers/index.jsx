@@ -9,8 +9,6 @@ import { Segment, Input, Grid, Header } from 'semantic-ui-react';
 import { GET_USERS } from '../../store/actions';
 import { userSelector } from '../../store/selectors';
 
-// import CustomerWashSettings from './CustomerWashSettings.jsx';
-
 import './customers.css';
 
 class Customers extends Component {
