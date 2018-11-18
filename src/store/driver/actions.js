@@ -11,7 +11,7 @@ export const DRIVERS_LIST = 'DRIVERS_LIST';
 export function GET_DRIVERS() {
   return async (dispatch) => {
     const result = await getDrivers();
-    console.log('ACTIONS', result);
+
     if (!resultOK(result)) {
       return null;
     }

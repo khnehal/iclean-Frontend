@@ -56,7 +56,7 @@ const AppRoutes = () => (
           <RouteContainer path={'/drivers/editDriver/'} componentToUse={EditDriver} />
 
           <RouteContainer path={'/customers/'} componentToUse={Customers} />
-          <RouteContainer path={'/customerWashSettings/'} componentToUse={CustomerWashSettings} />
+          <RouteContainer path={'/washSettings/:uid'} componentToUse={CustomerWashSettings} />
           <RouteContainer path={'/notifications/'} componentToUse={Noifications} />
 
           <RouteContainer path={'/items/price-list/'} componentToUse={Items} />

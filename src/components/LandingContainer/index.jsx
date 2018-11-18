@@ -1,63 +1,76 @@
-import React from 'react';
-// import { NavLink } from 'react-router-dom';
+import React, { Component } from 'react';
+
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import {
   Table,
   Icon,
 } from 'semantic-ui-react';
 
+import { USER_SELECTED } from '../../store/actions';
+// import { userSelector } from '../../store/selectors';
+
 import './landingStyles.css';
 
-const LandingContainer = (props) => {
-  const {
-    data,
-    history,
-    hasStatus,
-    redirectTo,
-    hasDateAndTime,
-  } = props;
+class LandingContainer extends Component {
 
-  const handleRedirection = () => {
-    console.log('historyrrr', history, redirectTo);
+  static propTypes = {
+    match: PropTypes.object,
+    data: PropTypes.array,
+    hasStatus: PropTypes.bool,
+    redirectTo: PropTypes.string,
+    hasDateAndTime: PropTypes.bool,
+    history: PropTypes.object,
+    // handleUsersWashSettings: PropTypes.func,
+    // selectedUser: PropTypes.func,
+  };
+
+  handleRedirection = (item) => {
+    const { redirectTo, history } = this.props;
+
     if (redirectTo) {
-      history.push(redirectTo);
+      history.push( `${redirectTo}${item.user_id}/` );
     }
   };
 
-  return (
-    <div className="landing-container">
-      <Table padded selectable>
-        <Table.Body>
-          {(data && data.length > 0) && data.map((item, i) => {
-            return (
-              <Table.Row key={i + 1} onClick={handleRedirection}>
-                <Table.Cell>{item.name}</Table.Cell>
-                {hasStatus && <Table.Cell>Status - {item.hasStatus}</Table.Cell>}
-                {hasDateAndTime && <Table.Cell>{item.dateTime}</Table.Cell>}
-                <Table.Cell textAlign='right'>
-                  <Icon name='arrow right' />
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
-      </Table>
-    </div>
-  )
-};
+  render(){
+    const { data, hasStatus, hasDateAndTime } = this.props;
 
-LandingContainer.propTypes = {
-  data: PropTypes.array,
-  hasStatus: PropTypes.bool,
-  redirectTo: PropTypes.string,
-  hasDateAndTime: PropTypes.bool,
-  history: PropTypes.object,
-};
+    return (
+      <div className="landing-container">
+        <Table padded selectable>
+          <Table.Body>
+            {(data && data.length > 0) && data.map((item, i) => {
+              return (
+                <Table.Row key={i + 1} onClick={() => this.handleRedirection(item)}>
+                  <Table.Cell>{item.name}</Table.Cell>
+                  {hasStatus && <Table.Cell>Status - {item.hasStatus}</Table.Cell>}
+                  {hasDateAndTime && <Table.Cell>{item.dateTime}</Table.Cell>}
+                  <Table.Cell textAlign='right'>
+                    <Icon name='arrow right' />
+                  </Table.Cell>
+                </Table.Row>
+              );
+            })}
+          </Table.Body>
+        </Table>
+      </div>
+    )
+  }
+}
 
-LandingContainer.defaultProps = {
-  hasStatus: false,
-  hasDateAndTime: false,
-};
+// const mapStateToProps = (state) => ({
+//   usersList: userSelector.allUsersList(state),
+// });
 
-export default LandingContainer;
+const mapDispatchToProps = (dispatch) => ({
+  selectedUser: async (id) => {
+    return dispatch(USER_SELECTED(id));
+  },
+});
+
+export default connect(null, mapDispatchToProps)(withRouter(LandingContainer));
+
+// export default LandingContainer;
