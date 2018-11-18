@@ -11,11 +11,14 @@ import {
 } from './../../api/utils.js';
 
 
+// Items listing page actions
 export const ITEMS_LIST = 'ITEMS_LIST';
-export const CATEGORIES_LIST = 'CATEGORIES_LIST';
+export const ITEM_UPDATED = 'ITEM_UPDATED';
 export const ITEM_DELETED= 'ITEM_DELETED';
 export const RELOAD_ITEMS = 'RELOAD_ITEMS';
-export const ITEM_UPDATED = 'ITEM_UPDATED';
+
+// Add Item page actions
+export const CATEGORIES_LIST = 'CATEGORIES_LIST';
 export const ITEM_SAVED = 'ITEM_SAVED';
 export const ITEM_ERRORS = 'ITEM_ERRORS';
 
@@ -35,17 +38,10 @@ export function GET_ITEMS() {
 export function GET_CATEGORIES() {
   return async (dispatch) => {
     const result = await getCategories();
-    // if (!resultOK(result)) {
-    //   return null;
-    // }
-    const categoriesList = [
-      ["dry_cleaning", "Dry Cleaning"],
-      ["laundry", "Laundry"],
-      ["households", "Households"],
-      ["fluff_and_fold", "Fluff & Fold"],
-      ["dry_clean_upcharges", "Dry Clean Upcharges"],
-    ]
-    const data = (result.data && result.data.data && result.data.data.categories) || categoriesList;
+    if (!resultOK(result)) {
+      return null;
+    }
+    const data = result && result.data && result.data.data;
     dispatch({ type: CATEGORIES_LIST, data });
     return result;
   };
@@ -56,7 +52,7 @@ export function DELETE_ITEM(id) {
     const result = await deleteItem(id);
     // returns status= 0 or 404 when item is deleted or doesn't exist(already deleted).
     const validStates = [0, 404];
-    const status = (result.status in validStates) ? true : false;
+    const status = (result && result.status in validStates) ? true : false;
     dispatch({ type: ITEM_DELETED, data: status });
     dispatch({ type: RELOAD_ITEMS, data: status });
   }
