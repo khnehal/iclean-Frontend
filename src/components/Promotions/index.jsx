@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Segment, Header, Table, Button, Input } from 'semantic-ui-react';
+import { Segment, Header, Table, Button, Input, Message } from 'semantic-ui-react';
 import './promotions.css'
 
 import moment from 'moment';
@@ -11,9 +11,9 @@ import {
   GET_PROMO_CODE,
   DELETE_PROMOTION,
   SAVE_PROMOTION,
-  // PROMOTION_DELETED,
-  // PROMOTION_SAVED,
+  PROMOTION_SAVED,
   RELOAD_PROMOTIONS,
+  PROMOTION_ERRORS,
 } from '../../store/actions';
 import { promotionSelector } from '../../store/selectors';
 
@@ -29,7 +29,8 @@ class Promotions extends Component {
     deletePromotion: PropTypes.func,
     savePromotion: PropTypes.func,
     // promotionDeleted: PropTypes.bool,
-    // promotionSaved: PropTypes.bool,
+    promotionSaved: PropTypes.string,
+    promotionErrors: PropTypes.array,
     reloadPromotions: PropTypes.bool,
     resetData: PropTypes.func,
   };
@@ -57,6 +58,8 @@ class Promotions extends Component {
       reloadPromotions,
       resetData,
       getPromotions,
+      promotionErrors,
+      promotionSaved,
     } = nextProps;
     if (generatedPromoCode) {
       const { data } = this.state;
@@ -68,6 +71,20 @@ class Promotions extends Component {
       resetData(RELOAD_PROMOTIONS);
       getPromotions();
     }
+
+    if (promotionSaved && !(promotionErrors && promotionErrors.length > 0)) {
+      this.fadeOutMessage();
+    }
+  }
+
+  fadeOutMessage = () => {
+    const {
+      resetData
+    } = this.props;
+    window.setTimeout(() => {
+      resetData(PROMOTION_SAVED, '');
+      resetData(PROMOTION_ERRORS, []);
+    }, 3000);
   }
 
   onSavePromo = () => {
@@ -106,6 +123,8 @@ class Promotions extends Component {
       generatePromoCode,
       promotionsList,
       deletePromotion,
+      promotionSaved,
+      promotionErrors,
      } = this.props;
 
     const {
@@ -137,6 +156,22 @@ class Promotions extends Component {
         </Segment>
 
         <Segment basic className="promo-section">
+          { promotionSaved &&
+            <Message size={'large'} info>
+              <Message.Header>{`${promotionSaved}`}</Message.Header>
+              {
+                (promotionErrors && promotionErrors.length > 0) &&
+                <Message.List>
+                  {
+                    promotionErrors.map((error, i) => {
+                      return <Message.Item key={ i + 1 }>{`${error}`}</Message.Item>;
+                    })
+                  }
+                </Message.List>
+              }
+            </Message>
+          }
+
           <Segment className="add-promo">
             <div className="promo-code">
               <h5>Use a generated promo code or type your own</h5>
@@ -251,8 +286,9 @@ class Promotions extends Component {
 const mapStateToProps = (state) => ({
   promotionsList: promotionSelector.getPromotionsList(state),
   generatedPromoCode: promotionSelector.getGeneratedPromoCode(state),
-  // promotionDeleted: promotionSelector.isPromotionDeleted(state),
-  // promotionSaved: promotionSelector.isPromotionSaved(state),
+  // promotionDeleted: promotionSelector.promotionDeleted(state),
+  promotionSaved: promotionSelector.promotionSaved(state),
+  promotionErrors: promotionSelector.getPromotionErrors(state),
   reloadPromotions: promotionSelector.reloadPromotions(state),
 });
 
