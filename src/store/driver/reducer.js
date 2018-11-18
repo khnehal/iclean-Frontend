@@ -9,6 +9,11 @@ import {
   DAYOFF_SAVED,
   DAYOFF_DELETED,
   RELOAD_DAYOFFS,
+  AREAS_LIST,
+  AREA_ERRORS,
+  AREA_SAVED,
+  RELOAD_AREAS,
+  AREA_DELETED,
 } from './actions';
 
 export default (state = initialState, action) => {
@@ -53,6 +58,32 @@ export default (state = initialState, action) => {
         ...state,
         dayoffDeleted: action.data,
       };
+    case AREAS_LIST:
+      return {
+        ...state,
+        areasList: action.data,
+      };
+    case AREA_ERRORS:
+      return {
+        ...state,
+        areaErrors: action.data,
+      };
+    case AREA_SAVED:
+      return {
+        ...state,
+        areaSaved: action.data,
+      };
+    case RELOAD_AREAS:
+      return {
+        ...state,
+        reloadAreas: action.data,
+      };
+    case AREA_DELETED:
+      return {
+        ...state,
+        areaDeleted: action.data,
+      };
+
     default:
       return state;
   }

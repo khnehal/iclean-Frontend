@@ -26,3 +26,14 @@ export async function deleteDayOff(id) {
   return del(`${apiUrl}/customer-service/day-off/${id}/`, {});
 }
 
+export async function getAreas(driverId) {
+  return get(`${apiUrl}/driver/${driverId}/area/`);
+}
+
+export async function saveArea(driverId, data) {
+  return post(`${apiUrl}/driver/${driverId}/area/`, data);
+}
+
+export async function deleteArea(driverId, areaCode) {
+  return del(`${apiUrl}/driver/${driverId}/area/${areaCode}/`, {});
+}

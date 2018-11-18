@@ -12,7 +12,7 @@ import { itemSelector } from '../../store/selectors';
 
 
 class ItemsListingRow extends Component {
-  props: {
+  static propTypes = {
     item: PropTypes.object,
     index: PropTypes.number,
     deleteItem: PropTypes.func,
