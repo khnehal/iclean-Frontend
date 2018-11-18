@@ -4,6 +4,7 @@ import {
   GENERATED_PROMO_CODE,
   PROMOTION_DELETED,
   PROMOTION_SAVED,
+  PROMOTION_ERRORS,
   RELOAD_PROMOTIONS,
 } from './actions';
 
@@ -34,6 +35,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         reloadPromotions: action.data,
+      };
+    case PROMOTION_ERRORS:
+      return {
+        ...state,
+        promotionErrors: action.data,
       };
     default:
       return state;

@@ -15,6 +15,7 @@ export const GENERATED_PROMO_CODE = 'GENERATED_PROMO_CODE';
 export const PROMOTION_DELETED= 'PROMOTION_DELETED';
 export const PROMOTION_SAVED= 'PROMOTION_SAVED';
 export const RELOAD_PROMOTIONS = 'RELOAD_PROMOTIONS';
+export const PROMOTION_ERRORS = 'PROMOTION_ERRORS';
 
 
 export function GET_PROMOTIONS() {
@@ -53,10 +54,15 @@ export function DELETE_PROMOTION(id) {
 export function SAVE_PROMOTION(data) {
   return async (dispatch) => {
     const result = await savePromotion(data);
-    if (!resultOK(result)) {
-      return null;
+    // if (!resultOK(result)) {
+    //   return null;
+    // }
+    if (result && result.data) {
+      if (result.data.data) {
+        dispatch({ type: PROMOTION_ERRORS, data: result.data.data.errors });
+      }
+      dispatch({ type: PROMOTION_SAVED, data: result.data.message });
+      dispatch({ type: RELOAD_PROMOTIONS, data: true });
     }
-    dispatch({ type: PROMOTION_SAVED, data: true });
-    dispatch({ type: RELOAD_PROMOTIONS, data: true });
   }
 }

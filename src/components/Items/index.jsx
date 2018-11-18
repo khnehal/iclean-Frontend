@@ -17,7 +17,7 @@ import { itemSelector } from '../../store/selectors';
 
 class Items extends Component {
 
-  props: {
+  static propTypes = {
     getItems: PropTypes.func,
     itemsList: PropTypes.array,
     itemUpdated: PropTypes.string,
@@ -42,7 +42,7 @@ class Items extends Component {
       resetData
     } = this.props;
     window.setTimeout(() => {
-      resetData(ITEM_UPDATED);
+      resetData(ITEM_UPDATED, false);
     }, 2000);
   }
 
@@ -52,7 +52,7 @@ class Items extends Component {
       resetData,
     } = this.props;
 
-    resetData(RELOAD_ITEMS);
+    resetData(RELOAD_ITEMS, false);
     getItems();
   }
 
@@ -103,8 +103,8 @@ const mapDispatchToProps = (dispatch) => ({
   getItems: async () => {
     return dispatch(GET_ITEMS());
   },
-  resetData: async (type) => {
-    return dispatch({ type, data: false });
+  resetData: async (type, data) => {
+    return dispatch({ type, data });
   },
 });
 

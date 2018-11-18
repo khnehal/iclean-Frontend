@@ -11,11 +11,14 @@ import {
 } from './../../api/utils.js';
 
 
+// Items listing page actions
 export const ITEMS_LIST = 'ITEMS_LIST';
-export const CATEGORIES_LIST = 'CATEGORIES_LIST';
+export const ITEM_UPDATED = 'ITEM_UPDATED';
 export const ITEM_DELETED= 'ITEM_DELETED';
 export const RELOAD_ITEMS = 'RELOAD_ITEMS';
-export const ITEM_UPDATED = 'ITEM_UPDATED';
+
+// Add Item page actions
+export const CATEGORIES_LIST = 'CATEGORIES_LIST';
 export const ITEM_SAVED = 'ITEM_SAVED';
 export const ITEM_ERRORS = 'ITEM_ERRORS';
 
