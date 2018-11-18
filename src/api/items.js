@@ -7,7 +7,7 @@ export async function getItems() {
 }
 
 export async function getCategories() {
-  return get(`${apiUrl}/customer-service/categories/`);
+  return get(`${apiUrl}/customer-service/item-categories/`);
 }
 
 export async function deleteItem(id) {

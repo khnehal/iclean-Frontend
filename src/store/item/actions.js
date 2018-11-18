@@ -35,17 +35,10 @@ export function GET_ITEMS() {
 export function GET_CATEGORIES() {
   return async (dispatch) => {
     const result = await getCategories();
-    // if (!resultOK(result)) {
-    //   return null;
-    // }
-    const categoriesList = [
-      ["dry_cleaning", "Dry Cleaning"],
-      ["laundry", "Laundry"],
-      ["households", "Households"],
-      ["fluff_and_fold", "Fluff & Fold"],
-      ["dry_clean_upcharges", "Dry Clean Upcharges"],
-    ]
-    const data = (result.data && result.data.data && result.data.data.categories) || categoriesList;
+    if (!resultOK(result)) {
+      return null;
+    }
+    const data = result && result.data && result.data.data;
     dispatch({ type: CATEGORIES_LIST, data });
     return result;
   };
@@ -56,7 +49,7 @@ export function DELETE_ITEM(id) {
     const result = await deleteItem(id);
     // returns status= 0 or 404 when item is deleted or doesn't exist(already deleted).
     const validStates = [0, 404];
-    const status = (result.status in validStates) ? true : false;
+    const status = (result && result.status in validStates) ? true : false;
     dispatch({ type: ITEM_DELETED, data: status });
     dispatch({ type: RELOAD_ITEMS, data: status });
   }

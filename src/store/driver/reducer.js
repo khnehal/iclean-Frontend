@@ -1,7 +1,9 @@
 import { initialState } from './selectors.js';
 
 import {
-  DRIVERS_LIST
+  DRIVERS_LIST,
+  DRIVER_ERRORS,
+  DRIVER_SAVED,
 } from './actions';
 
 export default (state = initialState, action) => {
@@ -10,6 +12,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         driversList: action.data,
+      };
+    case DRIVER_ERRORS:
+      return {
+        ...state,
+        driverErrors: action.data,
+      };
+    case DRIVER_SAVED:
+      return {
+        ...state,
+        driverSaved: action.data,
       };
 
     default:
