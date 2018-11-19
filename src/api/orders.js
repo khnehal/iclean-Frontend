@@ -21,3 +21,6 @@ export async function getOrderAsXLS(orderId) {
   return download(`${apiUrl}/order/${orderId}/export/xlsx/`);
 }
 
+export async function getDateBasedOrders(date) {
+  return get(`${apiUrl}/order/?date=${date}`);
+}
