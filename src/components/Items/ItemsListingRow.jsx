@@ -37,14 +37,6 @@ class ItemsListingRow extends Component {
     }
   }
 
-  onDeleteItem = (itemId) => {
-    const {
-      deleteItem
-    } = this.props;
-    console.log(`Ye Item(${itemId}) ko delete kar re jamaila!!`);
-    deleteItem(itemId);
-  }
-
   onUpdateItem = (itemId) => {
     this.props.updateItem(itemId, { price: this.state.price });
     this.props.fadeOutMessage();
@@ -62,6 +54,7 @@ class ItemsListingRow extends Component {
     const {
       index,
       item,
+      deleteItem,
     } = this.props;
 
     return (
@@ -94,7 +87,7 @@ class ItemsListingRow extends Component {
             color={'red'}
             size='medium'
             icon='delete'
-            onClick={() => this.onDeleteItem(item.id)}
+            onClick={() => deleteItem(item.id)}
           />
         </Table.Cell>
       </Table.Row>

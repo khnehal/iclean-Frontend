@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import { Segment, Input, Header, Button, Grid, Icon } from 'semantic-ui-react';
+import { Segment, Header, Button, Grid, Icon } from 'semantic-ui-react';
 import './style.css';
 
 import DriverAreas from './DriverAreas';
@@ -38,39 +38,18 @@ class Areas extends Component {
   constructor() {
     super();
     this.state = {
-      areasList: [{
-        driver_id: '74ba912b-4e08-4116-b4c3-40469447b688',
-        name: 'Driver One',
-        driver_areas: [
-          { "zip_code": "90004" },
-          { "zip_code": "90005" },
-          { "zip_code": "90006" },
-          { "zip_code": "90012" },
-        ],
-      }],
     };
   };
 
   componentDidMount() {
-    // this.props.getAreas();
+    this.props.getDrivers();
   }
 
   componentWillReceiveProps(nextProps) {
     const {
-      reloadAreas,
-      resetData,
       areaSaved,
       areaErrors,
-      // getAreas,
-      // driversList,
-      // areasList,
     } = nextProps;
-
-    this.setState()
-    if (reloadAreas) {
-      resetData(RELOAD_AREAS);
-      // getAreas();
-    }
 
     if (areaSaved && !(areaErrors && areaErrors.length > 0)) {
       this.fadeOutMessage();
@@ -99,8 +78,8 @@ class Areas extends Component {
 
   render() {
     const {
-      areasList
-    } = this.state;
+      driversList
+    } = this.props;
 
     return (
       <div className="Driver">
@@ -114,8 +93,16 @@ class Areas extends Component {
           </Segment>
           <Segment padded basic textAlign='center'>
             <Grid>
-              { areasList.map((area, i) => {
-                return <DriverAreas key={i + 1} {...this.state} resetAndReload={this.resetAndReload} fadeOutMessage={this.fadeOutMessage} area={area} index={i} />;
+              { driversList.map((driver, i) => {
+                return (
+                  <DriverAreas
+                    key={i + 1}
+                    {...this.state}
+                    resetAndReload={this.resetAndReload}
+                    fadeOutMessage={this.fadeOutMessage}
+                    driver={driver}
+                  />
+                )
               })}
             </Grid>
           </Segment>

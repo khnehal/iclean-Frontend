@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Segment, Input, Button, Grid, Icon } from 'semantic-ui-react';
+import { Segment, Input, Button, Grid, Icon, Header } from 'semantic-ui-react';
 import './style.css';
 
 import {
@@ -10,7 +10,7 @@ import {
   GET_AREAS,
   // AREA_SAVED,
   // AREA_ERRORS,
-  // RELOAD_AREAS,
+  RELOAD_AREAS,
   SAVE_AREA,
   DELETE_AREA,
 } from '../../store/actions';
@@ -20,12 +20,13 @@ import { driverSelector } from '../../store/selectors';
 class DriverAreas extends Component {
 
   static propTypes = {
-    area: PropTypes.object,
+    driver: PropTypes.object,
     index: PropTypes.number,
     resetAndReload: PropTypes.func,
     // fadeOutMessage: PropTypes.func,
     // driversList: PropTypes.array,
-    // areasList: PropTypes.array,
+    areasList: PropTypes.array,
+    allAreas: PropTypes.object,
     // areaErrors: PropTypes.array,
     // areaSaved: PropTypes.string,
     reloadAreas: PropTypes.bool,
@@ -39,26 +40,46 @@ class DriverAreas extends Component {
 
   state = {
     zipCode: '',
-    driverId: this.props.area.driver_id,
+    driver: {},
   };
+
+  componentDidMount() {
+    const {
+      driver,
+      getAreas,
+      allAreas
+    } = this.props;
+    getAreas(driver.driver_id, driver.name, allAreas);
+  }
 
   componentWillReceiveProps(nextProps) {
     const {
       reloadAreas,
-      resetAndReload,
+      getAreas,
+      allAreas,
+      resetData,
+      driver,
     } = nextProps;
 
+    // const {
+    //   driver_id,
+    //   name
+    // } = this.state.driver;
+
     if (reloadAreas) {
-      resetAndReload();
+      resetData(RELOAD_AREAS, false);
+      getAreas(driver.driver_id, driver.name, allAreas);
     }
   }
 
-  onDeleteArea = (id, zipCode) => {
-    this.props.deleteArea(id, zipCode);
+  onDeleteArea = (driver, zipCode) => {
+    this.props.deleteArea(driver.driver_id, zipCode);
+    this.setState({ driver });
   }
 
-  onAddZipCode = (id) => {
-    this.props.saveArea(id, { zip_code: this.state.zipCode });
+  onAddZipCode = (driver) => {
+    this.props.saveArea(driver.driver_id, { zip_code: this.state.zipCode });
+    this.setState({ driver, zipCode: '' });
   }
 
   handleChange = (e, { value }) => {
@@ -68,17 +89,19 @@ class DriverAreas extends Component {
   render() {
     const {
       zipCode,
-      driverId,
     } = this.state;
 
     const {
       index,
-      area,
+      driver,
+      allAreas
     } = this.props;
 
     return (
       <Grid.Column key={ index + 1 } mobile={16} tablet={8} computer={8}>
         <Segment>
+          <Header content={ driver.name } textAlign={'left'} size={'large'} />
+          <Header content={ driver.driver_id } textAlign={'left'} size={'tiny'} />
           <Grid>
             <Grid.Column mobile={16} tablet={8} computer={10}>
               <Input
@@ -92,14 +115,14 @@ class DriverAreas extends Component {
               />
             </Grid.Column>
             <Grid.Column mobile={16} tablet={8} computer={6}>
-              <Button fluid floated='right' color='green' onClick={() => this.onAddZipCode(driverId)}>
+              <Button fluid floated='right' color='green' onClick={() => this.onAddZipCode(driver)}>
                 <Icon name='plus' /> Add Zip Code
               </Button>
             </Grid.Column>
           </Grid>
           <Grid>
             {
-              area.driver_areas.map((driverArea, i) => {
+              allAreas[driver.driver_id] && allAreas[driver.driver_id].map((area, i) => {
                 return (
                   <Grid.Column key={ i + 1 } mobile={16} tablet={8} computer={5}>
                     <Button
@@ -108,9 +131,9 @@ class DriverAreas extends Component {
                       color={'red'}
                       size='medium'
                       icon='delete'
-                      onClick={() => this.onDeleteArea(driverId, driverArea.zip_code)}
+                      onClick={() => this.onDeleteArea(driver, area.zip_code)}
                     />
-                    <span>{ driverArea.zip_code }</span>
+                    <span>{ area.zip_code }</span>
                   </Grid.Column>
                 )
               })
@@ -125,10 +148,11 @@ class DriverAreas extends Component {
 
 const mapStateToProps = (state) => ({
   // driversList: driverSelector.getDriversList(state),
-  // areasList: driverSelector.getAreasList(state),
+  areasList: driverSelector.getAreasList(state),
   // areaErrors: driverSelector.getAreaErrors(state),
   // areaSaved: driverSelector.areaSaved(state),
   reloadAreas: driverSelector.reloadAreas(state),
+  allAreas: driverSelector.allAreas(state),
   // areaDeleted: driverSelector.areaDeleted(state),
 });
 
@@ -136,8 +160,8 @@ const mapDispatchToProps = (dispatch) => ({
   // getDrivers: async () => {
   //   return dispatch(GET_DRIVERS());
   // },
-  getAreas: async (driverIds) => {
-    return dispatch(GET_AREAS(driverIds));
+  getAreas: async (driverId, driverName, existingAreas) => {
+    return dispatch(GET_AREAS(driverId, driverName, existingAreas));
   },
   saveArea: async (driverId, data) => {
     return dispatch(SAVE_AREA(driverId, data));

@@ -8,6 +8,7 @@ export const initialState = {
   dayoffErrors: [],
   dayoffDeleted: '',
   areasList: [],
+  allAreas: {},
   areaErrors: [],
   areaSaved: '',
   reloadAreas: false,
@@ -30,3 +31,4 @@ export const getAreaErrors = (state = initialState) => state.areaErrors;
 export const areaSaved = (state = initialState) => state.areaSaved;
 export const reloadAreas = (state = initialState) => state.reloadAreas;
 export const areaDeleted = (state = initialState) => state.areaDeleted;
+export const allAreas = (state = initialState) => state.allAreas;

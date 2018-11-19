@@ -33,6 +33,7 @@ export const AREA_ERRORS = 'AREA_ERRORS';
 export const AREA_SAVED = 'AREA_SAVED';
 export const RELOAD_AREAS = 'RELOAD_AREAS';
 export const AREA_DELETED = 'AREA_DELETED';
+export const ALL_DRIVER_AREAS_LIST = 'ALL_DRIVER_AREAS_LIST';
 
 
 export function GET_DRIVERS() {
@@ -103,14 +104,17 @@ export function DELETE_DAYOFF(id) {
   }
 }
 
-export function GET_AREAS(id) {
+export function GET_AREAS(driverId, driverName, existingAreas) {
   return async (dispatch) => {
-    const result = await getAreas(id);
+    const result = await getAreas(driverId);
     if (!resultOK(result)) {
       return null;
     }
     const data = (result.data && result.data.data && result.data.data.driver_areas) || [];
     dispatch({ type: AREAS_LIST, data });
+    const allAreasList = existingAreas;
+    allAreasList[driverId] = data;
+    dispatch({ type: ALL_DRIVER_AREAS_LIST, data: allAreasList });
     return result;
   };
 }

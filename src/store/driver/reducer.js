@@ -14,6 +14,7 @@ import {
   AREA_SAVED,
   RELOAD_AREAS,
   AREA_DELETED,
+  ALL_DRIVER_AREAS_LIST,
 } from './actions';
 
 export default (state = initialState, action) => {
@@ -82,6 +83,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         areaDeleted: action.data,
+      };
+    case ALL_DRIVER_AREAS_LIST:
+      return {
+        ...state,
+        allAreas: action.data,
       };
 
     default:
