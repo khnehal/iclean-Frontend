@@ -97,6 +97,17 @@ class OrderDetails extends Component {
     );
   }
 
+  handlePDFDownload = () => {
+    const { ordersList, userOrderId } = this.props;
+    const orderDetails = find(ordersList, { id: userOrderId });
+    console.log('handlepdfdownload', orderDetails);
+
+    if (userOrderId) {
+      this.props.getPDF(userOrderId);
+      // this.props.getXLSX(userOrderId.id);
+    }
+  }
+
   render() {
     const { customerInfo, ordersList, userOrderId } = this.props;
     const orderDetails = find(ordersList, { id: userOrderId });
@@ -146,6 +157,7 @@ class OrderDetails extends Component {
                 (customerInfo && Object.keys(customerInfo).length > 0 &&
                   <WashSettings
                     data={customerInfo.wash_settings}
+                    getpdf={this.handlePDFDownload}
                   />
                 )
               }

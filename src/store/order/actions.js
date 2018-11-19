@@ -4,6 +4,7 @@ import {
   getWaitingForCleaning,
   getOrderAsPDF,
   getOrderAsXLS,
+  getDateBasedOrders,
 } from './../../api/orders.js';
 
 import {
@@ -50,6 +51,18 @@ export function GET_WAITING_FOR_CLEANING() {
     }
 
     dispatch({ type: WAITING_FOR_CLEANING, data:result.data.data.orders });
+  };
+}
+
+export function GET_DATE_BASED_ORDER(date) {
+  return async (dispatch) => {
+    const result = await getDateBasedOrders(date);
+
+    if (!resultOK(result)) {
+      return null;
+    }
+
+    dispatch({ type: GET_ORDERS, data:result.data.data.orders });
   };
 }
 

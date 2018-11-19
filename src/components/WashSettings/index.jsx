@@ -12,11 +12,17 @@ class WashSettings extends Component {
   static propTypes = {
     data: PropTypes.object,
     isLoading: PropTypes.bool,
+    getpdf: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
     this.state = {};
+  };
+
+  handleExport = () => {
+    const { getpdf } = this.props;
+    getpdf();
   };
 
   renderDryCleanDetails = () => {
@@ -120,7 +126,6 @@ class WashSettings extends Component {
     );
   };
 
-
   render() {
     const { data } = this.props;
 
@@ -133,7 +138,7 @@ class WashSettings extends Component {
                 <Header as='h1' textAlign='left'> Wash Setting </Header>
               </Grid.Column>
               <Grid.Column textAlign="right" mobile={16} tablet={16} computer={8}>
-                <Button color="green" size="medium"> Export </Button>
+                <Button color="green" size="medium" onClick={this.handleExport}> Export </Button>
               </Grid.Column>
             </Grid>
           </Segment>
