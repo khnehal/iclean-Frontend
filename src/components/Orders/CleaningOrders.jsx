@@ -1,42 +1,71 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+
+import { GET_CLEANING_NOW } from '../../store/actions';
+import { orderSelector } from '../../store/selectors';
 
 import LandingContainer from '../LandingContainer';
-
-import { Segment, Input } from 'semantic-ui-react';
+import { Segment, Input, Header } from 'semantic-ui-react';
 
 import './orders.css'
 
 class CleaningOrders extends Component {
 
-  constructor() {
-    super();
-    this.state = {
-      hasStatus: false,
-      hasDateAndTime: true,
-      data: [
-        {
-          name: 'Cleaning orders',
-          dateTime: '12-oct-18',
-        },
-      ],
-    };
+  static propTypes = {
+    history: PropTypes.object,
+    ordersList: PropTypes.array,
+    getOrdersList: PropTypes.func,
   };
 
+  constructor() {
+    super();
+    this.state = {};
+  };
+
+  componentDidMount() {
+    this.props.getOrdersList();
+  }
+
   render() {
+    const { ordersList } = this.props;
+
     return (
       <Segment className="OrdersSection">
         <Segment.Group horizontal className="OrdersHeaderSection">
           <Segment className="OrdersTitle">
-            <h2> Cleaning Now </h2>
+            <Header as='h1'> Cleaning Now </Header>
           </Segment>
           <Segment className="OrdersSearchSection">
             <Input icon='search' placeholder='Search...' />
           </Segment>
         </Segment.Group>
-        <LandingContainer {...this.state} />
+        {
+          (ordersList && ordersList.length > 0)
+          ?
+            <LandingContainer
+              data={ordersList}
+              hasDateAndTime={true}
+              redirectTo={'/orders/'}
+              history={this.props.history}
+            />
+          :
+            <Header as='h2'> No orders waiting. </Header>
+        }
       </Segment>
     );
   }
 }
 
-export default CleaningOrders;
+const mapStateToProps = (state) => ({
+  ordersList: orderSelector.getOrdersList(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getOrdersList: async () => {
+    return dispatch(GET_CLEANING_NOW());
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CleaningOrders));

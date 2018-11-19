@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
@@ -24,13 +24,13 @@ class LandingContainer extends Component {
     hasDateAndTime: PropTypes.bool,
     history: PropTypes.object,
     // handleUsersWashSettings: PropTypes.func,
-    // selectedUser: PropTypes.func,
+    selectedUserOrder: PropTypes.func,
   };
 
   handleRedirection = (item) => {
-    const { redirectTo, history } = this.props;
-
+    const { redirectTo, history, selectedUserOrder } = this.props;
     if (redirectTo) {
+      selectedUserOrder(item.id);
       history.push( `${redirectTo}${item.user_id}/` );
     }
   };
@@ -43,11 +43,13 @@ class LandingContainer extends Component {
         <Table padded selectable>
           <Table.Body>
             {(data && data.length > 0) && data.map((item, i) => {
+              const dateTime = item.drop_off_date;
+
               return (
                 <Table.Row key={i + 1} onClick={() => this.handleRedirection(item)}>
-                  <Table.Cell>{item.name}</Table.Cell>
+                  <Table.Cell>{item.name ? item.name : item.customer_name}</Table.Cell>
                   {hasStatus && <Table.Cell>Status - {item.hasStatus}</Table.Cell>}
-                  {hasDateAndTime && <Table.Cell>{item.dateTime}</Table.Cell>}
+                  {hasDateAndTime && <Table.Cell textAlign='right'>{moment(dateTime).format('dddd, MMMM Do, YYYY')}</Table.Cell>}
                   <Table.Cell textAlign='right'>
                     <Icon name='arrow right' />
                   </Table.Cell>
@@ -66,7 +68,7 @@ class LandingContainer extends Component {
 // });
 
 const mapDispatchToProps = (dispatch) => ({
-  selectedUser: async (id) => {
+  selectedUserOrder: async (id) => {
     return dispatch(USER_SELECTED(id));
   },
 });

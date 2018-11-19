@@ -23,7 +23,8 @@ function responseData(result, type, data, dispatch) {
 export function GET_USERS() {
   return async (dispatch) => {
     const result = await getUsers();
-    responseData(result, USERS_LIST, result.data.data.users, dispatch);
+    const data = (result && result.data && result.data.data && result.data.data.users) || [];
+    responseData(result, USERS_LIST, data, dispatch);
   };
 }
 
@@ -31,6 +32,7 @@ export function GET_USERS() {
 export function GET_USER_DETAILS(uid) {
   return async (dispatch) => {
     const result = await getUserDetail(uid);
-    responseData(result, USER_DETAILS, result.data.data.user, dispatch);
+    const data = (result && result.data && result.data.data && result.data.data.user) || [];
+    responseData(result, USER_DETAILS, data, dispatch);
   };
 }

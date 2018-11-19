@@ -14,6 +14,7 @@ import App from './components/App/index.jsx';
 import Orders from './components/Orders/index.jsx';
 import CleaningOrders from './components/Orders/CleaningOrders.jsx';
 import AllOrders from './components/Orders/AllOrders.jsx';
+import OrderDetails from './components/Orders/OrderDetails.jsx'
 
 // Drivers Landing Page and Sub Page
 import Drivers from './components/Drivers/index.jsx';
@@ -48,6 +49,7 @@ const AppRoutes = () => (
           <RouteContainer path={'/orders/waitingOrders/'} componentToUse={Orders} />
           <RouteContainer path={'/orders/cleaning/'} componentToUse={CleaningOrders} />
           <RouteContainer path={'/orders/all/'} componentToUse={AllOrders} />
+          <RouteContainer path={'/orders/:uid/'} componentToUse={OrderDetails} />
 
           <RouteContainer path={'/drivers/driversList/'} componentToUse={Drivers} />
           <RouteContainer path={'/drivers/areas/'} componentToUse={Areas} />
@@ -56,7 +58,7 @@ const AppRoutes = () => (
           <RouteContainer path={'/drivers/editDriver/'} componentToUse={EditDriver} />
 
           <RouteContainer path={'/customers/'} componentToUse={Customers} />
-          <RouteContainer path={'/washSettings/:uid'} componentToUse={CustomerWashSettings} />
+          <RouteContainer path={'/washSettings/:uid/'} componentToUse={CustomerWashSettings} />
           <RouteContainer path={'/notifications/'} componentToUse={Noifications} />
 
           <RouteContainer path={'/items/price-list/'} componentToUse={Items} />

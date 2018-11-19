@@ -1,42 +1,71 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import LandingContainer from '../LandingContainer';
 
-import { Segment, Input } from 'semantic-ui-react';
+import { GET_ORDERS_LIST } from '../../store/actions';
+import { orderSelector } from '../../store/selectors';
+
+import { Segment, Input, Loader, Header } from 'semantic-ui-react';
 
 import './orders.css'
 
-class Orders extends Component {
+class AllOrders extends Component {
+
+  static propTypes = {
+    history: PropTypes.object,
+    ordersList: PropTypes.array,
+    getOrdersList: PropTypes.func,
+  };
 
   constructor() {
     super();
-    this.state = {
-      hasStatus: false,
-      hasDateAndTime: true,
-      data: [
-        {
-          name: 'All',
-          dateTime: '12-oct-18',
-        },
-      ],
-    };
+    this.state = {};
   };
 
+  componentDidMount() {
+    this.props.getOrdersList();
+  }
+
   render() {
+    const { ordersList } = this.props;
+
     return (
       <Segment className="OrdersSection">
         <Segment.Group horizontal className="OrdersHeaderSection">
           <Segment className="OrdersTitle">
-            <h2> Orders History </h2>
+            <Header as='h1'> Orders History </Header>
           </Segment>
           <Segment className="OrdersSearchSection">
             <Input icon='search' placeholder='Search...' />
           </Segment>
         </Segment.Group>
-        <LandingContainer {...this.state} />
+        {
+          (ordersList && ordersList.length > 0)
+          ?
+            <LandingContainer
+              data={ordersList}
+              hasDateAndTime={true}
+              redirectTo={'/orders/'}
+              history={this.props.history}
+            />
+          :
+            <Loader active inverted> No orders waiting. </Loader>
+        }
       </Segment>
     );
   }
 }
 
-export default Orders;
+const mapStateToProps = (state) => ({
+  ordersList: orderSelector.getOrdersList(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getOrdersList: async () => {
+    return dispatch(GET_ORDERS_LIST());
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AllOrders));

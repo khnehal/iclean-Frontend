@@ -25,3 +25,7 @@
 .CustomerSection .ui.table, .CustomerSection .ui.radio label {
     font-size: 1.6em;
 }
+
+.CustomersSection .landing-container .ui.table {
+    font-size: 1.25em;
+}

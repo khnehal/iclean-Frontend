@@ -2,4 +2,4 @@ export const initialState = {
   userId: null,
 };
 
-export const getUserId = (state = initialState) => state.userId;
+export const getUserOrderId = (state = initialState) => state.userId;

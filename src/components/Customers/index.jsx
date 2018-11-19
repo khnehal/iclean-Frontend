@@ -25,7 +25,7 @@ class Customers extends Component {
     this.state = {
       usersList: [],
       hasStatus: false,
-      selectedUser: '12121111',
+      selectedUser: '',
       hasDateAndTime: true,
     };
   };

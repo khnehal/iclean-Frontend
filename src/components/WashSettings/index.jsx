@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 // import { connect } from 'react-redux';
 // import { withRouter } from 'react-router';
 
-import { Header, Segment, Grid, Button, Checkbox, TextArea, Loader } from 'semantic-ui-react';
+import { Header, Segment, Grid, Button, Checkbox, TextArea } from 'semantic-ui-react';
 
 import './wash.css';
 
@@ -127,7 +127,6 @@ class WashSettings extends Component {
     if(data && Object.keys(data).length > 0) {
       return (
         <div>
-          <Loader inverted>Loading</Loader>
           <Segment secondary className="WashSettings">
             <Grid padded>
               <Grid.Column mobile={16} tablet={16} computer={8}>

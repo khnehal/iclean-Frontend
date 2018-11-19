@@ -149,10 +149,8 @@ class Promotions extends Component {
     return (
       <Segment className="promotions">
         <Segment padded basic textAlign='center'>
-          <Header as='h1' textAlign='left'>
-            Promotions
-            <Header.Subheader>Below you can view promotion details.</Header.Subheader>
-          </Header>
+          <Header as='h1' textAlign='left'> Promotions </Header>
+          <Header as='h2' textAlign='left'>Below you can view promotion details.</Header>
         </Segment>
 
         <Segment basic className="promo-section">

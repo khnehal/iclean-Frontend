@@ -95,11 +95,75 @@ function requestWrapper(method) {
   };
 }
 
+function requestDownloadWrapper(method) {
+  return async function (url, data = null, params = {}) { // eslint-disable-line func-names
+    const fileName = data;
+    data = null; // eslint-disable-line no-param-reassign
+    if (method === 'GET') {
+      // is it a GET?
+      // GET doesn't have data
+      params = data; // eslint-disable-line no-param-reassign
+      data = null; // eslint-disable-line no-param-reassign
+    } else if (data === Object(data)) {
+      // (data === Object(data)) === _.isObject(data)
+      data = JSON.stringify(data); // eslint-disable-line no-param-reassign
+    } else {
+      throw new Error(`XHR invalid, check ${method} on ${url}`);
+    }
+    const csrfToken = getLocalToken();
+
+    // default params for fetch = method + (Content-Type)
+    const defaults = {
+      method,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'X-CSRFToken': csrfToken
+      },
+      credentials: 'include',
+      redirect: 'follow',
+    };
+
+    // check that req url is relative and request was sent to our domain
+    if (url.match(/^https?:\/\//gi) > -1) {
+      // const token = getLocalToken();
+
+      // if (token) {
+      //   defaults.headers.Authorization = `JWT ${token}`;
+      // }
+      const { apiUrl } = config;
+      url = apiUrl + url; // eslint-disable-line no-param-reassign
+    }
+
+    if (data) {
+      defaults.body = data;
+    }
+
+    const paramsObj = { ...defaults, headers: { ...params, ...defaults.headers } };
+
+    return fetch(url, paramsObj).then(function (res) { // eslint-disable-line
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style = 'display: none';
+      const csvfile = res.blob();
+      csvfile.then(blob => {
+        const objectURL = URL.createObjectURL(blob);
+        a.href = objectURL;
+        a.download = `${fileName}.csv`;
+        a.click();
+        URL.revokeObjectURL(objectURL);
+      });
+    }).catch(err => {
+      console.error(err); // eslint-disable-line no-console
+    });
+  };
+}
+
 export const get = requestWrapper('GET');
 export const post = requestWrapper('POST');
 export const put = requestWrapper('PUT');
 export const patch = requestWrapper('PATCH');
 export const del = requestWrapper('DELETE');
+export const download = requestDownloadWrapper('GET');
 
 // USAGE:
 // get('https://www.google.com', {
