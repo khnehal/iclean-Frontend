@@ -53,9 +53,9 @@ export function GET_WAITING_FOR_CLEANING() {
   };
 }
 
-export function EXPORT_ORDER_PDF() {
+export function EXPORT_ORDER_PDF(orderId) {
   return async (dispatch) => {
-    const result = await getOrderAsPDF();
+    const result = await getOrderAsPDF(orderId);
     // const result = {
     //   data: [
     //     {
@@ -74,9 +74,9 @@ export function EXPORT_ORDER_PDF() {
   };
 }
 
-export function EXPORT_ORDER_XLSX() {
+export function EXPORT_ORDER_XLSX(orderId) {
   return async (dispatch) => {
-    const result = await getOrderAsXLS();
+    const result = await getOrderAsXLS(orderId);
     // const result = {
     //   data: [
     //     {
