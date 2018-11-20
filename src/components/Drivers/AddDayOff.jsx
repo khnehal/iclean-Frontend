@@ -8,18 +8,16 @@ import {
   Input,
   Header,
   Button,
-  Message,
 } from 'semantic-ui-react';
 import './style.css';
 
 import moment from 'moment';
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
 import {
   SAVE_DAYOFF,
   RELOAD_DAYOFFS,
   GET_DAYOFFS,
   DELETE_DAYOFF,
-  DAYOFF_SAVED,
-  DAYOFFS_ERRORS,
 } from '../../store/actions';
 import { driverSelector } from '../../store/selectors';
 
@@ -52,28 +50,12 @@ class AddDayOff extends Component {
       reloadDayoffs,
       resetData,
       getDayoffs,
-      dayoffSaved,
-      dayoffErrors,
     } = nextProps;
 
     if (reloadDayoffs) {
       resetData(RELOAD_DAYOFFS);
       getDayoffs();
     }
-
-    if (dayoffSaved && !(dayoffErrors && dayoffErrors.length > 0)) {
-      this.fadeOutMessage();
-    }
-  }
-
-  fadeOutMessage = () => {
-    const {
-      resetData
-    } = this.props;
-    window.setTimeout(() => {
-      resetData(DAYOFF_SAVED, '');
-      resetData(DAYOFFS_ERRORS, []);
-    }, 3000);
   }
 
   onSaveDayoff = () => {
@@ -156,21 +138,7 @@ class AddDayOff extends Component {
           <Button floated='right' color='green' onClick={() => this.onSaveDayoff()}> Done </Button>
         </Segment>
         <Segment basic textAlign='center'>
-          { dayoffSaved &&
-            <Message size={'large'} info>
-              <Message.Header>{`${dayoffSaved}`}</Message.Header>
-              {
-                (dayoffErrors && dayoffErrors.length > 0) &&
-                <Message.List>
-                  {
-                    dayoffErrors.map((error, i) => {
-                      return <Message.Item key={ i + 1 }>{`${error}`}</Message.Item>;
-                    })
-                  }
-                </Message.List>
-              }
-            </Message>
-          }
+          <DisplayMessage message={dayoffSaved} errors={dayoffErrors} />
 
           {this.renderDateTable()}
         </Segment>

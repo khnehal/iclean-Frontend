@@ -9,11 +9,9 @@ import DisplayMessage from '../DisplayMessage/DisplayMessage';
 import {
   GET_USERS,
   SEND_NOTIFICATION,
-  NOTIFICATION_SENT,
-  NOTIFICATION_ERRORS,
 } from '../../store/actions';
 import { userSelector } from '../../store/selectors';
-import { fadeOutMessage } from '../utils.js';
+
 
 class Notifications extends Component {
 
@@ -24,7 +22,6 @@ class Notifications extends Component {
     sendNotification: PropTypes.func,
     notificationSent: PropTypes.string,
     notificationErrors: PropTypes.array,
-    resetData: PropTypes.func,
   };
 
   constructor() {
@@ -48,9 +45,6 @@ class Notifications extends Component {
   componentWillReceiveProps(nextProps) {
     const {
       customersList,
-      resetData,
-      notificationSent,
-      notificationErrors,
     } = nextProps;
     if (customersList && customersList.length > 0) {
       const customerOptions = [];
@@ -66,10 +60,6 @@ class Notifications extends Component {
         customerOptions,
         selectedCustomer: customerOptions[0].value
       });
-    }
-
-    if (notificationSent && !(notificationErrors && notificationErrors.length > 0)) {
-      fadeOutMessage(resetData);
     }
   }
 
@@ -173,7 +163,7 @@ class Notifications extends Component {
           </Grid>
         </Segment>
         <Segment padded basic textAlign='center'>
-          { notificationSent && <DisplayMessage message={notificationSent} errors={notificationErrors} /> }
+          <DisplayMessage message={notificationSent} errors={notificationErrors} />
 
           {this.renderNotificationsBlock()}
         </Segment>
@@ -198,11 +188,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
   sendNotification: async (data) => {
     return dispatch(SEND_NOTIFICATION(data));
-  },
-  resetData: async () => {
-    dispatch({ type: NOTIFICATION_SENT, data: '' });
-    dispatch({ type: NOTIFICATION_ERRORS, data: [] });
-    return null;
   },
 });
 
