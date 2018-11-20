@@ -1,6 +1,7 @@
 import {
   getUsers,
   getUserDetail,
+  sendNotification,
 } from './../../api/customers.js';
 
 import {
@@ -9,6 +10,9 @@ import {
 
 export const USERS_LIST = 'USERS_LIST';
 export const USER_DETAILS = 'USER_DETAILS';
+export const NOTIFICATION_SENT = 'NOTIFICATION_SENT';
+export const NOTIFICATION_ERRORS = 'NOTIFICATION_ERRORS';
+
 
 function responseData(result, type, data, dispatch) {
     if (!resultOK(result)) {
@@ -34,5 +38,17 @@ export function GET_USER_DETAILS(uid) {
     const result = await getUserDetail(uid);
     const data = (result && result.data && result.data.data && result.data.data.user) || [];
     responseData(result, USER_DETAILS, data, dispatch);
+  };
+}
+
+export function SEND_NOTIFICATION(data) {
+  return async (dispatch) => {
+    const result = await sendNotification(data);
+    if (result && result.data) {
+      if (result.data.data) {
+        dispatch({ type: NOTIFICATION_ERRORS, data: result.data.data.errors });
+      }
+      dispatch({ type: NOTIFICATION_SENT, data: result.data.message });
+    }
   };
 }

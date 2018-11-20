@@ -1,38 +1,112 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Segment, Input, Table, Button, Radio, TextArea, Dropdown, Grid } from 'semantic-ui-react';
-
 import './customers.css';
+
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
+import {
+  GET_USERS,
+  SEND_NOTIFICATION,
+  NOTIFICATION_SENT,
+  NOTIFICATION_ERRORS,
+} from '../../store/actions';
+import { userSelector } from '../../store/selectors';
+import { fadeOutMessage } from '../utils.js';
 
 class Notifications extends Component {
 
   static propTypes = {
     history: PropTypes.object,
+    getAllUsers: PropTypes.func,
+    customersList: PropTypes.array,
+    sendNotification: PropTypes.func,
+    notificationSent: PropTypes.string,
+    notificationErrors: PropTypes.array,
+    resetData: PropTypes.func,
   };
 
   constructor() {
     super();
     this.state = {
+      value: '',
       notificationText: '',
       hasStatus: false,
       hasDateAndTime: true,
+      selectedCustomer: '',
+      customerOptions: [],
       data: [
-        {
-          name: 'Customers list',
-          dateTime: '12-oct-18',
-        },
       ],
     };
   };
 
-  handleChange = (e, { value }) => this.setState({ value });
+  componentDidMount() {
+    this.props.getAllUsers();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      customersList,
+      resetData,
+      notificationSent,
+      notificationErrors,
+    } = nextProps;
+    if (customersList && customersList.length > 0) {
+      const customerOptions = [];
+      customersList.map((customer) => {
+        return customerOptions.push({
+          key: customer.user_id,
+          value: customer.user_id,
+          text: customer.name,
+        });
+      });
+
+      this.setState({
+        customerOptions,
+        selectedCustomer: customerOptions[0].value
+      });
+    }
+
+    if (notificationSent && !(notificationErrors && notificationErrors.length > 0)) {
+      fadeOutMessage(resetData);
+    }
+  }
+
+  handleChange = (e, { name, value }) => {
+    if (name === 'customer') {
+      this.setState({ selectedCustomer: value });
+    } else {
+      this.setState({ value });
+    }
+  }
 
   handleCustomerDescription = (name, val) => {
     this.setState({ [name]: val });
   }
 
+  onSendNotification = () => {
+    const {
+      value,
+      notificationText,
+      selectedCustomer,
+    } = this.state;
+
+    const data = {
+      "send_to": value,
+      "user_id": selectedCustomer,
+      "notification_text": notificationText,
+    }
+    this.props.sendNotification(data);
+  }
+
   renderNotificationsBlock = () => {
+    const {
+      customerOptions,
+      value,
+      selectedCustomer,
+    } = this.state;
+
     return (
       <Table collapsing className={'addNotifications'} style={{ 'margin': 'auto' }}>
         <Table.Body>
@@ -42,16 +116,16 @@ class Notifications extends Component {
                 <Radio
                   label='Every Body'
                   name='radioGroup'
-                  value='EveryBody'
-                  checked={this.state.value === 'EveryBody'}
+                  value='every_body'
+                  checked={value === 'every_body'}
                   onChange={this.handleChange}
                 />
                 <br />
                 <Radio
                   label='Only To'
                   name='radioGroup'
-                  value='OnlyTo'
-                  checked={this.state.value === 'OnlyTo'}
+                  value='only_to'
+                  checked={value === 'only_to'}
                   onChange={this.handleChange}
                 />
                 <br />
@@ -59,6 +133,10 @@ class Notifications extends Component {
                   search
                   selection
                   placeholder='Choose the User'
+                  onChange={this.handleChange}
+                  options={customerOptions}
+                  value={selectedCustomer}
+                  name={'customer'}
                 />
             </Table.Cell>
           </Table.Row>
@@ -77,6 +155,11 @@ class Notifications extends Component {
   }
 
   render() {
+    const {
+      notificationSent,
+      notificationErrors,
+    } = this.props;
+
     return (
       <Segment className="CustomerSection">
         <Segment basic>
@@ -90,10 +173,12 @@ class Notifications extends Component {
           </Grid>
         </Segment>
         <Segment padded basic textAlign='center'>
+          { notificationSent && <DisplayMessage message={notificationSent} errors={notificationErrors} /> }
+
           {this.renderNotificationsBlock()}
         </Segment>
         <Segment basic textAlign={'center'}>
-          <Button color='green' size='big'> Send </Button>
+          <Button color='green' size='big' onClick={() => this.onSendNotification()}> Send </Button>
         </Segment>
       </Segment>
     );
@@ -101,4 +186,24 @@ class Notifications extends Component {
 }
 
 
-export default Notifications;
+const mapStateToProps = (state) => ({
+  customersList: userSelector.allUsersList(state),
+  notificationSent: userSelector.notificationSent(state),
+  notificationErrors: userSelector.getNotificationErrors(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getAllUsers: async () => {
+    return dispatch(GET_USERS());
+  },
+  sendNotification: async (data) => {
+    return dispatch(SEND_NOTIFICATION(data));
+  },
+  resetData: async () => {
+    dispatch({ type: NOTIFICATION_SENT, data: '' });
+    dispatch({ type: NOTIFICATION_ERRORS, data: [] });
+    return null;
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Notifications));

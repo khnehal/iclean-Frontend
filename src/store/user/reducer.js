@@ -2,7 +2,9 @@ import { initialState } from './selectors.js';
 
 import {
   USERS_LIST,
-  USER_DETAILS
+  USER_DETAILS,
+  NOTIFICATION_SENT,
+  NOTIFICATION_ERRORS,
 } from './actions';
 
 export default (state = initialState, action) => {
@@ -17,6 +19,16 @@ export default (state = initialState, action) => {
         ...state,
         userInfo: action.data,
       };
+    case NOTIFICATION_SENT:
+      return {
+        ...state,
+        notificationSent: action.data,
+      }
+    case NOTIFICATION_ERRORS:
+      return {
+        ...state,
+        notificationErrors: action.data,
+      }
 
     default:
       return state;

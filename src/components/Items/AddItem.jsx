@@ -60,7 +60,7 @@ class AddItem extends Component {
       this.setState({ categoryOptions, data });
     }
 
-    if (itemSaved && !(itemErrors || itemErrors.length > 0)) {
+    if (itemSaved && !(itemErrors && itemErrors.length > 0)) {
       this.fadeOutMessage();
     }
   }

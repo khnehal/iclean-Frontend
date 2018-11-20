@@ -22,7 +22,9 @@
     text-align: right;
 }
 
-.CustomerSection .ui.table, .CustomerSection .ui.radio label {
+.CustomerSection .ui.table, .CustomerSection .ui.radio label,
+.CustomerSection .ui.table.addNotifications .dropdown span
+{
     font-size: 1.6em;
 }
 
