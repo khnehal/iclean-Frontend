@@ -31,8 +31,8 @@ class AddItem extends Component {
         price: '',
         category: '',
         image: '',
-        file: {},
       },
+      imageFile: null,
       categoryOptions: [],
     };
   };
@@ -64,14 +64,17 @@ class AddItem extends Component {
       name,
       price,
       category,
-      file,
     } = this.state.data;
+
+    const {
+      imageFile,
+    } = this.state;
 
     const data = {
       "item_name": name,
       "price": price,
       "item_category": category,
-      "item_image": file,
+      "item_image": (imageFile && imageFile.files[0]) || '',
     }
     this.props.saveItem(data);
   }
@@ -79,12 +82,11 @@ class AddItem extends Component {
   handleChange = (e, { value, name }) => {
     const { data } = this.state;
     if (name === 'image') {
-      const file = e.target.files[0];
-      data.file = { file };
+      this.setState({ imageFile: e.target });
     } else {
       data[name] = value;
+      this.setState({ data });
     }
-    this.setState({ data });
   }
 
   render() {

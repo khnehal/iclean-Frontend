@@ -41,28 +41,31 @@ class LandingContainer extends Component {
   };
 
   render(){
-    const { data, hasStatus, hasDateAndTime } = this.props;
-
+    const { data, hasStatus, hasDateAndTime, type } = this.props;
+    const entity = type === 'driver' ? 'drivers' : 'items';
     return (
       <div className="landing-container">
-        <Table padded selectable>
-          <Table.Body>
-            {(data && data.length > 0) && data.map((item, i) => {
-              const dateTime = item.drop_off_date;
+        {
+          (data && data.length > 0) ?
+          <Table padded selectable>
+            <Table.Body>
+              { data.map((item, i) => {
+                const dateTime = item.drop_off_date;
 
-              return (
-                <Table.Row key={i + 1} onClick={() => this.handleRedirection(item)}>
-                  <Table.Cell>{item.name ? item.name : item.customer_name}</Table.Cell>
-                  {hasStatus && <Table.Cell>Status - {item.hasStatus}</Table.Cell>}
-                  {hasDateAndTime && <Table.Cell textAlign='right'>{moment(dateTime).format('dddd, MMMM Do, YYYY')}</Table.Cell>}
-                  <Table.Cell textAlign='right'>
-                    <Icon name='arrow right' />
-                  </Table.Cell>
-                </Table.Row>
-              );
-            })}
-          </Table.Body>
-        </Table>
+                return (
+                  <Table.Row key={i + 1} onClick={() => this.handleRedirection(item)}>
+                    <Table.Cell>{item.name ? item.name : item.customer_name}</Table.Cell>
+                    {hasStatus && <Table.Cell>Status - {item.hasStatus}</Table.Cell>}
+                    {hasDateAndTime && <Table.Cell textAlign='right'>{moment(dateTime).format('dddd, MMMM Do, YYYY')}</Table.Cell>}
+                    <Table.Cell textAlign='right'>
+                      <Icon name='arrow right' />
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
+            </Table.Body>
+          </Table> : (<h4>No { entity } to display.</h4>)
+        }
       </div>
     )
   }
