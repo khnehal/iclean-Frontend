@@ -3,14 +3,14 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Segment, Header, Table, Button, Icon, Message } from 'semantic-ui-react';
+import { Segment, Header, Table, Button, Icon } from 'semantic-ui-react';
 import './items.css'
 
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
 import ItemsListingRow from './ItemsListingRow';
 import {
   GET_ITEMS,
   RELOAD_ITEMS,
-  ITEM_UPDATED,
 } from '../../store/actions';
 import { itemSelector } from '../../store/selectors';
 
@@ -21,6 +21,7 @@ class Items extends Component {
     getItems: PropTypes.func,
     itemsList: PropTypes.array,
     itemUpdated: PropTypes.string,
+    itemUpdateErrors: PropTypes.array,
   };
 
   constructor(props) {
@@ -37,15 +38,6 @@ class Items extends Component {
     console.log(nextProps.itemUpdated);
   }
 
-  fadeOutMessage = () => {
-    const {
-      resetData
-    } = this.props;
-    window.setTimeout(() => {
-      resetData(ITEM_UPDATED, false);
-    }, 2000);
-  }
-
   resetAndReload = () => {
     const {
       getItems,
@@ -57,7 +49,7 @@ class Items extends Component {
   }
 
   render() {
-    const { itemsList, itemUpdated } = this.props;
+    const { itemsList, itemUpdated, itemUpdateErrors } = this.props;
 
     return (
       <Segment className="items">
@@ -67,13 +59,7 @@ class Items extends Component {
             <Header.Subheader>List of all Items and Prices.</Header.Subheader>
           </Header>
 
-          { itemUpdated &&
-            <Message info size={'large'}>
-              <Message.Content>
-                {`${itemUpdated}`}
-              </Message.Content>
-            </Message>
-          }
+          <DisplayMessage message={itemUpdated} errors={itemUpdateErrors} />
 
           <Button className="add-item-btn" floated='right' color='green' as={NavLink} to={'/items/add-item'}> <Icon name='plus' /> Add Item </Button>
         </Segment>
@@ -83,7 +69,7 @@ class Items extends Component {
             <Table padded striped>
               <Table.Body>
                 { itemsList.map((item, i) => {
-                  return <ItemsListingRow key={i} {...this.state} resetAndReload={this.resetAndReload} fadeOutMessage={this.fadeOutMessage} item={item} index={i} />;
+                  return <ItemsListingRow key={i} {...this.state} resetAndReload={this.resetAndReload} item={item} index={i} />;
                 })}
               </Table.Body>
             </Table> : (<h4>No items to display.</h4>)
@@ -97,6 +83,7 @@ class Items extends Component {
 const mapStateToProps = (state) => ({
   itemsList: itemSelector.getItemsList(state),
   itemUpdated: itemSelector.itemUpdated(state),
+  itemUpdateErrors: itemSelector.getItemUpdateErrors(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

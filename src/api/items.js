@@ -1,5 +1,5 @@
-import { apiUrl } from '../utils';
-import { get, del, put, post } from './utils';
+import { apiUrl} from '../utils';
+import { get, del, put, upload } from './utils';
 
 
 export async function getItems() {
@@ -15,7 +15,7 @@ export async function deleteItem(id) {
 }
 
 export async function saveItem(data) {
-  return post(`${apiUrl}/customer-service/prices/`, data);
+  return upload(`${apiUrl}/customer-service/prices/`, data);
 }
 
 export async function updateItem(id, data) {

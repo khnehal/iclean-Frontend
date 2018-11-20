@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Segment, Header, Input, Table, Dropdown, Button, Message } from 'semantic-ui-react';
+import { Segment, Header, Input, Table, Dropdown, Button } from 'semantic-ui-react';
 import './items.css'
 
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
 import {
   GET_CATEGORIES,
   SAVE_ITEM,
-  ITEM_SAVED,
-  ITEM_ERRORS,
 } from '../../store/actions';
 import { itemSelector } from '../../store/selectors';
 
@@ -22,7 +21,6 @@ class AddItem extends Component {
     itemSaved: PropTypes.string,
     itemErrors: PropTypes.array,
     saveItem: PropTypes.func,
-    resetData: PropTypes.func,
   };
 
   constructor(props) {
@@ -33,8 +31,8 @@ class AddItem extends Component {
         price: '',
         category: '',
         image: '',
-        file: {},
       },
+      imageFile: null,
       categoryOptions: [],
     };
   };
@@ -44,7 +42,7 @@ class AddItem extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { categoriesList, itemSaved, itemErrors } = nextProps;
+    const { categoriesList } = nextProps;
     if (categoriesList && categoriesList.length > 0) {
       const { data } = this.state;
       const categoryOptions = [];
@@ -59,20 +57,6 @@ class AddItem extends Component {
       data.category = categoryOptions[0].value;
       this.setState({ categoryOptions, data });
     }
-
-    if (itemSaved && !(itemErrors || itemErrors.length > 0)) {
-      this.fadeOutMessage();
-    }
-  }
-
-  fadeOutMessage = () => {
-    const {
-      resetData
-    } = this.props;
-    window.setTimeout(() => {
-      resetData(ITEM_SAVED, '');
-      resetData(ITEM_ERRORS, []);
-    }, 3000);
   }
 
   onAddItem = () => {
@@ -80,14 +64,17 @@ class AddItem extends Component {
       name,
       price,
       category,
-      file,
     } = this.state.data;
+
+    const {
+      imageFile,
+    } = this.state;
 
     const data = {
       "item_name": name,
       "price": price,
       "item_category": category,
-      "item_image": file,
+      "item_image": (imageFile && imageFile.files[0]) || '',
     }
     this.props.saveItem(data);
   }
@@ -95,12 +82,11 @@ class AddItem extends Component {
   handleChange = (e, { value, name }) => {
     const { data } = this.state;
     if (name === 'image') {
-      const file = e.target.files[0];
-      data.file = { file };
+      this.setState({ imageFile: e.target });
     } else {
       data[name] = value;
+      this.setState({ data });
     }
-    this.setState({ data });
   }
 
   render() {
@@ -131,21 +117,7 @@ class AddItem extends Component {
         </Segment>
 
         <Segment basic textAlign='center' className="add-item-section">
-          { itemSaved &&
-            <Message size={'large'} info>
-              <Message.Header>{`${itemSaved}`}</Message.Header>
-              {
-                (itemErrors && itemErrors.length > 0) &&
-                <Message.List>
-                  {
-                    itemErrors.map((error, i) => {
-                      return <Message.Item key={ i + 1 }>{`${error}`}</Message.Item>;
-                    })
-                  }
-                </Message.List>
-              }
-            </Message>
-          }
+          <DisplayMessage message={itemSaved} errors={itemErrors} />
 
           <Table collapsing>
             <Table.Body>
@@ -222,9 +194,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
   saveItem: async (data) => {
     return dispatch(SAVE_ITEM(data));
-  },
-  resetData: async (type, data) => {
-    return dispatch({ type, data });
   },
 });
 

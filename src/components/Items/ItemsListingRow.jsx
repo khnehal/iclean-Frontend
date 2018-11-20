@@ -19,7 +19,6 @@ class ItemsListingRow extends Component {
     reloadItems: PropTypes.bool,
     resetAndReload: PropTypes.func,
     updateItem: PropTypes.func,
-    fadeOutMessage: PropTypes.func,
   };
 
   state = {
@@ -39,7 +38,6 @@ class ItemsListingRow extends Component {
 
   onUpdateItem = (itemId) => {
     this.props.updateItem(itemId, { price: this.state.price });
-    this.props.fadeOutMessage();
   }
 
   handleChange = (e, { value }) => {

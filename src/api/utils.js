@@ -219,6 +219,54 @@ function requestDownloadCSVWrapper(method) {
   };
 }
 
+function requestUploadWrapper(method) {
+  return async function (url, data = null, params = {}) { // eslint-disable-line func-names
+    if (method === 'GET') {
+      // is it a GET?
+      // GET doesn't have data
+      params = data; // eslint-disable-line no-param-reassign
+      data = null; // eslint-disable-line no-param-reassign
+    }
+
+    const csrfToken = getLocalToken();
+    // default params for fetch = method + (Content-Type)
+    const defaults = {
+      method,
+      headers: { 'X-CSRFToken': csrfToken },
+      credentials: 'include',
+      redirect: 'follow',
+    };
+
+    const postData = new FormData();
+    // postData.append('file', data.file);
+    Object.keys(data).map(k => {
+      postData.append(k, data[k]);
+      return null;
+    });
+
+    // check that req url is relative and request was sent to our domain
+    if (url.match(/^https?:\/\//gi) > -1) {
+      // const token = getLocalToken();
+
+      // if (token) {
+      //   defaults.headers.Authorization = `JWT ${token}`;
+      // }
+      const { apiUrl } = config;
+      url = apiUrl + url; // eslint-disable-line no-param-reassign
+    }
+
+    if (data) {
+      defaults.body = postData;
+    }
+
+    const paramsObj = { ...defaults, headers: { ...params, ...defaults.headers } };
+
+    return fetch(url, paramsObj).then(parseJSON).catch(err => {
+      console.error(err); // eslint-disable-line no-console
+    });
+  };
+}
+
 export const get = requestWrapper('GET');
 export const post = requestWrapper('POST');
 export const put = requestWrapper('PUT');
@@ -226,6 +274,7 @@ export const patch = requestWrapper('PATCH');
 export const del = requestWrapper('DELETE');
 export const download = requestDownloadWrapper('GET');
 export const csvdownload = requestDownloadCSVWrapper('GET');
+export const upload = requestUploadWrapper('POST');
 
 // USAGE:
 // get('https://www.google.com', {
@@ -256,25 +305,6 @@ export function resultOK(result) {
   }
 
   return false;
-}
-
-export async function uploadFile(input, requestParams = {}, url) {
-  if (input && url) {
-    const data = new FormData();
-    data.append('event_logo', input.files[0] || '');
-    Object.keys(requestParams).map(k => {
-      data.append(k, requestParams[k]);
-      return null;
-    });
-    const { apiUrl } = config;
-    return fetch(`${apiUrl}${url}`, {
-      method: 'POST',
-      body: data,
-    }).then(parseJSON).catch(err => {
-      console.error(err); // eslint-disable-line
-    });
-  }
-  return null;
 }
 
 export function _getHeaders() {

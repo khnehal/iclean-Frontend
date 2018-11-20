@@ -17,6 +17,7 @@ import './landingStyles.css';
 class LandingContainer extends Component {
 
   static propTypes = {
+    type: PropTypes.string,
     match: PropTypes.object,
     data: PropTypes.array,
     hasStatus: PropTypes.bool,
@@ -28,36 +29,44 @@ class LandingContainer extends Component {
   };
 
   handleRedirection = (item) => {
-    const { redirectTo, history, selectedUserOrder } = this.props;
+    const { redirectTo, history, selectedUserOrder, type } = this.props;
     if (redirectTo) {
-      selectedUserOrder(item.id);
-      history.push( `${redirectTo}${item.user_id}/` );
+      if (type === 'driver') {
+        history.push( `${redirectTo}${item.driver_id}/` );
+      } else {
+        selectedUserOrder(item.id);
+        history.push( `${redirectTo}${item.user_id}/` );
+      }
     }
   };
 
   render(){
-    const { data, hasStatus, hasDateAndTime } = this.props;
-
+    const { data, hasStatus, hasDateAndTime, type } = this.props;
+    const entity = type === 'driver' ? 'drivers' : 'items';
     return (
       <div className="landing-container">
-        <Table padded selectable>
-          <Table.Body>
-            {(data && data.length > 0) && data.map((item, i) => {
-              const dateTime = item.drop_off_date;
-
-              return (
-                <Table.Row key={i + 1} onClick={() => this.handleRedirection(item)}>
-                  <Table.Cell>{item.name ? item.name : item.customer_name}</Table.Cell>
-                  {hasStatus && item.status_admin && <Table.Cell>Status - {(item.status_admin).replace(/_/g, " ")}</Table.Cell>}
-                  {hasDateAndTime && <Table.Cell textAlign='right'>{moment(dateTime).format('dddd, MMMM Do, YYYY')}</Table.Cell>}
-                  <Table.Cell textAlign='right'>
-                    <Icon name='arrow right' />
-                  </Table.Cell>
-                </Table.Row>
-              );
-            })}
+        {
+          (data && data.length > 0) ?
+          <Table padded selectable>
+            <Table.Body>
+              {
+                data.map((item, i) => {
+                const dateTime = item.drop_off_date;
+                return (
+                  <Table.Row key={i + 1} onClick={() => this.handleRedirection(item)}>
+                    <Table.Cell>{item.name ? item.name : item.customer_name}</Table.Cell>
+                    {hasStatus && item.status_admin && <Table.Cell>Status - {(item.status_admin).replace(/_/g, " ")}</Table.Cell>}
+                    {hasDateAndTime && <Table.Cell textAlign='right'>{moment(dateTime).format('dddd, MMMM Do, YYYY')}</Table.Cell>}
+                    <Table.Cell textAlign='right'>
+                      <Icon name='arrow right' />
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
           </Table.Body>
-        </Table>
+        </Table> : (<h4>No { entity } to display.</h4>)
+        }
+
       </div>
     )
   }
