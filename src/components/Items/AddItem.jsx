@@ -8,8 +8,7 @@ import './items.css'
 import DisplayMessage from '../DisplayMessage/DisplayMessage';
 import {
   GET_CATEGORIES,
-  SAVE_ITEM_WITH_IMAGE,
-  // SAVE_ITEM,
+  SAVE_ITEM,
 } from '../../store/actions';
 import { itemSelector } from '../../store/selectors';
 
@@ -194,8 +193,7 @@ const mapDispatchToProps = (dispatch) => ({
     return dispatch(GET_CATEGORIES());
   },
   saveItem: async (data) => {
-    return dispatch(SAVE_ITEM_WITH_IMAGE(data));
-    // return dispatch(SAVE_ITEM(data));
+    return dispatch(SAVE_ITEM(data));
   },
 });
 
