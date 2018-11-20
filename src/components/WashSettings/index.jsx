@@ -10,9 +10,11 @@ import './wash.css';
 class WashSettings extends Component {
 
   static propTypes = {
-    data: PropTypes.object,
     isLoading: PropTypes.bool,
+    data: PropTypes.object,
     getpdf: PropTypes.func,
+    getXLSX: PropTypes.func,
+    isOrders: PropTypes.bool,
   };
 
   constructor(props) {
@@ -22,8 +24,17 @@ class WashSettings extends Component {
 
   handleExport = () => {
     const { getpdf } = this.props;
-    getpdf();
+    if (getpdf) {
+      getpdf();
+    }
   };
+
+  handleCSV = () => {
+    const { getXLSX } = this.props;
+    if (getXLSX) {
+      getXLSX();
+    }
+  }
 
   renderDryCleanDetails = () => {
     const { data } = this.props;
@@ -127,7 +138,7 @@ class WashSettings extends Component {
   };
 
   render() {
-    const { data } = this.props;
+    const { data, isOrders } = this.props;
 
     if(data && Object.keys(data).length > 0) {
       return (
@@ -139,6 +150,9 @@ class WashSettings extends Component {
               </Grid.Column>
               <Grid.Column textAlign="right" mobile={16} tablet={16} computer={8}>
                 <Button color="green" size="medium" onClick={this.handleExport}> Export </Button>
+                {
+                  isOrders && <Button color="green" size="medium" onClick={this.handleCSV}> Export XLSX </Button>
+                }
               </Grid.Column>
             </Grid>
           </Segment>

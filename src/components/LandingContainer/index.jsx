@@ -48,7 +48,7 @@ class LandingContainer extends Component {
               return (
                 <Table.Row key={i + 1} onClick={() => this.handleRedirection(item)}>
                   <Table.Cell>{item.name ? item.name : item.customer_name}</Table.Cell>
-                  {hasStatus && <Table.Cell>Status - {item.hasStatus}</Table.Cell>}
+                  {hasStatus && item.status_admin && <Table.Cell>Status - {(item.status_admin).replace(/_/g, " ")}</Table.Cell>}
                   {hasDateAndTime && <Table.Cell textAlign='right'>{moment(dateTime).format('dddd, MMMM Do, YYYY')}</Table.Cell>}
                   <Table.Cell textAlign='right'>
                     <Icon name='arrow right' />
@@ -75,4 +75,3 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(null, mapDispatchToProps)(withRouter(LandingContainer));
 
-// export default LandingContainer;

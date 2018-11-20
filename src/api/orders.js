@@ -1,5 +1,5 @@
 import { apiUrl } from '../utils';
-import { get, download } from './utils';
+import { get, download, csvdownload } from './utils';
 
 export async function getOrders() {
   return get(`${apiUrl}/order/`);
@@ -14,11 +14,11 @@ export async function getCleaningNow() {
 }
 
 export async function getOrderAsPDF(orderId) {
-  return download(`${apiUrl}/order/${orderId}/export/pdf/`);
+  return download(`${apiUrl}/order/${orderId}/export/pdf/`, {});
 }
 
-export async function getOrderAsXLS(orderId) {
-  return download(`${apiUrl}/order/${orderId}/export/xlsx/`);
+export async function getOrderAsXLSX(orderId) {
+  return csvdownload(`${apiUrl}/order/${orderId}/export/xlsx/`, {});
 }
 
 export async function getDateBasedOrders(date) {

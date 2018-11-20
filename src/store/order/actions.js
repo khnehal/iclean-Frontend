@@ -3,7 +3,7 @@ import {
   getCleaningNow,
   getWaitingForCleaning,
   getOrderAsPDF,
-  getOrderAsXLS,
+  getOrderAsXLSX,
   getDateBasedOrders,
 } from './../../api/orders.js';
 
@@ -69,19 +69,10 @@ export function GET_DATE_BASED_ORDER(date) {
 export function EXPORT_ORDER_PDF(orderId) {
   return async (dispatch) => {
     const result = await getOrderAsPDF(orderId);
-    // const result = {
-    //   data: [
-    //     {
-    //       name: 'sdas'
-    //     }
-    //   ]
-    // }
-    console.log('resultpdfffff', result);
 
     if (!resultOK(result)) {
       return null;
     }
-
 
     dispatch({ type: ORDER_AS_PDF, data:result.data });
   };
@@ -89,20 +80,11 @@ export function EXPORT_ORDER_PDF(orderId) {
 
 export function EXPORT_ORDER_XLSX(orderId) {
   return async (dispatch) => {
-    const result = await getOrderAsXLS(orderId);
-    // const result = {
-    //   data: [
-    //     {
-    //       name: 'sdas'
-    //     }
-    //   ]
-    // }
-    console.log('result xlsx', result);
+    const result = await getOrderAsXLSX(orderId);
 
     if (!resultOK(result)) {
       return null;
     }
-
 
     dispatch({ type: ORDER_AS_XLSX, data:result.data });
   };

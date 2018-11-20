@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import moment from 'moment';
 import { find } from 'lodash';
-import { Segment, Header, Grid, Button, TextArea } from 'semantic-ui-react';
+import { Segment, Header, Grid, Button, TextArea, Table } from 'semantic-ui-react';
 
 import {
   GET_USER_DETAILS,
@@ -32,10 +33,7 @@ class OrderDetails extends Component {
     orderXlsx: PropTypes.any,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {};
-  };
+  state = {};
 
   componentDidMount() {
     const { getUserInfo, match } = this.props;
@@ -60,7 +58,7 @@ class OrderDetails extends Component {
             <Header as='h3' textAlign='left'> { customerOrderInfo.pickup_date && moment(customerOrderInfo.pickup_date).format('dddd, MMMM Do, YYYY') } </Header>
           </Grid.Column>
           <Grid.Column mobile={16} tablet={16} computer={8}>
-            <Header as='h3' textAlign='right'> { customerOrderInfo.pickup_time && <span> {customerOrderInfo.pickup_time} </span> } </Header>
+            <Header as='h3' textAlign='right'> { customerOrderInfo.pickup_time && <span> {(customerOrderInfo.pickup_time).replace(/_/g, " ")} </span> } </Header>
           </Grid.Column>
         </Grid>
         <Segment secondary>
@@ -75,7 +73,7 @@ class OrderDetails extends Component {
             <Header as='h3' textAlign='left'> { customerOrderInfo.drop_off_date && moment(customerOrderInfo.drop_off_date).format('dddd, MMMM Do, YYYY') } </Header>
           </Grid.Column>
           <Grid.Column mobile={16} tablet={16} computer={8}>
-            <Header as='h3' textAlign='right'> { customerOrderInfo.drop_off_time && <span> {customerOrderInfo.drop_off_time} </span> } </Header>
+            <Header as='h3' textAlign='right'> { customerOrderInfo.drop_off_time && <span> {(customerOrderInfo.drop_off_time).replace(/_/g, " ")} </span> } </Header>
           </Grid.Column>
         </Grid>
         <Segment secondary>
@@ -98,38 +96,51 @@ class OrderDetails extends Component {
   }
 
   handlePDFDownload = () => {
-    const { ordersList, userOrderId } = this.props;
-    const orderDetails = find(ordersList, { id: userOrderId });
-    console.log('handlepdfdownload', orderDetails);
+    const { getPDF, userOrderId } = this.props;
 
     if (userOrderId) {
-      this.props.getPDF(userOrderId);
-      // this.props.getXLSX(userOrderId.id);
+      getPDF(userOrderId);
     }
-  }
+  };
+
+  handleXLSXDownload = () => {
+    const { getXLSX, userOrderId } = this.props;
+
+    if (userOrderId) {
+      getXLSX(userOrderId);
+    }
+  };
+
+  handleItemsRedirection = () => {
+    const { history, userOrderId } = this.props;
+    history.push(`/orders/${userOrderId}/addItems/`);
+  };
+
+  // handlePastOrderRedirection = () => {
+  //   this.props.history.push('/orders/pastOrders/');
+  // };
 
   render() {
-    const { customerInfo, ordersList, userOrderId } = this.props;
+    const { customerInfo, ordersList, userOrderId, match } = this.props;
     const orderDetails = find(ordersList, { id: userOrderId });
-    console.log('orderDetails', orderDetails);
-    if (userOrderId && userOrderId.id) {
-      this.props.getPDF(userOrderId.id);
-      this.props.getXLSX(userOrderId.id);
-    }
 
     return (
       <Segment className="OrdersSection">
         <Segment.Group horizontal className="OrdersHeaderSection">
           <Segment className="OrdersTitle">
             <Header as='h1'> Orders </Header>
-            <Header.Subheader> Below you can view all the details of order. </Header.Subheader>
+            <h4> Below you can view all the details of order. </h4>
           </Segment>
-          <Segment>
-            <Header as='h2'>
-              Status: {orderDetails ? orderDetails.status_admin : ''}
-              <Button color={'red'}> Cancel Order </Button>
-            </Header>
-          </Segment>
+          <Segment.Group horizontal>
+            <Segment basic>
+              <Header as='h2'>
+                Status: {orderDetails ? (orderDetails.status_admin).replace(/_/g, " ") : ''}
+              </Header>
+            </Segment>
+            <Segment basic>
+              <Button color={'red'} size="large"> Cancel Order </Button>
+            </Segment>
+          </Segment.Group>
         </Segment.Group>
         <Segment>
           <Grid>
@@ -137,7 +148,7 @@ class OrderDetails extends Component {
               {
                 orderDetails &&
                 <Segment basic>
-                  <Header as='h1'> {orderDetails.customer_name ? orderDetails.customer_name : ''} </Header>
+                  <Header as='h1'> {customerInfo.name ? customerInfo.name : ''} </Header>
                   <Header as='h3'> {customerInfo.phone_number ? customerInfo.phone_number : ''} </Header>
                   <Header as='h3'> {customerInfo.email ? customerInfo.email : ''} </Header>
                 </Segment>
@@ -149,6 +160,38 @@ class OrderDetails extends Component {
                   <Header as='h3'> Drop Off Address: {customerInfo.drop_off_location && customerInfo.drop_off_location.address_1} </Header>
                 </Segment>
               }
+              <Button color="grey" onClick={this.handlePastOrderRedirection} size="large"> Past Orders </Button>
+              <Button color="grey" size="large" as={NavLink} to={`/orders/${match.params.uid}/addItems/`}> Add Items </Button>
+            </Grid.Column>
+            <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
+              { orderDetails &&
+                <div>
+                  <Header as='h2' color="green"> Count Order </Header>
+                  <Table basic>
+                    { orderDetails.items && (orderDetails.items.length > 0)
+                      && orderDetails.items.map((item, i) => {
+                        return (
+                          <Table.Row>
+                            <Table.Cell textAlign='left'>{item.item_name}</Table.Cell>
+                            <Table.Cell textAlign='right'>{item.price}</Table.Cell>
+                          </Table.Row>
+                        )
+                      })
+                    }
+                    <Table.Row>
+                        <Table.Cell textAlign='left'><b> Total </b></Table.Cell>
+                        <Table.Cell textAlign='right'>
+                          { (orderDetails.tip_amount > 0)
+                            ?
+                              <b> {orderDetails.amount} </b>
+                            :
+                              <b> {(orderDetails.amount + orderDetails.tip_amount)} </b>
+                          }
+                        </Table.Cell>
+                    </Table.Row>
+                  </Table>
+                </div>
+              }
             </Grid.Column>
           </Grid>
           <Grid>
@@ -156,8 +199,10 @@ class OrderDetails extends Component {
               {
                 (customerInfo && Object.keys(customerInfo).length > 0 &&
                   <WashSettings
+                    isOrders={true}
                     data={customerInfo.wash_settings}
                     getpdf={this.handlePDFDownload}
+                    getXLSX={this.handleXLSXDownload}
                   />
                 )
               }

@@ -14,7 +14,8 @@ import App from './components/App/index.jsx';
 import Orders from './components/Orders/index.jsx';
 import CleaningOrders from './components/Orders/CleaningOrders.jsx';
 import AllOrders from './components/Orders/AllOrders.jsx';
-import OrderDetails from './components/Orders/OrderDetails.jsx'
+import OrderDetails from './components/Orders/OrderDetails.jsx';
+import AddOrderItems from './components/Orders/AddOrderItems.jsx';
 
 // Drivers Landing Page and Sub Page
 import Drivers from './components/Drivers/index.jsx';
@@ -50,6 +51,7 @@ const AppRoutes = () => (
           <RouteContainer path={'/orders/cleaning/'} componentToUse={CleaningOrders} />
           <RouteContainer path={'/orders/all/'} componentToUse={AllOrders} />
           <RouteContainer path={'/orders/:uid/'} componentToUse={OrderDetails} />
+          <RouteContainer path={'/orders/:uid/addItems/'} componentToUse={AddOrderItems} />
 
           <RouteContainer path={'/drivers/driversList/'} componentToUse={Drivers} />
           <RouteContainer path={'/drivers/areas/'} componentToUse={Areas} />

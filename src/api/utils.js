@@ -97,7 +97,7 @@ function requestWrapper(method) {
 
 function requestDownloadWrapper(method) {
   return async function (url, data = null, params = {}) { // eslint-disable-line func-names
-    const fileName = data;
+    const fileName = data; //eslint-disable-line
     data = null; // eslint-disable-line no-param-reassign
     if (method === 'GET') {
       // is it a GET?
@@ -117,9 +117,8 @@ function requestDownloadWrapper(method) {
       method,
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        'X-CSRFToken': csrfToken
+        'Token': csrfToken
       },
-      credentials: 'include',
       redirect: 'follow',
     };
 
@@ -148,7 +147,69 @@ function requestDownloadWrapper(method) {
       csvfile.then(blob => {
         const objectURL = URL.createObjectURL(blob);
         a.href = objectURL;
-        a.download = `${fileName}.csv`;
+        a.download = `OrderDetails.pdf`;
+        a.click();
+        URL.revokeObjectURL(objectURL);
+      });
+    }).catch(err => {
+      console.error(err); // eslint-disable-line no-console
+    });
+  };
+}
+
+function requestDownloadCSVWrapper(method) {
+  return async function (url, data = null, params = {}) { // eslint-disable-line func-names
+    const fileName = data;  //eslint-disable-line
+    data = null; // eslint-disable-line no-param-reassign
+    if (method === 'GET') {
+      // is it a GET?
+      // GET doesn't have data
+      params = data; // eslint-disable-line no-param-reassign
+      data = null; // eslint-disable-line no-param-reassign
+    } else if (data === Object(data)) {
+      // (data === Object(data)) === _.isObject(data)
+      data = JSON.stringify(data); // eslint-disable-line no-param-reassign
+    } else {
+      throw new Error(`XHR invalid, check ${method} on ${url}`);
+    }
+    const csrfToken = getLocalToken();
+
+    // default params for fetch = method + (Content-Type)
+    const defaults = {
+      method,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Token': csrfToken
+      },
+      redirect: 'follow',
+    };
+
+    // check that req url is relative and request was sent to our domain
+    if (url.match(/^https?:\/\//gi) > -1) {
+      // const token = getLocalToken();
+
+      // if (token) {
+      //   defaults.headers.Authorization = `JWT ${token}`;
+      // }
+      const { apiUrl } = config;
+      url = apiUrl + url; // eslint-disable-line no-param-reassign
+    }
+
+    if (data) {
+      defaults.body = data;
+    }
+
+    const paramsObj = { ...defaults, headers: { ...params, ...defaults.headers } };
+
+    return fetch(url, paramsObj).then(function (res) { // eslint-disable-line
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style = 'display: none';
+      const csvfile = res.blob();
+      csvfile.then(blob => {
+        const objectURL = URL.createObjectURL(blob);
+        a.href = objectURL;
+        a.download = `OrderDetails.csv`;
         a.click();
         URL.revokeObjectURL(objectURL);
       });
@@ -164,6 +225,7 @@ export const put = requestWrapper('PUT');
 export const patch = requestWrapper('PATCH');
 export const del = requestWrapper('DELETE');
 export const download = requestDownloadWrapper('GET');
+export const csvdownload = requestDownloadCSVWrapper('GET');
 
 // USAGE:
 // get('https://www.google.com', {

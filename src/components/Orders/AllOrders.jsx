@@ -60,6 +60,7 @@ class AllOrders extends Component {
           ?
             <LandingContainer
               data={ordersList}
+              hasStatus={true}
               hasDateAndTime={true}
               redirectTo={'/orders/'}
               history={this.props.history}
