@@ -27,9 +27,9 @@ class AddItem extends Component {
     super(props);
     this.state = {
       data: {
-        name: 'Kioshima',
-        price: '10',
-        category: 'dry_cleaning',
+        name: '',
+        price: '',
+        category: '',
         image: '',
       },
       imageFile: null,
