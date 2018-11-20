@@ -3,14 +3,14 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Segment, Header, Table, Button, Icon, Message } from 'semantic-ui-react';
+import { Segment, Header, Table, Button, Icon } from 'semantic-ui-react';
 import './items.css'
 
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
 import ItemsListingRow from './ItemsListingRow';
 import {
   GET_ITEMS,
   RELOAD_ITEMS,
-  ITEM_UPDATED,
 } from '../../store/actions';
 import { itemSelector } from '../../store/selectors';
 
@@ -37,15 +37,6 @@ class Items extends Component {
     console.log(nextProps.itemUpdated);
   }
 
-  fadeOutMessage = () => {
-    const {
-      resetData
-    } = this.props;
-    window.setTimeout(() => {
-      resetData(ITEM_UPDATED, false);
-    }, 2000);
-  }
-
   resetAndReload = () => {
     const {
       getItems,
@@ -67,13 +58,7 @@ class Items extends Component {
             <Header.Subheader>List of all Items and Prices.</Header.Subheader>
           </Header>
 
-          { itemUpdated &&
-            <Message info size={'large'}>
-              <Message.Content>
-                {`${itemUpdated}`}
-              </Message.Content>
-            </Message>
-          }
+          <DisplayMessage message={itemUpdated} errors={[]} />
 
           <Button className="add-item-btn" floated='right' color='green' as={NavLink} to={'/items/add-item'}> <Icon name='plus' /> Add Item </Button>
         </Segment>
@@ -83,7 +68,7 @@ class Items extends Component {
             <Table padded striped>
               <Table.Body>
                 { itemsList.map((item, i) => {
-                  return <ItemsListingRow key={i} {...this.state} resetAndReload={this.resetAndReload} fadeOutMessage={this.fadeOutMessage} item={item} index={i} />;
+                  return <ItemsListingRow key={i} {...this.state} resetAndReload={this.resetAndReload} item={item} index={i} />;
                 })}
               </Table.Body>
             </Table> : (<h4>No items to display.</h4>)

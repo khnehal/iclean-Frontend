@@ -2,18 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Segment, Header, Table, Button, Input, Message } from 'semantic-ui-react';
+import { Segment, Header, Table, Button, Input } from 'semantic-ui-react';
 import './promotions.css'
 
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
 import moment from 'moment';
 import {
   GET_PROMOTIONS,
   GET_PROMO_CODE,
   DELETE_PROMOTION,
   SAVE_PROMOTION,
-  PROMOTION_SAVED,
   RELOAD_PROMOTIONS,
-  PROMOTION_ERRORS,
 } from '../../store/actions';
 import { promotionSelector } from '../../store/selectors';
 
@@ -58,8 +57,6 @@ class Promotions extends Component {
       reloadPromotions,
       resetData,
       getPromotions,
-      promotionErrors,
-      promotionSaved,
     } = nextProps;
     if (generatedPromoCode) {
       const { data } = this.state;
@@ -71,20 +68,6 @@ class Promotions extends Component {
       resetData(RELOAD_PROMOTIONS);
       getPromotions();
     }
-
-    if (promotionSaved && !(promotionErrors && promotionErrors.length > 0)) {
-      this.fadeOutMessage();
-    }
-  }
-
-  fadeOutMessage = () => {
-    const {
-      resetData
-    } = this.props;
-    window.setTimeout(() => {
-      resetData(PROMOTION_SAVED, '');
-      resetData(PROMOTION_ERRORS, []);
-    }, 3000);
   }
 
   onSavePromo = () => {
@@ -154,21 +137,7 @@ class Promotions extends Component {
         </Segment>
 
         <Segment basic className="promo-section">
-          { promotionSaved &&
-            <Message size={'large'} info>
-              <Message.Header>{`${promotionSaved}`}</Message.Header>
-              {
-                (promotionErrors && promotionErrors.length > 0) &&
-                <Message.List>
-                  {
-                    promotionErrors.map((error, i) => {
-                      return <Message.Item key={ i + 1 }>{`${error}`}</Message.Item>;
-                    })
-                  }
-                </Message.List>
-              }
-            </Message>
-          }
+          <DisplayMessage message={promotionSaved} errors={promotionErrors} />
 
           <Segment className="add-promo">
             <div className="promo-code">
