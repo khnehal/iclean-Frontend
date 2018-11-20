@@ -14,6 +14,7 @@ import {
 // Items listing page actions
 export const ITEMS_LIST = 'ITEMS_LIST';
 export const ITEM_UPDATED = 'ITEM_UPDATED';
+export const ITEM_UPDATE_ERRORS = 'ITEM_UPDATE_ERRORS';
 export const ITEM_DELETED= 'ITEM_DELETED';
 export const RELOAD_ITEMS = 'RELOAD_ITEMS';
 
@@ -61,10 +62,15 @@ export function DELETE_ITEM(id) {
 export function UPDATE_ITEM(id, data) {
   return async (dispatch) => {
     const result = await updateItem(id, data);
-    if (!resultOK(result)) {
-      return null;
+    // if (!resultOK(result)) {
+    //   return null;
+    // }
+    if (result && result.data) {
+      if (result.data.data) {
+        dispatch({ type: ITEM_UPDATE_ERRORS, data: result.data.data.errors });
+      }
+      dispatch({ type: ITEM_UPDATED, data: result.data.message });
     }
-    dispatch({ type: ITEM_UPDATED, data: result.data.message });
   }
 }
 

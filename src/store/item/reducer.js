@@ -6,7 +6,8 @@ import {
   RELOAD_ITEMS,
   ITEM_UPDATED,
   ITEM_SAVED,
-  ITEM_ERRORS
+  ITEM_ERRORS,
+  ITEM_UPDATE_ERRORS,
 } from './actions';
 
 
@@ -36,6 +37,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         itemUpdated: action.data,
+      };
+    case ITEM_UPDATE_ERRORS:
+      return {
+        ...state,
+        itemUpdateErrors: action.data,
       };
     case ITEM_SAVED:
       return {

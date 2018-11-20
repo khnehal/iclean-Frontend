@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Message } from 'semantic-ui-react';
+import { Message, Segment } from 'semantic-ui-react';
 
 import { fadeOutMessage } from '../utils.js';
 import {
@@ -17,6 +17,7 @@ import {
   PROMOTION_SAVED,
   PROMOTION_ERRORS,
   ITEM_UPDATED,
+  ITEM_UPDATE_ERRORS,
 } from '../../store/actions';
 
 const messageTypes = [
@@ -34,6 +35,7 @@ const errorTypes = [
   DRIVER_ERRORS,
   ITEM_ERRORS,
   PROMOTION_ERRORS,
+  ITEM_UPDATE_ERRORS,
 ];
 
 
@@ -63,11 +65,17 @@ class DisplayMessage extends Component {
       errors,
     } = this.props;
 
+    const success = (errors && errors.length > 0) ? false : true;
+
     return (
-      <div>
+      <Segment basic >
         {
           message &&
-          <Message size={'large'} info>
+          <Message
+            size={'large'}
+            positive={ success }
+            negative={ !success }
+          >
             <Message.Header>{`${message}`}</Message.Header>
             {
               (errors && errors.length > 0) &&
@@ -81,7 +89,7 @@ class DisplayMessage extends Component {
             }
           </Message>
         }
-      </div>
+      </Segment>
     );
   }
 }
