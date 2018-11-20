@@ -14,7 +14,7 @@ import 'whatwg-fetch';
  * @param  {Object} res - response from server
  * @return {Object} response result with "ok" property
  */
-async function parseJSON(res) {
+export async function parseJSON(res) {
   let json;
 
   try {

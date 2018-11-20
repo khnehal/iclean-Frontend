@@ -4,6 +4,7 @@ import {
   deleteItem,
   updateItem,
   saveItem,
+  saveItemWithImage,
 } from './../../api/items.js';
 
 import {
@@ -74,6 +75,19 @@ export function SAVE_ITEM(data) {
     // if (!resultOK(result)) {
     //   return null;
     // }
+    if (result && result.data) {
+      if (result.data.data) {
+        dispatch({ type: ITEM_ERRORS, data: result.data.data.errors });
+      }
+      dispatch({ type: ITEM_SAVED, data: result.data.message });
+    }
+  }
+}
+
+export function SAVE_ITEM_WITH_IMAGE(input, data) {
+  return async (dispatch) => {
+    const result = await saveItemWithImage(input, data);
+    console.log('----------SAVE_ITEM_WITH_IMAGE', result);
     if (result && result.data) {
       if (result.data.data) {
         dispatch({ type: ITEM_ERRORS, data: result.data.data.errors });
