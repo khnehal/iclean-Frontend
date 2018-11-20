@@ -172,7 +172,7 @@ function requestUploadWrapper(method) {
     const defaults = {
       method,
       headers: { 'X-CSRFToken': csrfToken },
-      // credentials: 'include',
+      credentials: 'include',
       redirect: 'follow',
     };
 

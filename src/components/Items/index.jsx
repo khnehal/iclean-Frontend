@@ -21,6 +21,7 @@ class Items extends Component {
     getItems: PropTypes.func,
     itemsList: PropTypes.array,
     itemUpdated: PropTypes.string,
+    itemUpdateErrors: PropTypes.array,
   };
 
   constructor(props) {
@@ -48,7 +49,7 @@ class Items extends Component {
   }
 
   render() {
-    const { itemsList, itemUpdated } = this.props;
+    const { itemsList, itemUpdated, itemUpdateErrors } = this.props;
 
     return (
       <Segment className="items">
@@ -58,7 +59,7 @@ class Items extends Component {
             <Header.Subheader>List of all Items and Prices.</Header.Subheader>
           </Header>
 
-          <DisplayMessage message={itemUpdated} errors={[]} />
+          <DisplayMessage message={itemUpdated} errors={itemUpdateErrors} />
 
           <Button className="add-item-btn" floated='right' color='green' as={NavLink} to={'/items/add-item'}> <Icon name='plus' /> Add Item </Button>
         </Segment>
@@ -82,6 +83,7 @@ class Items extends Component {
 const mapStateToProps = (state) => ({
   itemsList: itemSelector.getItemsList(state),
   itemUpdated: itemSelector.itemUpdated(state),
+  itemUpdateErrors: itemSelector.getItemUpdateErrors(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
