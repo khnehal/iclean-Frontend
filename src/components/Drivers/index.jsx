@@ -16,27 +16,23 @@ class Drivers extends Component {
   static propTypes = {
     history: PropTypes.object,
     getDrivers: PropTypes.func,
-    getDriversList: PropTypes.array,
+    driverList: PropTypes.array,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      data: [
-        {
-          name: 'ABC',
-          dateTime: '12-oct-18',
-        },
-        {
-          name: 'EFG',
-          dateTime: '19-nov-18',
-        }
-      ],
+      data: [],
     };
   };
 
   componentDidMount() {
     this.props.getDrivers();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { driverList } = nextProps;
+    this.setState({ data: driverList });
   }
 
   render() {
@@ -50,6 +46,7 @@ class Drivers extends Component {
           {...this.state}
           history={this.props.history}
           redirectTo={'/drivers/editDriver/'}
+          type='driver'
         />
       </Segment>
     );
@@ -57,7 +54,7 @@ class Drivers extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  getDriversList: driverSelector.getDriversList(state),
+  driverList: driverSelector.getDriversList(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

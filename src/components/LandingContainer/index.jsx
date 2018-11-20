@@ -17,6 +17,7 @@ import './landingStyles.css';
 class LandingContainer extends Component {
 
   static propTypes = {
+    type: PropTypes.string,
     match: PropTypes.object,
     data: PropTypes.array,
     hasStatus: PropTypes.bool,
@@ -28,10 +29,14 @@ class LandingContainer extends Component {
   };
 
   handleRedirection = (item) => {
-    const { redirectTo, history, selectedUserOrder } = this.props;
+    const { redirectTo, history, selectedUserOrder, type } = this.props;
     if (redirectTo) {
-      selectedUserOrder(item.id);
-      history.push( `${redirectTo}${item.user_id}/` );
+      if (type === 'driver') {
+        history.push( `${redirectTo}${item.driver_id}/` );
+      } else {
+        selectedUserOrder(item.id);
+        history.push( `${redirectTo}${item.user_id}/` );
+      }
     }
   };
 
