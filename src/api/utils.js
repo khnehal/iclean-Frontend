@@ -232,8 +232,12 @@ function requestUploadWrapper(method) {
     // default params for fetch = method + (Content-Type)
     const defaults = {
       method,
-      headers: { 'X-CSRFToken': csrfToken },
-      credentials: 'include',
+      headers: {
+        // 'X-CSRFToken': csrfToken,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Token': csrfToken,
+      },
+      // credentials: 'include',
       redirect: 'follow',
     };
 

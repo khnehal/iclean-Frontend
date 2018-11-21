@@ -5,6 +5,7 @@
 
 .driverDayOffDate.ui.table {
     margin: auto;
+    margin-bottom: 25px;
 }
 
 .driverDate.ui.table {

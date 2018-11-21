@@ -1,17 +1,32 @@
 import { apiUrl } from '../utils';
-import { get, post, del } from './utils';
+import { get, post, put, del } from './utils';
 
 // Driver API's
-export async function getDrivers() {
+export async function getDrivers(id) {
+  if (id) {
+    return get(`${apiUrl}/driver/${id}/`);
+  }
   return get(`${apiUrl}/driver`);
 }
 
-export async function getDriverTimeslotDetails(driverId) {
+export async function getDriverTimeslots(driverId) {
   return get(`${apiUrl}/driver/${driverId}/time-slot/?limit=14`);
+}
+
+export async function updateTimeslot(driverId, timeSlot, data) {
+  return put(`${apiUrl}/driver/${driverId}/time-slot/${timeSlot}/`, data);
 }
 
 export async function saveDriver(data) {
   return post(`${apiUrl}/driver/`, data);
+}
+
+export async function updateDriver(id, data) {
+  return put(`${apiUrl}/driver/${id}/`, data);
+}
+
+export async function deleteDriver(id) {
+  return del(`${apiUrl}/driver/${id}/`, {});
 }
 
 export async function getDayOffs(driverId) {
