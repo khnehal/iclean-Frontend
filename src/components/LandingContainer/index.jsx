@@ -6,7 +6,10 @@ import { withRouter } from 'react-router';
 
 import { Table, Icon, Rating, Segment } from 'semantic-ui-react';
 
-import { USER_SELECTED } from '../../store/actions';
+import {
+  USER_SELECTED,
+  CURRENT_DRIVER,
+} from '../../store/actions';
 // import { userSelector } from '../../store/selectors';
 
 import './landingStyles.css';
@@ -24,15 +27,20 @@ class LandingContainer extends Component {
     // handleUsersWashSettings: PropTypes.func,
     selectedUserOrder: PropTypes.func,
     hasRating: PropTypes.bool,
+    setCurrentDriver: PropTypes.func,
   };
 
 
 
   handleRedirection = (item) => {
-    const { redirectTo, history, selectedUserOrder, type } = this.props;
+    const { redirectTo, history, selectedUserOrder, type, setCurrentDriver } = this.props;
     if (redirectTo) {
       if (type === 'driver') {
-        history.push( `${redirectTo}${item.driver_id}/` );
+        setCurrentDriver(item.driver_id);
+        history.push({
+          pathname: `${redirectTo}${item.driver_id}/`,
+          state: { driver_id: item.driver_id },
+        });
       } else {
         if (type === 'order' || type === 'past') {
           history.push( `${redirectTo}${item.user_id}/${item.id}/`);
@@ -103,6 +111,9 @@ const mapDispatchToProps = (dispatch) => ({
   selectedUserOrder: async (id) => {
     return dispatch(USER_SELECTED(id));
   },
+  setCurrentDriver: async (id) => {
+    return dispatch({ type: CURRENT_DRIVER, data: { driver_id: id } });
+  }
 });
 
 export default connect(null, mapDispatchToProps)(withRouter(LandingContainer));

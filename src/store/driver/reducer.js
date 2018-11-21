@@ -2,8 +2,11 @@ import { initialState } from './selectors.js';
 
 import {
   DRIVERS_LIST,
+  DRIVER_TIMESLOTS_LIST,
+  RELOAD_TIMESLOTS,
   DRIVER_ERRORS,
   DRIVER_SAVED,
+  DRIVER_DELETED,
   DAYOFFS_LIST,
   DAYOFFS_ERRORS,
   DAYOFF_SAVED,
@@ -14,7 +17,9 @@ import {
   AREA_SAVED,
   RELOAD_AREAS,
   AREA_DELETED,
-  ALL_DRIVER_AREAS_LIST,
+  ALL_DRIVER_AREAS,
+  CURRENT_DRIVER,
+  RELOAD_DRIVERS,
 } from './actions';
 
 export default (state = initialState, action) => {
@@ -23,6 +28,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         driversList: action.data,
+      };
+    case DRIVER_TIMESLOTS_LIST:
+      return {
+        ...state,
+        driverTimeslotsList: action.data,
+      };
+    case RELOAD_TIMESLOTS:
+      return {
+        ...state,
+        reloadTimeslots: action.data,
       };
     case DRIVER_ERRORS:
       return {
@@ -33,6 +48,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         driverSaved: action.data,
+      };
+    case DRIVER_DELETED:
+      return {
+        ...state,
+        driverDeleted: action.data,
       };
     case DAYOFF_SAVED:
       return {
@@ -84,10 +104,20 @@ export default (state = initialState, action) => {
         ...state,
         areaDeleted: action.data,
       };
-    case ALL_DRIVER_AREAS_LIST:
+    case ALL_DRIVER_AREAS:
       return {
         ...state,
         allAreas: action.data,
+      };
+    case CURRENT_DRIVER:
+      return {
+        ...state,
+        currentDriver: action.data,
+      };
+    case RELOAD_DRIVERS:
+      return {
+        ...state,
+        reloadDrivers: action.data,
       };
 
     default:

@@ -24,9 +24,9 @@ function responseData(result, type, data, dispatch) {
 }
 
 // Get List and details of All users
-export function GET_USERS() {
+export function GET_USERS(searchTerm) {
   return async (dispatch) => {
-    const result = await getUsers();
+    const result = await getUsers(searchTerm);
     const data = (result && result.data && result.data.data && result.data.data.users) || [];
     responseData(result, USERS_LIST, data, dispatch);
   };

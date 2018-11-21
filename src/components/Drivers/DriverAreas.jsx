@@ -6,7 +6,6 @@ import { Segment, Input, Button, Grid, Icon, Header } from 'semantic-ui-react';
 import './style.css';
 
 import {
-  // GET_DRIVERS,
   GET_AREAS,
   // AREA_SAVED,
   // AREA_ERRORS,
@@ -21,26 +20,24 @@ class DriverAreas extends Component {
 
   static propTypes = {
     driver: PropTypes.object,
-    index: PropTypes.number,
-    resetAndReload: PropTypes.func,
     // fadeOutMessage: PropTypes.func,
-    // driversList: PropTypes.array,
     areasList: PropTypes.array,
     allAreas: PropTypes.object,
     // areaErrors: PropTypes.array,
     // areaSaved: PropTypes.string,
     reloadAreas: PropTypes.bool,
     // areaDeleted: PropTypes.string,
-    // getDrivers: PropTypes.func,
     getAreas: PropTypes.func,
     saveArea: PropTypes.func,
     deleteArea: PropTypes.func,
     resetData: PropTypes.func,
+    currentDriver: PropTypes.object,
+    setCurrentDriver: PropTypes.func,
   };
 
   state = {
     zipCode: '',
-    driver: {},
+    allAreas: [],
   };
 
   componentDidMount() {
@@ -49,7 +46,8 @@ class DriverAreas extends Component {
       getAreas,
       allAreas
     } = this.props;
-    getAreas(driver.driver_id, driver.name, allAreas);
+    getAreas(driver.driver_id, allAreas);
+    this.setState({ allAreas });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,28 +56,29 @@ class DriverAreas extends Component {
       getAreas,
       allAreas,
       resetData,
-      driver,
+      currentDriver
     } = nextProps;
-
-    // const {
-    //   driver_id,
-    //   name
-    // } = this.state.driver;
 
     if (reloadAreas) {
       resetData(RELOAD_AREAS, false);
-      getAreas(driver.driver_id, driver.name, allAreas);
+      getAreas(currentDriver.driver_id, allAreas);
+      this.setState({ allAreas });
     }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    console.log('---------nextstate', nextState.allAreas, nextProps.allAreas);
   }
 
   onDeleteArea = (driver, zipCode) => {
     this.props.deleteArea(driver.driver_id, zipCode);
-    this.setState({ driver });
   }
 
   onAddZipCode = (driver) => {
+    this.setState({
+      zipCode: '',
+    });
     this.props.saveArea(driver.driver_id, { zip_code: this.state.zipCode });
-    this.setState({ driver, zipCode: '' });
   }
 
   handleChange = (e, { value }) => {
@@ -89,16 +88,15 @@ class DriverAreas extends Component {
   render() {
     const {
       zipCode,
+      allAreas,
     } = this.state;
 
     const {
-      index,
       driver,
-      allAreas
     } = this.props;
 
     return (
-      <Grid.Column key={ index + 1 } mobile={16} tablet={8} computer={8}>
+      <Grid.Column mobile={16} tablet={8} computer={8}>
         <Segment class={'DriverAreas'}>
           <Header content={ driver.name } textAlign={'left'} size={'large'} />
           <Header content={ driver.driver_id } textAlign={'left'} size={'tiny'} />
@@ -147,21 +145,18 @@ class DriverAreas extends Component {
 
 
 const mapStateToProps = (state) => ({
-  // driversList: driverSelector.getDriversList(state),
   areasList: driverSelector.getAreasList(state),
   // areaErrors: driverSelector.getAreaErrors(state),
   // areaSaved: driverSelector.areaSaved(state),
   reloadAreas: driverSelector.reloadAreas(state),
-  allAreas: driverSelector.allAreas(state),
+  allAreas: driverSelector.getAllAreas(state),
   // areaDeleted: driverSelector.areaDeleted(state),
+  currentDriver: driverSelector.getCurrentDriver(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // getDrivers: async () => {
-  //   return dispatch(GET_DRIVERS());
-  // },
-  getAreas: async (driverId, driverName, existingAreas) => {
-    return dispatch(GET_AREAS(driverId, driverName, existingAreas));
+  getAreas: async (driverId, existingAreas) => {
+    return dispatch(GET_AREAS(driverId, existingAreas));
   },
   saveArea: async (driverId, data) => {
     return dispatch(SAVE_AREA(driverId, data));

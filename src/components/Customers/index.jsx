@@ -27,6 +27,7 @@ class Customers extends Component {
       hasStatus: false,
       selectedUser: '',
       hasDateAndTime: true,
+      searchTerm: '',
     };
   };
 
@@ -41,6 +42,18 @@ class Customers extends Component {
     this.setState({ selectedUser: userId });
   }
 
+  handleChange = (e, { value, name }) => {
+    this.setState({ searchTerm: value });
+  }
+
+  keyPress = (e) => {
+      if(e.keyCode === 13){
+        console.log('value', e.target.value);
+        const searchTerm = e.target.value;
+        this.props.getAllUsers(searchTerm);
+      }
+  }
+
   render() {
     const { usersList, history, match } = this.props;
 
@@ -51,11 +64,20 @@ class Customers extends Component {
             <Header as='h1'> Customers List </Header>
           </Grid.Column>
           <Grid.Column mobile={16} tablet={8} computer={6} textAlign={'right'} className="CustomersSearchSection">
-            <Input icon='search' placeholder='Search...' />
+            <Input
+              icon='search'
+              onChange={this.handleChange}
+              onKeyDown={this.keyPress}
+              type='text'
+              value={this.state.searchTerm}
+              placeholder={'Search...'}
+              name={'search'}
+            />
           </Grid.Column>
         </Grid>
         <Segment basic padded>
           <LandingContainer
+            type={'customer'}
             match={match}
             data={usersList}
             history={history}
@@ -75,8 +97,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getAllUsers: async () => {
-    return dispatch(GET_USERS());
+  getAllUsers: async (searchTerm) => {
+    return dispatch(GET_USERS(searchTerm));
   },
 });
 

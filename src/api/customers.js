@@ -1,7 +1,11 @@
 import { apiUrl } from '../utils';
 import { get, post } from './utils';
 
-export async function getUsers() {
+export async function getUsers(searchTerm = null) {
+  if (searchTerm) {
+    searchTerm = encodeURIComponent(searchTerm);
+    return get(`${apiUrl}/user/?search=${searchTerm}`);
+  }
   return get(`${apiUrl}/user/`);
 }
 

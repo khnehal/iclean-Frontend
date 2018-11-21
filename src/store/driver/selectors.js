@@ -1,6 +1,9 @@
 export const initialState = {
   driversList: [],
+  driverTimeslotsList: [],
+  reloadTimeslots: false,
   driverSaved: '',
+  driverDeleted: '',
   driverErrors: [],
   dayoffSaved: '',
   dayoffsList: [],
@@ -12,10 +15,16 @@ export const initialState = {
   areaErrors: [],
   areaSaved: '',
   reloadAreas: false,
+  reloadDrivers: false,
   areaDeleted: '',
+  currentDriver: {},
 };
 
 export const getDriversList = (state = initialState) => state.driversList;
+export const getDriverTimeslotsList = (state = initialState) => state.driverTimeslotsList;
+export const reloadDrivers = (state = initialState) => state.reloadDrivers;
+export const reloadTimeslots = (state = initialState) => state.reloadTimeslots;
+export const driverDeleted = (state = initialState) => state.driverDeleted;
 
 export const driverSaved = (state = initialState) => state.driverSaved;
 export const getDriverErrors = (state = initialState) => state.driverErrors;
@@ -31,4 +40,5 @@ export const getAreaErrors = (state = initialState) => state.areaErrors;
 export const areaSaved = (state = initialState) => state.areaSaved;
 export const reloadAreas = (state = initialState) => state.reloadAreas;
 export const areaDeleted = (state = initialState) => state.areaDeleted;
-export const allAreas = (state = initialState) => state.allAreas;
+export const getAllAreas = (state = initialState) => state.allAreas;
+export const getCurrentDriver = (state = initialState) => state.currentDriver;
