@@ -1,6 +1,10 @@
 import {
   getDrivers,
   saveDriver,
+  updateDriver,
+  deleteDriver,
+  getDriverTimeslots,
+  updateTimeslot,
   getDayOffs,
   saveDayOff,
   deleteDayOff,
@@ -15,8 +19,12 @@ import {
 
 // Drivers listing page actions
 export const DRIVERS_LIST = 'DRIVERS_LIST';
+export const RELOAD_DRIVERS = 'RELOAD_DRIVERS';
+export const DRIVER_TIMESLOTS_LIST = 'DRIVER_TIMESLOTS_LIST';
+export const RELOAD_TIMESLOTS = 'RELOAD_TIMESLOTS';
 
 // Add driver page actions
+export const DRIVER_DELETED= 'DRIVER_DELETED';
 export const DRIVER_ERRORS = 'DRIVER_ERRORS';
 export const DRIVER_SAVED = 'DRIVER_SAVED';
 
@@ -33,7 +41,8 @@ export const AREA_ERRORS = 'AREA_ERRORS';
 export const AREA_SAVED = 'AREA_SAVED';
 export const RELOAD_AREAS = 'RELOAD_AREAS';
 export const AREA_DELETED = 'AREA_DELETED';
-export const ALL_DRIVER_AREAS_LIST = 'ALL_DRIVER_AREAS_LIST';
+export const ALL_DRIVER_AREAS = 'ALL_DRIVER_AREAS';
+export const CURRENT_DRIVER = 'CURRENT_DRIVER';
 
 
 export function GET_DRIVERS() {
@@ -50,17 +59,82 @@ export function GET_DRIVERS() {
   };
 }
 
+export function GET_DRIVER_DATA(id) {
+  return async (dispatch) => {
+    const result = await getDrivers(id);
+
+    if (!resultOK(result)) {
+      return null;
+    }
+
+    const data = (result.data && result.data.data) || {};
+    dispatch({ type: CURRENT_DRIVER, data });
+    return result;
+  };
+}
+
+export function GET_DRIVER_TIMESLOTS(id) {
+  return async (dispatch) => {
+    const result = await getDriverTimeslots(id);
+
+    if (!resultOK(result)) {
+      return null;
+    }
+
+    const data = (result.data && result.data.data && result.data.data.driver_time_slots) || [];
+    dispatch({ type: DRIVER_TIMESLOTS_LIST, data });
+    return result;
+  };
+}
+
+export function UPDATE_TIMESLOT(driverId, timeSlot, data) {
+  return async (dispatch) => {
+    const result = await updateTimeslot(driverId, timeSlot, data);
+
+    if (!resultOK(result)) {
+      return null;
+    }
+
+    dispatch({ type: RELOAD_TIMESLOTS, data: true });
+    return result;
+  };
+}
+
 export function SAVE_DRIVER(data) {
   return async (dispatch) => {
     const result = await saveDriver(data);
-    // if (!resultOK(result)) {
-    //   return null;
-    // }
+
     if (result && result.data) {
       if (result.data.data) {
         dispatch({ type: DRIVER_ERRORS, data: result.data.data.errors });
       }
       dispatch({ type: DRIVER_SAVED, data: result.data.message });
+    }
+  }
+}
+
+export function UPDATE_DRIVER(id, data) {
+  return async (dispatch) => {
+    const result = await updateDriver(id, data);
+
+    if (result && result.data) {
+      if (result.data.data) {
+        dispatch({ type: DRIVER_ERRORS, data: result.data.data.errors });
+      }
+      dispatch({ type: DRIVER_SAVED, data: result.data.message });
+    }
+  }
+}
+
+export function DELETE_DRIVER(id) {
+  return async (dispatch) => {
+    const result = await deleteDriver(id);
+
+    if (result && result.data) {
+      if (result.data.data) {
+        dispatch({ type: DRIVER_ERRORS, data: result.data.data.errors });
+      }
+      dispatch({ type: DRIVER_DELETED, data: result.data.message });
     }
   }
 }
@@ -80,9 +154,7 @@ export function GET_DAYOFFS() {
 export function SAVE_DAYOFF(data) {
   return async (dispatch) => {
     const result = await saveDayOff(data);
-    // if (!resultOK(result)) {
-    //   return null;
-    // }
+
     if (result && result.data) {
       if (result.data.data) {
         dispatch({ type: DAYOFFS_ERRORS, data: result.data.data.errors });
@@ -104,7 +176,7 @@ export function DELETE_DAYOFF(id) {
   }
 }
 
-export function GET_AREAS(driverId, driverName, existingAreas) {
+export function GET_AREAS(driverId, existingAreas) {
   return async (dispatch) => {
     const result = await getAreas(driverId);
     if (!resultOK(result)) {
@@ -114,23 +186,23 @@ export function GET_AREAS(driverId, driverName, existingAreas) {
     dispatch({ type: AREAS_LIST, data });
     const allAreasList = existingAreas;
     allAreasList[driverId] = data;
-    dispatch({ type: ALL_DRIVER_AREAS_LIST, data: allAreasList });
-    return result;
+    console.log('--------GET_AREAS', driverId, existingAreas[driverId], allAreasList[driverId]);
+    dispatch({ type: ALL_DRIVER_AREAS, data: allAreasList });
   };
 }
 
 export function SAVE_AREA(driverId, data) {
   return async (dispatch) => {
     const result = await saveArea(driverId, data);
-    // if (!resultOK(result)) {
-    //   return null;
-    // }
+
     if (result && result.data) {
       if (result.data.data) {
         dispatch({ type: AREA_ERRORS, data: result.data.data.errors });
       }
+      dispatch({ type: CURRENT_DRIVER, data: { driver_id: driverId } });
       dispatch({ type: AREA_SAVED, data: result.data.message });
       dispatch({ type: RELOAD_AREAS, data: true });
+      console.log('----------savearea', { driver_id: driverId });
     }
   }
 }
@@ -141,6 +213,7 @@ export function DELETE_AREA(driverId, zipCode) {
     // returns status= 0 or 404 when areaCode is deleted or doesn't exist(already deleted).
     const validStates = [0, 404];
     const status = (result && result.status in validStates) ? true : false;
+    dispatch({ type: CURRENT_DRIVER, data: { driver_id: driverId } });
     dispatch({ type: AREA_DELETED, data: '' });
     dispatch({ type: RELOAD_AREAS, data: status });
   }
