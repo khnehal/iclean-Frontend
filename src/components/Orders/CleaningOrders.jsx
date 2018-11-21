@@ -45,6 +45,7 @@ class CleaningOrders extends Component {
           (ordersList && ordersList.length > 0)
           ?
             <LandingContainer
+              type='order'
               data={ordersList}
               hasDateAndTime={true}
               redirectTo={'/orders/'}

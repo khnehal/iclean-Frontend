@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+
 import moment from 'moment';
 import { find } from 'lodash';
 import { Segment, Header, Grid, Button, TextArea, Table } from 'semantic-ui-react';
@@ -10,7 +10,8 @@ import { Segment, Header, Grid, Button, TextArea, Table } from 'semantic-ui-reac
 import {
   GET_USER_DETAILS,
   EXPORT_ORDER_PDF,
-  EXPORT_ORDER_XLSX
+  EXPORT_ORDER_XLSX,
+  GET_ORDERS_LIST
 } from '../../store/actions';
 
 import { userSelector, landingContainerSelector, orderSelector } from '../../store/selectors';
@@ -20,7 +21,7 @@ import './orders.css'
 
 class OrderDetails extends Component {
 
-  props = {
+  static ropTypes = {
     match: PropTypes.object,
     history: PropTypes.object,
     getUserInfo: PropTypes.func,
@@ -31,13 +32,22 @@ class OrderDetails extends Component {
     getXLSX: PropTypes.func,
     orderPdf: PropTypes.any,
     orderXlsx: PropTypes.any,
+    getAllOrdersOnRefresh: PropTypes.func,
   };
 
-  state = {};
+  constructor() {
+    super();
+    this.state = {
+    };
+  }
 
   componentDidMount() {
-    const { getUserInfo, match } = this.props;
+    const { getUserInfo, match, getAllOrdersOnRefresh, ordersList } = this.props;
+    // console.log('uid', match.params.uid);
     getUserInfo(match.params.uid);
+    if (ordersList === undefined) {
+      getAllOrdersOnRefresh();
+    }
   }
 
   renderPickUpDropDetails = (customerOrderInfo) => {
@@ -111,19 +121,19 @@ class OrderDetails extends Component {
     }
   };
 
-  handleItemsRedirection = () => {
-    const { history, userOrderId } = this.props;
-    history.push(`/orders/${userOrderId}/addItems/`);
+  handlePastOrderRedirection = (id) => {
+    this.props.history.push(`/pastOrders/${id}/`);
   };
 
-  // handlePastOrderRedirection = () => {
-  //   this.props.history.push('/orders/pastOrders/');
-  // };
+  handleOrderRedirection = () => {
+    const { history, userOrderId } = this.props;
+    history.push(`/${userOrderId}/addOrderItems/`);
+  };
 
   render() {
-    const { customerInfo, ordersList, userOrderId, match } = this.props;
+    const { customerInfo, ordersList, userOrderId } = this.props;
     const orderDetails = find(ordersList, { id: userOrderId });
-
+    console.log('orderDetails', orderDetails, ordersList, userOrderId);
     return (
       <Segment className="OrdersSection">
         <Segment.Group horizontal className="OrdersHeaderSection">
@@ -160,35 +170,37 @@ class OrderDetails extends Component {
                   <Header as='h3'> Drop Off Address: {customerInfo.drop_off_location && customerInfo.drop_off_location.address_1} </Header>
                 </Segment>
               }
-              <Button color="grey" onClick={this.handlePastOrderRedirection} size="large"> Past Orders </Button>
-              <Button color="grey" size="large" as={NavLink} to={`/orders/${match.params.uid}/addItems/`}> Add Items </Button>
+              {<Button color="grey" size="large" onClick={() => this.handlePastOrderRedirection(orderDetails.user_id)}> Past Orders </Button>}
+              <Button color="grey" size="large" onClick={this.handleOrderRedirection}> Add Items </Button>
             </Grid.Column>
             <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
               { orderDetails &&
                 <div>
                   <Header as='h2' color="green"> Count Order </Header>
                   <Table basic>
-                    { orderDetails.items && (orderDetails.items.length > 0)
-                      && orderDetails.items.map((item, i) => {
-                        return (
-                          <Table.Row>
-                            <Table.Cell textAlign='left'>{item.item_name}</Table.Cell>
-                            <Table.Cell textAlign='right'>{item.price}</Table.Cell>
-                          </Table.Row>
-                        )
-                      })
-                    }
-                    <Table.Row>
-                        <Table.Cell textAlign='left'><b> Total </b></Table.Cell>
-                        <Table.Cell textAlign='right'>
-                          { (orderDetails.tip_amount > 0)
-                            ?
-                              <b> {orderDetails.amount} </b>
-                            :
-                              <b> {(orderDetails.amount + orderDetails.tip_amount)} </b>
-                          }
-                        </Table.Cell>
-                    </Table.Row>
+                    <Table.Body>
+                      { orderDetails.items && (orderDetails.items.length > 0)
+                        && orderDetails.items.map((item, i) => {
+                          return (
+                            <Table.Row key={i + 1}>
+                              <Table.Cell textAlign='left'>{item.item_name}</Table.Cell>
+                              <Table.Cell textAlign='right'>{item.price}</Table.Cell>
+                            </Table.Row>
+                          )
+                        })
+                      }
+                      <Table.Row>
+                          <Table.Cell textAlign='left'><b> Total </b></Table.Cell>
+                          <Table.Cell textAlign='right'>
+                            { (orderDetails.tip_amount > 0)
+                              ?
+                                <b> {orderDetails.amount} </b>
+                              :
+                                <b> {(orderDetails.amount + orderDetails.tip_amount)} </b>
+                            }
+                          </Table.Cell>
+                      </Table.Row>
+                    </Table.Body>
                   </Table>
                 </div>
               }
@@ -234,6 +246,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getUserInfo: async (uid) => {
     return dispatch(GET_USER_DETAILS(uid));
+  },
+  getAllOrdersOnRefresh: async () => {
+    return dispatch(GET_ORDERS_LIST());
   },
   getPDF: async(orderID) => {
     return dispatch(EXPORT_ORDER_PDF(orderID));

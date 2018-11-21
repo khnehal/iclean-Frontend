@@ -5,7 +5,13 @@ import {
   getOrderAsPDF,
   getOrderAsXLSX,
   getDateBasedOrders,
+  getCustomerPastOrders,
 } from './../../api/orders.js';
+
+import {
+  getListOfAllOrderItems,
+  saveOrderItemsDetail,
+} from './../../api/addOrderItems.js';
 
 import {
   resultOK,
@@ -16,77 +22,76 @@ export const CLEANING_NOW = 'CLEANING_NOW';
 export const WAITING_FOR_CLEANING = 'WAITING_FOR_CLEANING';
 export const ORDER_AS_PDF = 'ORDER_AS_PDF';
 export const ORDER_AS_XLSX = 'ORDER_AS_XLSX';
+export const ORDER_ITEMS = 'ORDER_ITEMS';
+export const SAVE_ORDER_ITEMS = 'SAVE_ORDER_ITEMS';
 
+function responseData(result, dispatch, type, data) {
+  if (!resultOK(result)) {
+    return null;
+  }
+
+  dispatch({ type, data });
+}
 
 export function GET_ORDERS_LIST() {
   return async (dispatch) => {
     const result = await getOrders();
-
-    if (!resultOK(result)) {
-      return null;
-    }
-
-    dispatch({ type: GET_ORDERS, data:result.data.data.orders });
+    responseData(result, dispatch, GET_ORDERS, result.data.data.orders);
   };
 }
 
 export function GET_CLEANING_NOW() {
   return async (dispatch) => {
     const result = await getCleaningNow();
-
-    if (!resultOK(result)) {
-      return null;
-    }
-
-    dispatch({ type: CLEANING_NOW, data:result.data.data.orders });
+    responseData(result, dispatch, CLEANING_NOW, result.data.data.orders);
   };
 }
 
 export function GET_WAITING_FOR_CLEANING() {
   return async (dispatch) => {
     const result = await getWaitingForCleaning();
-
-    if (!resultOK(result)) {
-      return null;
-    }
-
-    dispatch({ type: WAITING_FOR_CLEANING, data:result.data.data.orders });
+    responseData(result, dispatch, WAITING_FOR_CLEANING, result.data.data.orders);
   };
 }
 
 export function GET_DATE_BASED_ORDER(date) {
   return async (dispatch) => {
     const result = await getDateBasedOrders(date);
-
-    if (!resultOK(result)) {
-      return null;
-    }
-
-    dispatch({ type: GET_ORDERS, data:result.data.data.orders });
+    responseData(result, dispatch, GET_ORDERS, result.data.data.orders);
   };
 }
 
 export function EXPORT_ORDER_PDF(orderId) {
   return async (dispatch) => {
     const result = await getOrderAsPDF(orderId);
-
-    if (!resultOK(result)) {
-      return null;
-    }
-
-    dispatch({ type: ORDER_AS_PDF, data:result.data });
+    responseData(result, dispatch, ORDER_AS_PDF, result.data);
   };
 }
 
 export function EXPORT_ORDER_XLSX(orderId) {
   return async (dispatch) => {
     const result = await getOrderAsXLSX(orderId);
-
-    if (!resultOK(result)) {
-      return null;
-    }
-
-    dispatch({ type: ORDER_AS_XLSX, data:result.data });
+    responseData(result, dispatch, ORDER_AS_XLSX, result.data);
   };
 }
 
+export function GET_LIST_OF_ALL_ORDER_ITEMS() {
+  return async (dispatch) => {
+    const result = await getListOfAllOrderItems();
+    responseData(result, dispatch, ORDER_ITEMS, result.data.data.prices);
+  };
+}
+
+export function SAVE_ORDER_ITEM_DETAILS(orderId, data) {
+  return async (dispatch) => {
+    const result = await saveOrderItemsDetail(orderId, data);
+    responseData(result, dispatch, SAVE_ORDER_ITEMS, result.data.data);
+  }
+}
+
+export function GET_CUSTOMER_PAST_ORDER(customerId) {
+  return async (dispatch) => {
+    const result = await getCustomerPastOrders(customerId);
+    responseData(result, dispatch, GET_ORDERS, result.data.data.orders);
+  }
+}

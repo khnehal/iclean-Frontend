@@ -4,10 +4,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import {
-  Table,
-  Icon,
-} from 'semantic-ui-react';
+import { Table, Icon, Rating, Segment } from 'semantic-ui-react';
 
 import { USER_SELECTED } from '../../store/actions';
 // import { userSelector } from '../../store/selectors';
@@ -26,7 +23,10 @@ class LandingContainer extends Component {
     history: PropTypes.object,
     // handleUsersWashSettings: PropTypes.func,
     selectedUserOrder: PropTypes.func,
+    hasRating: PropTypes.bool,
   };
+
+
 
   handleRedirection = (item) => {
     const { redirectTo, history, selectedUserOrder, type } = this.props;
@@ -34,37 +34,60 @@ class LandingContainer extends Component {
       if (type === 'driver') {
         history.push( `${redirectTo}${item.driver_id}/` );
       } else {
+        if (type === 'order' || type === 'past') {
+          history.push( `${redirectTo}${item.user_id}/${item.id}/`);
+        } else {
+          history.push( `${redirectTo}${item.user_id}/`);
+        }
         selectedUserOrder(item.id);
-        history.push( `${redirectTo}${item.user_id}/` );
       }
     }
   };
 
   render(){
-    const { data, hasStatus, hasDateAndTime, type } = this.props;
+    const { data, hasStatus, hasDateAndTime, type, hasRating } = this.props;
     const entity = type === 'driver' ? 'drivers' : 'items';
+
     return (
       <div className="landing-container">
         {
-          (data && data.length > 0) ?
-          <Table padded selectable>
-            <Table.Body>
+          (data && data.length > 0)
+          ?
+            <Segment basic>
               {
-                data.map((item, i) => {
-                const dateTime = item.drop_off_date;
-                return (
-                  <Table.Row key={i + 1} onClick={() => this.handleRedirection(item)}>
-                    <Table.Cell>{item.name ? item.name : item.customer_name}</Table.Cell>
-                    {hasStatus && item.status_admin && <Table.Cell>Status - {(item.status_admin).replace(/_/g, " ")}</Table.Cell>}
-                    {hasDateAndTime && <Table.Cell textAlign='right'>{moment(dateTime).format('dddd, MMMM Do, YYYY')}</Table.Cell>}
-                    <Table.Cell textAlign='right'>
-                      <Icon name='arrow right' />
-                    </Table.Cell>
-                  </Table.Row>
-                );
-              })}
-          </Table.Body>
-        </Table> : (<h4>No { entity } to display.</h4>)
+                (type === 'past') &&
+                <div>
+                  <h3>{data && data[0].customer_name ? data[0].customer_name : ''}</h3> <h4>Past Orders</h4>
+                </div>
+              }
+              <Table padded selectable>
+                <Table.Body>
+                  {
+                    data.map((item, i) => {
+                    const dateTime = item.drop_off_date;
+                    return (
+                      <Table.Row key={i + 1} onClick={() => this.handleRedirection(item)}>
+                        {
+                          (type === 'past')
+                          ?
+                            <Table.Cell>{item.name ? item.name : item.pickup_driver_name}</Table.Cell>
+                          :
+                            <Table.Cell>{item.name ? item.name : item.customer_name}</Table.Cell>
+                        }
+                        {hasStatus && item.status_admin && <Table.Cell>Status - {(item.status_admin).replace(/_/g, " ")}</Table.Cell>}
+                        {hasDateAndTime && <Table.Cell textAlign='right'>{moment(dateTime).format('dddd, MMMM Do, YYYY')}</Table.Cell>}
+                        {hasRating && <Table.Cell> <Rating defaultRating={item.rating} maxRating={5}  icon='star' size='massive' disabled /> </Table.Cell>}
+                        <Table.Cell textAlign='right'>
+                          <Icon name='arrow right' />
+                        </Table.Cell>
+                      </Table.Row>
+                    );
+                  })}
+                </Table.Body>
+              </Table>
+            </Segment>
+          :
+            (<h4>No { entity } to display.</h4>)
         }
 
       </div>

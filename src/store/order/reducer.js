@@ -5,6 +5,8 @@ import {
   WAITING_FOR_CLEANING,
   ORDER_AS_PDF,
   ORDER_AS_XLSX,
+  ORDER_ITEMS,
+  SAVE_ORDER_ITEMS,
 } from './actions';
 
 
@@ -35,6 +37,16 @@ export default (state = initialState, action) => {
         ...state,
         exportXLSX: action.data,
       };
+    case ORDER_ITEMS:
+      return {
+        ...state,
+        orderItems: action.data,
+      };
+    case SAVE_ORDER_ITEMS:
+      return {
+        ...state,
+        savedDetails: action.data,
+      }
     default:
       return state;
   }

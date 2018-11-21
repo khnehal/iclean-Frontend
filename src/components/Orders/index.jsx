@@ -24,10 +24,10 @@ class Orders extends Component {
     getOrdersList: PropTypes.func,
   };
 
-  constructor() {
-    super();
-    this.state = {};
-  };
+  // constructor() {
+  //   super();
+  //   this.state = {};
+  // };
 
   componentDidMount() {
     this.props.getOrdersList();
@@ -36,7 +36,6 @@ class Orders extends Component {
   renderTabsList = (ordersList) => {
     const driversList = uniqBy(ordersList, 'pickup_driver');
     const driversData = filter(ordersList, (ord) => { return some(driversList, (obj) => ord.pickup_driver === obj.pickup_driver ); });
-    console.log(driversData);
 
     return (
       <Tabs>
@@ -56,6 +55,7 @@ class Orders extends Component {
             (ordersList && ordersList.length > 0)
             ?
               <LandingContainer
+                type='order'
                 data={ordersList}
                 hasDateAndTime={true}
                 redirectTo={'/orders/'}
@@ -73,6 +73,7 @@ class Orders extends Component {
                   (driversData && driversData.length > 0)
                   ?
                     <LandingContainer
+                      type='order'
                       data={driversData}
                       hasDateAndTime={true}
                       redirectTo={'/orders/'}

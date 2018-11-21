@@ -59,6 +59,7 @@ class AllOrders extends Component {
           (ordersList && ordersList.length > 0)
           ?
             <LandingContainer
+              type='order'
               data={ordersList}
               hasStatus={true}
               hasDateAndTime={true}

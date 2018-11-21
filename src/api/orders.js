@@ -24,3 +24,7 @@ export async function getOrderAsXLSX(orderId) {
 export async function getDateBasedOrders(date) {
   return get(`${apiUrl}/order/?date=${date}`);
 }
+
+export async function getCustomerPastOrders(customerId) {
+  return get(`${apiUrl}/order/?customer_id=${customerId}`);
+}

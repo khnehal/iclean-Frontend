@@ -21,8 +21,11 @@
 }
 
 .ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.title,
-.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.content .active.item {
-  background: rgba(0,0,0,0.07);
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.content .active.item,
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.title .item .button,
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.content .active.item .button {
+  background: rgba(0,0,0,0.3);
+  color: #e0e0e0;
 }
 
 .ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .content,

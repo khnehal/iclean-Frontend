@@ -99,7 +99,7 @@ class DriverAreas extends Component {
 
     return (
       <Grid.Column key={ index + 1 } mobile={16} tablet={8} computer={8}>
-        <Segment>
+        <Segment class={'DriverAreas'}>
           <Header content={ driver.name } textAlign={'left'} size={'large'} />
           <Header content={ driver.driver_id } textAlign={'left'} size={'tiny'} />
           <Grid>
