@@ -32,7 +32,6 @@ class AddItem extends Component {
         category: '',
         image: '',
       },
-      imageFile: null,
       categoryOptions: [],
     };
   };
@@ -42,7 +41,7 @@ class AddItem extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { categoriesList } = nextProps;
+    const { categoriesList, itemErrors } = nextProps;
     if (categoriesList && categoriesList.length > 0) {
       const { data } = this.state;
       const categoryOptions = [];
@@ -57,6 +56,17 @@ class AddItem extends Component {
       data.category = categoryOptions[0].value;
       this.setState({ categoryOptions, data });
     }
+
+    if (!itemErrors || itemErrors.length <= 0) {
+      this.setState({
+        data: {
+          name: '',
+          price: '',
+          category: '',
+          image: '',
+        },
+      })
+    }
   }
 
   onAddItem = () => {
@@ -66,27 +76,18 @@ class AddItem extends Component {
       category,
     } = this.state.data;
 
-    const {
-      imageFile,
-    } = this.state;
-
     const data = {
-      "item_name": name,
-      "price": price,
-      "item_category": category,
-      "item_image": (imageFile && imageFile.files[0]) || '',
+      item_name: name,
+      price: price,
+      item_category: category,
     }
     this.props.saveItem(data);
   }
 
   handleChange = (e, { value, name }) => {
     const { data } = this.state;
-    if (name === 'image') {
-      this.setState({ imageFile: e.target });
-    } else {
-      data[name] = value;
-      this.setState({ data });
-    }
+    data[name] = value;
+    this.setState({ data });
   }
 
   render() {
@@ -127,7 +128,7 @@ class AddItem extends Component {
                   <Input
                     onChange={this.handleChange}
                     type='text'
-                    defaultValue={name}
+                    value={name}
                     placeholder={'Item Name'}
                     name={'name'}
                   />
@@ -165,9 +166,10 @@ class AddItem extends Component {
                   <Input
                     onChange={this.handleChange}
                     type='file'
-                    defaultValue={image}
+                    value={image}
                     placeholder={'Upload Image'}
                     name={'image'}
+                    id={'file_upload'}
                   />
                 </Table.Cell>
               </Table.Row>

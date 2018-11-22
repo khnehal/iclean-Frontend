@@ -62,9 +62,6 @@ export function DELETE_ITEM(id) {
 export function UPDATE_ITEM(id, data) {
   return async (dispatch) => {
     const result = await updateItem(id, data);
-    // if (!resultOK(result)) {
-    //   return null;
-    // }
     if (result && result.data) {
       if (result.data.data) {
         dispatch({ type: ITEM_UPDATE_ERRORS, data: result.data.data.errors });
@@ -77,9 +74,6 @@ export function UPDATE_ITEM(id, data) {
 export function SAVE_ITEM(data) {
   return async (dispatch) => {
     const result = await saveItem(data);
-    // if (!resultOK(result)) {
-    //   return null;
-    // }
     if (result && result.data) {
       if (result.data.data) {
         dispatch({ type: ITEM_ERRORS, data: result.data.data.errors });
