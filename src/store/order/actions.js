@@ -101,7 +101,6 @@ export function GET_CUSTOMER_PAST_ORDER(customerId) {
 export function DELETE_ORDER(orderId) {
   return async (dispatch) => {
     const result = await deleteOrder(orderId);
-    console.log('dasdas', result.status);
     responseData(result, dispatch, DELETE_STATUS, result.status);
   }
 }

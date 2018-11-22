@@ -63,7 +63,7 @@ class TimeslotListingRow extends Component {
 
     return (
       <Table.Row>
-        <Table.Cell width={4}> {timeslot.time_slot} </Table.Cell>
+        <Table.Cell width={4}> {(timeslot.time_slot).replace(/_/g, ' ')} </Table.Cell>
         <Table.Cell width={4}>
           <Input
             type='number'

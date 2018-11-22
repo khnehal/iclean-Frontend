@@ -191,7 +191,12 @@ class EditDriver extends Component {
         <Table.Body>
           {
             this.state.driverTimeslotsList.map((timeslot, i) => {
-              return <TimeslotListingRow key={i + 1} {...this.state} resetAndReload={this.resetAndReload} timeslot={timeslot} driverId={currentDriver.driver_id} />
+              return <TimeslotListingRow
+                        key={i + 1}
+                        {...this.state}
+                        timeslot={timeslot}
+                        resetAndReload={this.resetAndReload}
+                        driverId={currentDriver.driver_id} />
             })
           }
         </Table.Body>
@@ -209,8 +214,9 @@ class EditDriver extends Component {
           <Segment padded basic textAlign='center'>
             <Header as='h1' textAlign='left'> Edit Driver <Header.Subheader> Below you can view all the Zip Code details </Header.Subheader></Header>
             <Button
-              floated='right'
+              size='large'
               color='green'
+              floated='right'
               icon={ !isEditing && 'edit' }
               onClick={this.onEditDriverDetails}
               content={ !isEditing ? 'Edit' : 'Done' }
@@ -223,7 +229,7 @@ class EditDriver extends Component {
           </Segment>
           <Segment basic textAlign='center'>
             {this.renderTimeslotsTable()}
-            <Button className='delete-driver-btn' color='red' onClick={this.onDeleteDriver}> Delete Driver </Button>
+            <Button className='delete-driver-btn' size='large' color='red' onClick={this.onDeleteDriver}> Delete Driver </Button>
           </Segment>
           <Segment basic textAlign='center'>
             <b>Special Notes</b>

@@ -1,12 +1,19 @@
 @media print {
 
-    .top-header,
     .NavBar,
-    .WashSettings,
     .ui.button,
-    .ui.horizontal.segments.OrdersHeaderSection,
-    .disabled.checkbox:not(.checked) {
+    .top-header,
+    .WashSettings,
+    .countOrderDetails,
+    .disabled.checkbox:not(.checked),
+    .ui.horizontal.segments.OrdersHeaderSection {
         display: none;
+    }
+    .countOrderDetailsForPrint {
+        display: block;
+    }
+    .countOrderDetailsForPrint .ui.header {
+        text-align: left;
     }
     .ui.segment.OrdersSection {
         width: 100%;
@@ -16,4 +23,9 @@
     .ui.center.aligned.header {
         text-align: left;
     }
+    .ui[class*="left aligned"].segment {
+        padding: 0;
+        border: 0;
+    }
+
 }
