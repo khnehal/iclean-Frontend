@@ -1,5 +1,5 @@
 import { apiUrl } from '../utils';
-import { get, download, csvdownload } from './utils';
+import { get, download, csvdownload, del } from './utils';
 
 export async function getOrders() {
   return get(`${apiUrl}/order/`);
@@ -27,4 +27,8 @@ export async function getDateBasedOrders(date) {
 
 export async function getCustomerPastOrders(customerId) {
   return get(`${apiUrl}/order/?customer_id=${customerId}`);
+}
+
+export async function deleteOrder(orderId) {
+  return del(`${apiUrl}/order/${orderId}`, {});
 }

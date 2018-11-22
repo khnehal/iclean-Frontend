@@ -7,6 +7,7 @@ import {
   ORDER_AS_XLSX,
   ORDER_ITEMS,
   SAVE_ORDER_ITEMS,
+  DELETE_STATUS,
 } from './actions';
 
 
@@ -46,6 +47,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         savedDetails: action.data,
+      };
+    case DELETE_STATUS:
+      return {
+        ...state,
+        deletedStatus: action.data,
       }
     default:
       return state;

@@ -1,0 +1,19 @@
+@media print {
+
+    .top-header,
+    .NavBar,
+    .WashSettings,
+    .ui.button,
+    .ui.horizontal.segments.OrdersHeaderSection,
+    .disabled.checkbox:not(.checked) {
+        display: none;
+    }
+    .ui.segment.OrdersSection {
+        width: 100%;
+        padding: 0;
+        border: 0;
+    }
+    .ui.center.aligned.header {
+        text-align: left;
+    }
+}

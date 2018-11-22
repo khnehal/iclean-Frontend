@@ -27,3 +27,8 @@
 .react-tabs .react-tabs__tab-list {
     font-size: 1.5em;
 }
+
+textarea {
+    width: 25%;
+    height: 75px;
+}

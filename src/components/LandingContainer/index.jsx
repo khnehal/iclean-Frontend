@@ -4,6 +4,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
+import { capitalize } from 'lodash';
 import { Table, Icon, Rating, Segment } from 'semantic-ui-react';
 
 import {
@@ -82,7 +83,7 @@ class LandingContainer extends Component {
                           :
                             <Table.Cell>{item.name ? item.name : item.customer_name}</Table.Cell>
                         }
-                        {hasStatus && item.status_admin && <Table.Cell>Status - {(item.status_admin).replace(/_/g, " ")}</Table.Cell>}
+                        {hasStatus && item.status_admin && <Table.Cell>Status - {capitalize((item.status_admin).replace(/_/g, " "))}</Table.Cell>}
                         {hasDateAndTime && <Table.Cell textAlign='right'>{moment(dateTime).format('dddd, MMMM Do, YYYY')}</Table.Cell>}
                         {hasRating && <Table.Cell> <Rating defaultRating={item.rating} maxRating={5}  icon='star' size='massive' disabled /> </Table.Cell>}
                         <Table.Cell textAlign='right'>
