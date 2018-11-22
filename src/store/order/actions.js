@@ -66,14 +66,14 @@ export function GET_DATE_BASED_ORDER(date) {
 export function EXPORT_ORDER_PDF(orderId) {
   return async (dispatch) => {
     const result = await getOrderAsPDF(orderId);
-    responseData(result, dispatch, ORDER_AS_PDF, result.data);
+    responseData(result, dispatch, ORDER_AS_PDF, result && result.data);
   };
 }
 
 export function EXPORT_ORDER_XLSX(orderId) {
   return async (dispatch) => {
     const result = await getOrderAsXLSX(orderId);
-    responseData(result, dispatch, ORDER_AS_XLSX, result.data);
+    responseData(result, dispatch, ORDER_AS_XLSX, result && result.data);
   };
 }
 

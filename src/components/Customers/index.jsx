@@ -48,7 +48,6 @@ class Customers extends Component {
 
   keyPress = (e) => {
       if(e.keyCode === 13){
-        console.log('value', e.target.value);
         const searchTerm = e.target.value;
         this.props.getAllUsers(searchTerm);
       }

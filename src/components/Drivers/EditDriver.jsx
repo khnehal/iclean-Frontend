@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-// import { NavLink } from 'react-router-dom';
 import { Segment, Table, Input, Header, Button, Grid, Image, Icon, Label, Checkbox } from 'semantic-ui-react'; //eslint-disable-line
 import './style.css';
 

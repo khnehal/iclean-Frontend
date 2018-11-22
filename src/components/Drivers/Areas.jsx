@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { NavLink } from 'react-router-dom';
+
 import { Segment, Header, Button, Grid, Icon } from 'semantic-ui-react';
 import './style.css';
 
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
 import DriverAreas from './DriverAreas';
 import {
   GET_DRIVERS,
@@ -18,9 +19,12 @@ import { driverSelector } from '../../store/selectors';
 class Areas extends Component {
 
   static propTypes = {
+    history: PropTypes.object,
     driversList: PropTypes.array,
     getDrivers: PropTypes.func,
     resetData: PropTypes.func,
+    areaErrors: PropTypes.array,
+    areaSaved: PropTypes.string,
   };
 
   constructor() {
@@ -56,7 +60,10 @@ class Areas extends Component {
 
   render() {
     const {
-      driversList
+      driversList,
+      areaErrors,
+      areaSaved,
+      history,
     } = this.props;
 
     return (
@@ -67,9 +74,17 @@ class Areas extends Component {
               Drivers
               <Header.Subheader> Below you can view all the Zip Code details </Header.Subheader>
             </Header>
-            <Button floated='right' color='green' as={NavLink} to={'/drivers/addDrivers'}> <Icon name='plus' /> Add a Driver </Button>
+            <Button
+              floated='right'
+              color='green'
+              onClick={() => { history.push('/drivers/addDrivers'); }}
+            >
+              <Icon name='plus' /> Add a Driver
+            </Button>
           </Segment>
           <Segment padded basic textAlign='center'>
+            <DisplayMessage message={areaSaved} errors={areaErrors} />
+
             <Grid>
               { driversList.map((driver, i) => {
                 return (
@@ -93,6 +108,7 @@ const mapStateToProps = (state) => ({
   driversList: driverSelector.getDriversList(state),
   areaSaved: driverSelector.areaSaved(state),
   areaErrors: driverSelector.getAreaErrors(state),
+  areaDeleted: driverSelector.areaDeleted(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

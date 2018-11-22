@@ -186,7 +186,6 @@ export function GET_AREAS(driverId, existingAreas) {
     dispatch({ type: AREAS_LIST, data });
     const allAreasList = existingAreas;
     allAreasList[driverId] = data;
-    console.log('--------GET_AREAS', driverId, existingAreas[driverId], allAreasList[driverId]);
     dispatch({ type: ALL_DRIVER_AREAS, data: allAreasList });
   };
 }
@@ -202,7 +201,6 @@ export function SAVE_AREA(driverId, data) {
       dispatch({ type: CURRENT_DRIVER, data: { driver_id: driverId } });
       dispatch({ type: AREA_SAVED, data: result.data.message });
       dispatch({ type: RELOAD_AREAS, data: true });
-      console.log('----------savearea', { driver_id: driverId });
     }
   }
 }

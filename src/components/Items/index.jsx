@@ -34,10 +34,6 @@ class Items extends Component {
     this.props.getItems();
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps.itemUpdated);
-  }
-
   resetAndReload = () => {
     const {
       getItems,

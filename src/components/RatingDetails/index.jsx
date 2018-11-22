@@ -33,7 +33,7 @@ class RatingDetails extends Component {
   render() {
     const { ordersList, match } = this.props;
     const customerOrder = find(ordersList, (obj) => { return obj.id === parseInt(match.params.orderId, 10) });
-    console.log('customerOrderfilter', customerOrder);
+
     return (
       <Segment padded className="RatingDetails">
         <Header as='h1' textAlign='left'> Past Orders
