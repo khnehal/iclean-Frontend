@@ -133,7 +133,7 @@ class OrderDetails extends Component {
   render() {
     const { customerInfo, ordersList, userOrderId } = this.props;
     const orderDetails = find(ordersList, { id: userOrderId });
-    console.log('orderDetails', orderDetails, ordersList, userOrderId);
+
     return (
       <Segment className="OrdersSection">
         <Segment.Group horizontal className="OrdersHeaderSection">

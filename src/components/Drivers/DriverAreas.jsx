@@ -7,8 +7,7 @@ import './style.css';
 
 import {
   GET_AREAS,
-  // AREA_SAVED,
-  // AREA_ERRORS,
+  ALL_DRIVER_AREAS,
   RELOAD_AREAS,
   SAVE_AREA,
   DELETE_AREA,
@@ -20,13 +19,9 @@ class DriverAreas extends Component {
 
   static propTypes = {
     driver: PropTypes.object,
-    // fadeOutMessage: PropTypes.func,
     areasList: PropTypes.array,
     allAreas: PropTypes.object,
-    // areaErrors: PropTypes.array,
-    // areaSaved: PropTypes.string,
     reloadAreas: PropTypes.bool,
-    // areaDeleted: PropTypes.string,
     getAreas: PropTypes.func,
     saveArea: PropTypes.func,
     deleteArea: PropTypes.func,
@@ -61,13 +56,10 @@ class DriverAreas extends Component {
 
     if (reloadAreas) {
       resetData(RELOAD_AREAS, false);
+      resetData(ALL_DRIVER_AREAS, {});
       getAreas(currentDriver.driver_id, allAreas);
       this.setState({ allAreas });
     }
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    console.log('---------nextstate', nextState.allAreas, nextProps.allAreas);
   }
 
   onDeleteArea = (driver, zipCode) => {
@@ -97,9 +89,8 @@ class DriverAreas extends Component {
 
     return (
       <Grid.Column mobile={16} tablet={8} computer={8}>
-        <Segment class={'DriverAreas'}>
+        <Segment className={'DriverAreas'}>
           <Header content={ driver.name } textAlign={'left'} size={'large'} />
-          <Header content={ driver.driver_id } textAlign={'left'} size={'tiny'} />
           <Grid>
             <Grid.Column mobile={16} tablet={8} computer={10}>
               <Input
@@ -146,11 +137,8 @@ class DriverAreas extends Component {
 
 const mapStateToProps = (state) => ({
   areasList: driverSelector.getAreasList(state),
-  // areaErrors: driverSelector.getAreaErrors(state),
-  // areaSaved: driverSelector.areaSaved(state),
   reloadAreas: driverSelector.reloadAreas(state),
   allAreas: driverSelector.getAllAreas(state),
-  // areaDeleted: driverSelector.areaDeleted(state),
   currentDriver: driverSelector.getCurrentDriver(state),
 });
 
