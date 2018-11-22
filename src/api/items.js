@@ -1,5 +1,5 @@
 import { apiUrl} from '../utils';
-import { get, del, put, upload } from './utils';
+import { get, del, put, uploadFile } from './utils';
 
 
 export async function getItems() {
@@ -15,8 +15,10 @@ export async function deleteItem(id) {
 }
 
 export async function saveItem(data) {
-  return upload(`${apiUrl}/customer-service/prices/`, data);
+  const fileBtn = document.getElementById('file_upload');
+  return uploadFile(fileBtn, 'item_image', data, `${apiUrl}/customer-service/prices/`);
 }
+
 
 export async function updateItem(id, data) {
   return put(`${apiUrl}/customer-service/prices/${id}/`, data);

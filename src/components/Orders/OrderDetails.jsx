@@ -21,7 +21,7 @@ import './orders.css'
 
 class OrderDetails extends Component {
 
-  static ropTypes = {
+  static propTypes = {
     match: PropTypes.object,
     history: PropTypes.object,
     getUserInfo: PropTypes.func,
