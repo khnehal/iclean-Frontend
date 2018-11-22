@@ -1,56 +1,123 @@
 import React, { Component } from 'react';
-
-import { Segment, Table, Button, Input, Icon, Label } from 'semantic-ui-react';
-// import moment from 'moment';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Segment, Header, Table, Button, Input } from 'semantic-ui-react';
 import './promotions.css'
+
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
+import moment from 'moment';
+import {
+  GET_PROMOTIONS,
+  GET_PROMO_CODE,
+  DELETE_PROMOTION,
+  SAVE_PROMOTION,
+  RELOAD_PROMOTIONS,
+} from '../../store/actions';
+import { promotionSelector } from '../../store/selectors';
 
 
 class Promotions extends Component {
 
-  constructor() {
-    super();
+  props: {
+    history: PropTypes.object,
+    getPromotions: PropTypes.func,
+    promotionsList: PropTypes.array,
+    generatePromoCode: PropTypes.func,
+    generatedPromoCode: PropTypes.string,
+    deletePromotion: PropTypes.func,
+    savePromotion: PropTypes.func,
+    // promotionDeleted: PropTypes.bool,
+    promotionSaved: PropTypes.string,
+    promotionErrors: PropTypes.array,
+    reloadPromotions: PropTypes.bool,
+    resetData: PropTypes.func,
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {
-      data: [
-        {
-          created_on: '08-08-2018',
-          promo_code: 'YELP10',
-          amount: '$20',
-          start_date: '2018-08-08',
-          end_date: '2018-08-31',
-          id: 1,
-        },
-        {
-          created_on: '08-08-2018',
-          promo_code: 'LHEKH2',
-          amount: '$30',
-          start_date: '2018-08-08',
-          end_date: '2018-08-31',
-          id: 2,
-        },
-      ],
+      data: {
+        promoCode: '',
+        dollarValue: '',
+        percentValue: '',
+        startDate: '',
+        endDate: '',
+      }
     };
   };
 
-  onDeletePromo = (promoId) => {
-    // Call the delete api.
-    console.log(`Ye promo(${promoId}) ko delete kar re jamaila!!`);
+  componentDidMount() {
+    this.props.getPromotions();
   }
 
-  onGenerateCode = () => {
-    // Call the generate api.
+  componentWillReceiveProps(nextProps) {
+    const {
+      generatedPromoCode,
+      reloadPromotions,
+      resetData,
+      getPromotions,
+    } = nextProps;
+    if (generatedPromoCode) {
+      const { data } = this.state;
+      data.promoCode = generatedPromoCode;
+      this.setState({ data });
+    }
+
+    if (reloadPromotions) {
+      resetData(RELOAD_PROMOTIONS);
+      getPromotions();
+    }
   }
 
   onSavePromo = () => {
-    // Call the save promo api.
+    const {
+      promoCode,
+      dollarValue,
+      percentValue,
+      startDate,
+      endDate,
+    } = this.state.data;
+
+    let discountType = 'dollar_discount';
+    if (!dollarValue && percentValue) {
+      discountType = 'percentage_discount';
+    }
+
+    const data = {
+      "code": promoCode,
+      "discount_type": discountType,
+      "dollar_discount": dollarValue,
+      "percentage_discount": percentValue,
+      "start_date": startDate && moment(startDate).format('YYYY-MM-DD'),
+      "end_date": endDate && moment(endDate).format('YYYY-MM-DD'),
+    }
+    this.props.savePromotion(data);
   }
 
-  handleChange = (e, field) => {
-    console.log(`Ye promo(${field}) ko delete kar re jamaila!!`);
-    // this.setState(obj);
+  handleChange = (e, { value, name }) => {
+    const { data } = this.state;
+    data[name] = value;
+    this.setState({ data });
   }
 
   render() {
-    const { data } = this.state;
+    const {
+      generatePromoCode,
+      promotionsList,
+      deletePromotion,
+      promotionSaved,
+      promotionErrors,
+     } = this.props;
+
+    const {
+      promoCode,
+      dollarValue,
+      percentValue,
+      startDate,
+      endDate,
+    } = this.state.data;
+
     const tableHeaders = [
       'Date Created',
       'Promo Code',
@@ -59,124 +126,155 @@ class Promotions extends Component {
       'End Date',
       'Remove'
     ];
+
+    const minDate = moment().format('YYYY-MM-DD');
+
     return (
-      <div className="promo-section">
-        <Segment.Group horizontal className="promo-header-section">
-          <Segment className="promo-title">
-            <h2>Promotions</h2>
-          </Segment>
-        </Segment.Group>
+      <Segment className="promotions">
+        <Segment padded basic textAlign='center'>
+          <Header as='h1' textAlign='left'> Promotions </Header>
+          <Header as='h2' textAlign='left'>Below you can view promotion details.</Header>
+        </Segment>
 
-        <Segment.Group horizontal>
-          <Segment className="promo-sub-header">
-              <h4>Below you can view promotion details.</h4>
-          </Segment>
-        </Segment.Group>
+        <Segment basic className="promo-section">
+          <DisplayMessage message={promotionSaved} errors={promotionErrors} />
 
-        <Segment.Group horizontal>
           <Segment className="add-promo">
             <div className="promo-code">
-              <h4>Use a generated promo code or type your own</h4>
+              <h5>Use a generated promo code or type your own</h5>
               <Input
-                onChange={(e) => this.handleChange(e, 'promo_code')}
+                onChange={this.handleChange}
                 type='text'
-                defaultValue={''}
+                value={promoCode}
                 placeholder={'Alphanumeric Value'}
+                name={'promoCode'}
               />
-              <Button icon onClick={() => this.onGenerateCode()}>GENERATE CODE</Button>
+              <Button className='generate-code ui button' color='green' onClick={() => generatePromoCode()}>GENERATE CODE</Button>
             </div>
 
             <div className="promo-value">
               <Input
-                onChange={(e) => this.handleChange(e, 'promo_value_dollar')}
-                labelPosition='right'
-                type='text'
-                defaultValue={''}
+                onChange={this.handleChange}
+                label='$'
+                labelPosition='left'
+                type='number'
+                value={dollarValue}
                 placeholder={'Amount'}
-              >
-                <Label basic>$</Label>
-                <input />
-                <Label basic>OFF</Label>
-              </Input>
+                name={'dollarValue'}
+              />
               OR
               <Input
-                onChange={(e) => this.handleChange(e, 'promo_value_percent')}
-                labelPosition='right'
-                type='text'
-                defaultValue={''}
+                onChange={this.handleChange}
+                label='%'
+                labelPosition='left'
+                type='number'
+                value={percentValue}
                 placeholder={'Percent'}
-              >
-                <Label basic>%</Label>
-                <input />
-                <Label basic>OFF</Label>
-              </Input>
+                name={'percentValue'}
+              />
+              OFF
             </div>
 
             <div className="promo-dates">
               <Input
-                onChange={(e) => this.handleChange(e, 'start_date')}
-                labelPosition='right'
-                type='text'
-                defaultValue={''}
+                onChange={this.handleChange}
+                label='Start Date'
+                labelPosition='left'
+                type='date'
+                min={minDate}
+                value={startDate}
                 placeholder={'MM-DD-YYYY'}
-              >
-                <Label basic>Start Date</Label>
-                <input />
-              </Input>
+                name={'startDate'}
+              />
 
               <Input
-                onChange={(e) => this.handleChange(e, 'end_date')}
-                labelPosition='right'
-                type='text'
-                defaultValue={''}
+                onChange={this.handleChange}
+                label='End Date'
+                labelPosition='left'
+                type='date'
+                min={minDate}
+                value={endDate}
                 placeholder={'MM-DD-YYYY'}
-              >
-                <Label basic>End Date</Label>
-                <input />
-              </Input>
+                name={'endDate'}
+              />
             </div>
-            <hr/>
-            <Button icon className={'save-promo'} onClick={() => this.onSavePromo()}>SAVE PROMO CODE</Button>
-          </Segment>
-        </Segment.Group>
 
-        <div className="promo-listing-section">
-          <Segment.Group horizontal>
-            <Segment>
-              <Table>
+            <hr/>
+
+            <Button className='save-promo-btn ui button' color='green' onClick={() => this.onSavePromo()}>SAVE PROMO CODE</Button>
+          </Segment>
+          <br/>
+          <Segment className="promo-listing-section">
+            { (promotionsList && promotionsList.length > 0) ?
+              <Table striped celled textAlign={'center'}>
                 <Table.Header>
                   <Table.Row>
                     {
                       tableHeaders.map((header, i) => {
                         return (
-                          <Table.Cell key={i + 1}>{header}</Table.Cell>
+                          <Table.Cell key={i + 1}><b>{header}</b></Table.Cell>
                         );
                       })
                     }
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {(data && data.length > 0) && data.map((promo, i) => {
+                  { promotionsList.map((promo, i) => {
                     return (
                       <Table.Row key={i + 1}>
-                        <Table.Cell>{promo.created_on}</Table.Cell>
-                        <Table.Cell>{promo.promo_code}</Table.Cell>
-                        <Table.Cell>{promo.amount}</Table.Cell>
-                        <Table.Cell>{promo.start_date}</Table.Cell>
-                        <Table.Cell>{promo.end_date}</Table.Cell>
-                        <Table.Cell><Icon name='close' onClick={() => this.onDeletePromo(promo.id)} /></Table.Cell>
+                        <Table.Cell>{moment(promo.created_date).format('DD-MM-YYYY')}</Table.Cell>
+                        <Table.Cell>{promo.code}</Table.Cell>
+                        <Table.Cell>{`$${promo.dollar_discount}`}</Table.Cell>
+                        <Table.Cell>{moment(promo.start_date).format('YYYY-MM-DD')}</Table.Cell>
+                        <Table.Cell>{moment(promo.end_date).format('YYYY-MM-DD')}</Table.Cell>
+                        <Table.Cell>
+                          <Button
+                            className='delete-item-btn'
+                            basic circular
+                            color={'red'}
+                            size='medium'
+                            icon='delete'
+                            onClick={() => deletePromotion(promo.id)}
+                          />
+                        </Table.Cell>
                       </Table.Row>
                     );
                   })}
                 </Table.Body>
-              </Table>
-            </Segment>
-          </Segment.Group>
-        </div>
-      </div>
+              </Table> : (<h4>No promotions to display.</h4>)
+            }
+          </Segment>
+        </Segment>
+      </Segment>
     );
   }
 }
 
+const mapStateToProps = (state) => ({
+  promotionsList: promotionSelector.getPromotionsList(state),
+  generatedPromoCode: promotionSelector.getGeneratedPromoCode(state),
+  // promotionDeleted: promotionSelector.promotionDeleted(state),
+  promotionSaved: promotionSelector.promotionSaved(state),
+  promotionErrors: promotionSelector.getPromotionErrors(state),
+  reloadPromotions: promotionSelector.reloadPromotions(state),
+});
 
-export default Promotions;
+const mapDispatchToProps = (dispatch) => ({
+  getPromotions: async () => {
+    return dispatch(GET_PROMOTIONS());
+  },
+  generatePromoCode:  async () => {
+    return dispatch(GET_PROMO_CODE());
+  },
+  deletePromotion:  async (id) => {
+    return dispatch(DELETE_PROMOTION(id));
+  },
+  resetData: async (type) => {
+    return dispatch({ type, data: false });
+  },
+  savePromotion: async (data) => {
+    return dispatch(SAVE_PROMOTION(data));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Promotions));

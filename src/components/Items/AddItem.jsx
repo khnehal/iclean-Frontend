@@ -1,36 +1,92 @@
 import React, { Component } from 'react';
-
-import { Segment, Input, Table, Dropdown, Button } from 'semantic-ui-react';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Segment, Header, Input, Table, Dropdown, Button } from 'semantic-ui-react';
 import './items.css'
 
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
+import {
+  GET_CATEGORIES,
+  SAVE_ITEM,
+} from '../../store/actions';
+import { itemSelector } from '../../store/selectors';
+
+
 class AddItem extends Component {
-  constructor() {
-    super();
+
+  props: {
+    getCategories: PropTypes.func,
+    categoriesList: PropTypes.array,
+    itemSaved: PropTypes.string,
+    itemErrors: PropTypes.array,
+    saveItem: PropTypes.func,
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {
       data: {
         name: '',
-        price: null,
+        price: '',
         category: '',
         image: '',
-      }
+      },
+      categoryOptions: [],
     };
   };
 
-  categoryOptions = [
-    { key: '', text: 'Select Category', value: 0, _id: null},
-    { key: 'Dry Cleaning', text: 'Dry Cleaning', value: 0, _id: null},
-    { key: 'Laundary', text: 'Laundary', value: 0, _id: null},
-    { key: 'Households', text: 'Households', value: 0, _id: null},
-  ]
-
-  onAddItem = (itemData) => {
-    // Call the add api.
+  componentDidMount() {
+    this.props.getCategories();
   }
 
-  handleChange = (e, key) => {
+  componentWillReceiveProps(nextProps) {
+    const { categoriesList, itemErrors } = nextProps;
+    if (categoriesList && categoriesList.length > 0) {
+      const { data } = this.state;
+      const categoryOptions = [];
+      categoriesList.map((category) => {
+        return categoryOptions.push({
+          key: category.value,
+          value: category.value,
+          text: category.text,
+        });
+      });
+
+      data.category = categoryOptions[0].value;
+      this.setState({ categoryOptions, data });
+    }
+
+    if (!itemErrors || itemErrors.length <= 0) {
+      this.setState({
+        data: {
+          name: '',
+          price: '',
+          category: '',
+          image: '',
+        },
+      })
+    }
+  }
+
+  onAddItem = () => {
+    const {
+      name,
+      price,
+      category,
+    } = this.state.data;
+
+    const data = {
+      item_name: name,
+      price: price,
+      item_category: category,
+    }
+    this.props.saveItem(data);
+  }
+
+  handleChange = (e, { value, name }) => {
     const { data } = this.state;
-    data[key] = e.target.value;
+    data[name] = value;
     this.setState({ data });
   }
 
@@ -40,77 +96,107 @@ class AddItem extends Component {
       price,
       category,
       image,
+    } = this.state.data;
+
+    const {
+      itemSaved,
+      itemErrors,
+    } = this.props;
+
+    const {
+      categoryOptions
     } = this.state;
 
+    const columnWidth = 4;
     return (
-      <div className="items-section">
-        <Segment.Group horizontal className="item-header-section">
-          <Segment className="items-title">
-            <h2>Add Item</h2>
-          </Segment>
-        </Segment.Group>
+      <Segment className="add-item-wrapper">
+        <Segment padded basic textAlign='center'>
+          <Header as='h1' textAlign='left'>
+            Add Item
+            <Header.Subheader>Add New Item.</Header.Subheader>
+          </Header>
+        </Segment>
 
-        <Segment.Group horizontal className="item-add-section">
-          <Segment className="items-title">
-            <h4>Add New Item.</h4><br/>
+        <Segment basic textAlign='center' className="add-item-section">
+          <DisplayMessage message={itemSaved} errors={itemErrors} />
 
-            <Table>
-              <Table.Body>
-                <Table.Row>
-                  <Table.Cell><h4>Item Name</h4></Table.Cell>
-                  <Table.Cell>
-                    <Input
-                      onChange={(e) => this.handleChange(e, 'name')}
-                      type='text'
-                      defaultValue={name}
-                      placeholder={'Item Name'}
-                    />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.Cell><h4>Item Price</h4></Table.Cell>
-                  <Table.Cell>
-                    <Input
-                      onChange={(e) => this.handleChange(e, 'price')}
-                      type='text'
-                      defaultValue={price}
-                      placeholder={'Item Price'}
-                    />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.Cell><h4>Select Category</h4></Table.Cell>
-                  <Table.Cell>
-                    <Dropdown
-                      onChange={(e) => this.handleChange(e, 'category')}
-                      options={this.categoryOptions}
-                      defaultValue={category}
-                      placeholder={'Select Category'}
-                      button
-                      basic
-                    />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.Cell><h4>Item Image</h4></Table.Cell>
-                  <Table.Cell>
-                    <Input
-                      onChange={(e) => this.handleChange(e, 'image')}
-                      type='file'
-                      defaultValue={image}
-                      placeholder={'Upload Image'}
-                    />
-                  </Table.Cell>
-                </Table.Row>
-              </Table.Body>
-            </Table>
+          <Table collapsing>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell width={columnWidth}><b>Item Name</b></Table.Cell>
+                <Table.Cell textAlign={'right'}>
+                  <Input
+                    onChange={this.handleChange}
+                    type='text'
+                    value={name}
+                    placeholder={'Item Name'}
+                    name={'name'}
+                  />
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell width={columnWidth}><b>Item Price</b></Table.Cell>
+                <Table.Cell textAlign={'right'}>
+                  <Input
+                    onChange={this.handleChange}
+                    type='number'
+                    step={0.01}
+                    value={price}
+                    placeholder={'Item Price'}
+                    name={'price'}
+                  />
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell width={columnWidth}><b>Select Category</b></Table.Cell>
+                <Table.Cell textAlign={'right'}>
+                  <Dropdown
+                    onChange={this.handleChange}
+                    options={categoryOptions}
+                    value={category}
+                    placeholder={'Select Category'}
+                    selection
+                    name={'category'}
+                  />
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell width={columnWidth}><b>Item Image</b></Table.Cell>
+                <Table.Cell textAlign={'right'}>
+                  <Input
+                    onChange={this.handleChange}
+                    type='file'
+                    value={image}
+                    placeholder={'Upload Image'}
+                    name={'image'}
+                    id={'file_upload'}
+                  />
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
 
-            <Button icon onClick={() => this.onAddItem()}>Add Item</Button>
-          </Segment>
-        </Segment.Group>
-      </div>
+          <Button className='add-item-btn ui button' color='green' onClick={() => this.onAddItem()}>Add Item</Button>
+        </Segment>
+      </Segment>
     );
   }
 }
 
-export default AddItem;
+
+const mapStateToProps = (state) => ({
+  categoriesList: itemSelector.getCategoriesList(state),
+  itemSaved: itemSelector.itemSaved(state),
+  itemErrors: itemSelector.getItemErrors(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getCategories: async () => {
+    return dispatch(GET_CATEGORIES());
+  },
+  saveItem: async (data) => {
+    return dispatch(SAVE_ITEM(data));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AddItem));

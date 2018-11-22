@@ -1,60 +1,66 @@
 import React, { Component } from 'react';
-import './style.css';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+
+import { Header, Segment } from 'semantic-ui-react';
+
+import { GET_DRIVERS } from '../../store/actions';
+import { driverSelector } from '../../store/selectors';
 
 import LandingContainer from '../LandingContainer';
+import './style.css';
 
 class Drivers extends Component {
 
-  constructor() {
-    super();
+  static propTypes = {
+    history: PropTypes.object,
+    getDrivers: PropTypes.func,
+    driverList: PropTypes.array,
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {
-      hasStatus: true,
-      hasDateAndTime: true,
-      data: [
-        {
-          name: 'ABC',
-          dateTime: '12-oct-18',
-        },
-        {
-          name: 'EFG',
-          dateTime: '19-nov-18',
-        }
-      ],
+      data: [],
     };
   };
 
   componentDidMount() {
-    fetch("http://57cb2cf9.ngrok.io/driver/orders/2/")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          console.log('resultsasa', result);
-          this.setState({
-            isLoaded: true,
-            items: result.items
-          });
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          console.log('errorssadasd', error);
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
+    this.props.getDrivers();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { driverList } = nextProps;
+    this.setState({ data: driverList });
   }
 
   render() {
+
     return (
-      <div className="Driver">
-        <h1>Drivers <span> Below you can view all the drivers details. </span> </h1>
-        <LandingContainer {...this.state} />
-      </div>
+      <Segment className="Driver">
+        <Header as='h1' textAlign='left'> Drivers
+          <Header.Subheader> Below you can view all the drivers details. </Header.Subheader>
+        </Header>
+        <LandingContainer
+          {...this.state}
+          history={this.props.history}
+          redirectTo={'/drivers/editDriver/'}
+          type='driver'
+        />
+      </Segment>
     );
   }
 }
 
-export default Drivers;
+const mapStateToProps = (state) => ({
+  driverList: driverSelector.getDriversList(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getDrivers: async () => {
+    return dispatch(GET_DRIVERS());
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Drivers));

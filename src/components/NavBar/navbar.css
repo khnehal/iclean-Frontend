@@ -13,13 +13,19 @@
 .ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .title .ui.button {
   width: 100%;
   color: #fff;
+  padding: 7px;
   text-align: left;
+  font-size: 1.4em !important;
+  padding-left: 0.5em !important;
   background-color: rgb(59, 165, 0);
 }
 
 .ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.title,
-.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.content .active.item {
-  background: rgba(0,0,0,0.07);
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.content .active.item,
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.title .item .button,
+.ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .active.content .active.item .button {
+  background: rgba(0,0,0,0.3);
+  color: #e0e0e0;
 }
 
 .ui.vertical.menu.sidebar.SidebarMenu .accordion.ui .content,
@@ -40,4 +46,79 @@
 
 .SidebarMenu.ui.vertical.icon.menu {
   width: 100%;
+}
+.top-header {
+  position: fixed;
+  width: 100%;
+  z-index: 200;
+}
+.top-header .top-bar-logo {
+  width: 16%;
+}
+.top-bar-logo img {
+  height: 45px !important;
+  width: 100px !important;
+}
+.top-header .top-bar-right-empty {
+  width: 55%;
+}
+.top-header .top-bar-right-welcome span {
+  font-size: 15px;
+  font-family: SourceSansPro-Regular;
+}
+.top-header .top-bar-right-notification i .notificationsCount {
+  background-color: #6ebc43;
+  border-radius: 50%;
+  width: auto;
+  left: 25px;
+  top: 10px;
+  font-size: 15px;
+  position: absolute;
+  font-weight: bolder;
+  font-family: monospace;
+  color: #fff;
+  padding: 1px 3px;
+  animation: notification-pulse 2s infinite;
+}
+.top-header .top-bar-right-notification i .notificationsCount sup {
+  top: -0.2em;
+  font-size: 95%;
+}
+.top-header .top-bar-right-notification i .notificationsCount:hover {
+  animation: none;
+}
+.top-header .top-bar-right-logout i {
+  margin: 0 !important;
+}
+.top-header .top-bar-right-logout .ui.button {
+  box-shadow: none !important;
+  background: transparent !important;
+  color: rgba(255,255,255,.9) !important;
+  font-size: 15px !important;
+  font-family: SourceSansPro-Regular;
+  padding-left: 10px;
+}
+.top-bar-right.item:before {
+  background: none;
+}
+
+.ui.image.NavbarIcons {
+  padding-right: 10px;
+  display: inline-block;
+}
+
+
+@keyframes notification-pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(110, 180, 0, 0.4);
+    box-shadow: 0 0 0 0 rgba(110, 180, 0, 0.4);
+  }
+  70% {
+    -moz-box-shadow: 0 0 0 10px rgba(110, 180, 0, 0);
+    box-shadow: 0 0 0 10px rgba(110, 180, 0, 0);
+  }
+  100% {
+    -moz-box-shadow: 0 0 0 0 rgba(110, 180, 0, 0);
+    box-shadow: 0 0 0 0 rgba(110, 180, 0, 0);
+  }
 }

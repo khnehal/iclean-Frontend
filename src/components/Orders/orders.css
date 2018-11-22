@@ -14,3 +14,25 @@
 .ui.segment.OrdersSearchSection {
     text-align: right;
 }
+
+.ui.segment.OrdersSection .landing-container .ui.table {
+    font-size: 1.25em;
+}
+
+.react-tabs__tab-list {
+    text-align: left;
+    font-size: 1.5em;
+}
+
+.react-tabs .react-tabs__tab-list {
+    font-size: 1.5em;
+}
+
+.countOrderDetailsForPrint {
+    display: none;
+}
+
+textarea {
+    width: 25%;
+    height: 75px;
+}

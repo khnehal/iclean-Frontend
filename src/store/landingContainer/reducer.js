@@ -1,17 +1,15 @@
-import { initialState } from './selectors';
-
+import { initialState } from './selectors.js';
 import {
-  SS_PROJ_INFO
+  SELECTED_USER,
 } from './actions';
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case SS_PROJ_INFO:
+    case SELECTED_USER:
       return {
         ...state,
-        projectInfo: action.data,
+        userId: action.data,
       };
-
     default:
       return state;
   }

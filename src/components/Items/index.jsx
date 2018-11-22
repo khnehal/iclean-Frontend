@@ -1,72 +1,94 @@
 import React, { Component } from 'react';
-
-import { Segment, Table, Menu, Button } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
-import ItemsListingRow from './ItemsListingRow';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Segment, Header, Table, Button, Icon } from 'semantic-ui-react';
 import './items.css'
+
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
+import ItemsListingRow from './ItemsListingRow';
+import {
+  GET_ITEMS,
+  RELOAD_ITEMS,
+} from '../../store/actions';
+import { itemSelector } from '../../store/selectors';
 
 
 class Items extends Component {
 
-  constructor() {
-    super();
+  static propTypes = {
+    getItems: PropTypes.func,
+    itemsList: PropTypes.array,
+    itemUpdated: PropTypes.string,
+    itemUpdateErrors: PropTypes.array,
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {
-      data: [
-        {
-          id: 1,
-          name: 'vest',
-          price: '10.5',
-        },
-        {
-          id: 2,
-          name: 'shirt',
-          price: '15.5',
-        },
-      ],
     };
   };
 
+  componentDidMount() {
+    this.props.getItems();
+  }
+
+  resetAndReload = () => {
+    const {
+      getItems,
+      resetData,
+    } = this.props;
+
+    resetData(RELOAD_ITEMS, false);
+    getItems();
+  }
+
   render() {
-    const { data } = this.state;
+    const { itemsList, itemUpdated, itemUpdateErrors } = this.props;
 
     return (
-      <div className="items-section">
-        <Segment.Group horizontal className="item-header-section">
-          <Segment className="items-title">
-            <h2>Items Price List</h2>
-          </Segment>
-        </Segment.Group>
+      <Segment className="items">
+        <Segment padded basic textAlign='center'>
+          <Header as='h1' textAlign='left'>
+            Items Price List
+            <Header.Subheader>List of all Items and Prices.</Header.Subheader>
+          </Header>
 
-        <div className="items-listing-section">
-          <Segment.Group horizontal>
-            <Segment className="items-sub-header">
-                <h4>List of all Items and Prices.</h4>
-            </Segment>
+          <DisplayMessage message={itemUpdated} errors={itemUpdateErrors} />
 
-            <Segment className="add-item">
-              <Menu.Item as={NavLink} to={'/items/add-item/'}>
-                <Button icon>Add Item</Button>
-              </Menu.Item>
-            </Segment>
-          </Segment.Group>
+          <Button className="add-item-btn" floated='right' color='green' as={NavLink} to={'/items/add-item'}> <Icon name='plus' /> Add Item </Button>
+        </Segment>
 
-          <Segment.Group horizontal>
-            <Segment>
-              <Table>
-                <Table.Body>
-                  {(data && data.length > 0) && data.map((item, i) => {
-                    return <ItemsListingRow key={i} {...this.state} item={item} index={i} />;
-                  })}
-                </Table.Body>
-              </Table>
-            </Segment>
-          </Segment.Group>
-        </div>
-      </div>
+        <Segment className="items-section" textAlign='center'>
+          { (itemsList && itemsList.length > 0) ?
+            <Table padded striped>
+              <Table.Body>
+                { itemsList.map((item, i) => {
+                  return <ItemsListingRow key={i} {...this.state} resetAndReload={this.resetAndReload} item={item} index={i} />;
+                })}
+              </Table.Body>
+            </Table> : (<h4>No items to display.</h4>)
+          }
+        </Segment>
+      </Segment>
     );
   }
 }
 
+const mapStateToProps = (state) => ({
+  itemsList: itemSelector.getItemsList(state),
+  itemUpdated: itemSelector.itemUpdated(state),
+  itemUpdateErrors: itemSelector.getItemUpdateErrors(state),
+});
 
-export default Items;
+const mapDispatchToProps = (dispatch) => ({
+  getItems: async () => {
+    return dispatch(GET_ITEMS());
+  },
+  resetData: async (type, data) => {
+    return dispatch({ type, data });
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Items));

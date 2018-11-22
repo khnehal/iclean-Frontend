@@ -1,35 +1,47 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Table, Input, Button } from 'semantic-ui-react';
 
 import {
-  Table,
-  Icon,
-  Input,
-  Button,
-} from 'semantic-ui-react';
+  DELETE_ITEM,
+  UPDATE_ITEM,
+} from '../../store/actions';
+import { itemSelector } from '../../store/selectors';
+
 
 class ItemsListingRow extends Component {
-  props: {
+  static propTypes = {
     item: PropTypes.object,
     index: PropTypes.number,
+    deleteItem: PropTypes.func,
+    reloadItems: PropTypes.bool,
+    resetAndReload: PropTypes.func,
+    updateItem: PropTypes.func,
   };
 
   state = {
     price: this.props.item.price,
   };
 
-  onDeleteItem = (itemId) => {
-    // Call the delete api.
-    console.log(`Ye Item(${itemId}) ko delete kar re jamaila!!`);
+  componentWillReceiveProps(nextProps) {
+    const {
+      reloadItems,
+      resetAndReload,
+    } = nextProps;
+
+    if (reloadItems) {
+      resetAndReload();
+    }
   }
 
   onUpdateItem = (itemId) => {
-    // Call the update api.
-    console.log(`Ye Item(${itemId}) ko update kar re jamaila!!`);
+    this.props.updateItem(itemId, { price: this.state.price });
   }
 
-  handleChange = (e) => {
-    this.setState({ price: e.target.value });
+  handleChange = (e, { value }) => {
+    this.setState({ price: value });
   }
 
   render() {
@@ -40,26 +52,62 @@ class ItemsListingRow extends Component {
     const {
       index,
       item,
+      deleteItem,
     } = this.props;
 
     return (
       <Table.Row key={index + 1}>
-        <Table.Cell>{item.name}</Table.Cell>
-        <Table.Cell>
+        <Table.Cell>{item.item_name}</Table.Cell>
+        <Table.Cell textAlign={'right'}>
           <Input
-            onChange={(e) => this.handleChange(e)}
-            type='text'
-            defaultValue={price}
+            onChange={this.handleChange}
+            type='number'
+            value={price}
+            step={0.01}
+            placeholder={'Price'}
           />
         </Table.Cell>
         <Table.Cell>
-          <Button className='ui button' onClick={() => this.onUpdateItem(item.id)}>Update Price</Button>
+          <Button
+            className='update-item-btn ui button'
+            floated='right'
+            color='green'
+            onClick={() => this.onUpdateItem(item.id)}
+          >
+            Update Price
+          </Button>
         </Table.Cell>
-        <Table.Cell><Icon name='close' onClick={() => this.onDeleteItem(item.id)} /></Table.Cell>
+        <Table.Cell>
+          <Button
+            className='delete-item-btn'
+            basic
+            circular
+            color={'red'}
+            size='medium'
+            icon='delete'
+            onClick={() => deleteItem(item.id)}
+          />
+        </Table.Cell>
       </Table.Row>
     );
   }
 };
 
 
-export default ItemsListingRow;
+const mapStateToProps = (state) => ({
+  reloadItems: itemSelector.reloadItems(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  deleteItem:  async (id) => {
+    return dispatch(DELETE_ITEM(id));
+  },
+  resetData: async (type) => {
+    return dispatch({ type, data: false });
+  },
+  updateItem: async (id, data) => {
+    return dispatch(UPDATE_ITEM(id, data));
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ItemsListingRow));

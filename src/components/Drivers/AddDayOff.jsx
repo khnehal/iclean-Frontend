@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import {
   Segment,
   Table,
@@ -7,35 +9,66 @@ import {
   Header,
   Button,
 } from 'semantic-ui-react';
-
 import './style.css';
 
+import moment from 'moment';
+import DisplayMessage from '../DisplayMessage/DisplayMessage';
+import {
+  SAVE_DAYOFF,
+  RELOAD_DAYOFFS,
+  GET_DAYOFFS,
+  DELETE_DAYOFF,
+} from '../../store/actions';
+import { driverSelector } from '../../store/selectors';
+
 class AddDayOff extends Component {
+
+  static propTypes = {
+    dayoffSaved: PropTypes.string,
+    dayoffErrors: PropTypes.array,
+    dayoffsList: PropTypes.array,
+    reloadDayoffs: PropTypes.bool,
+    getDayoffs: PropTypes.func,
+    saveDayoff: PropTypes.func,
+    deleteDayoff: PropTypes.func,
+    resetData: PropTypes.func,
+  };
 
   constructor() {
     super();
     this.state = {
       date: '',
-      dayOffDates: [
-        {
-          day_off_date: '12-12-2018'
-        }
-      ],
     };
   };
 
-  handleDriverName = (e, { value }) => {
-    const { date } = this.state;
+  componentDidMount() {
+    this.props.getDayoffs();
+  }
 
-    if (date !== value) {
-      this.setState({ date: value });
+  componentWillReceiveProps(nextProps) {
+    const {
+      reloadDayoffs,
+      resetData,
+      getDayoffs,
+    } = nextProps;
+
+    if (reloadDayoffs) {
+      resetData(RELOAD_DAYOFFS);
+      getDayoffs();
     }
+  }
+
+  onSaveDayoff = () => {
+    this.props.saveDayoff({ day_off_date: this.state.date });
+  }
+
+  handleChange = (e, { value }) => {
+    this.setState({ date: value });
   };
 
   renderDateTable = () => {
     const { date } = this.state;
-    const today = new Date();
-    const dateValue = `${today.getFullYear()}-${(today.getMonth() + 1)}-${today.getDate()}`;
+    const minDate = moment().format('YYYY-MM-DD');
 
     return (
       <Table striped collapsing className={'driverDate'}>
@@ -46,8 +79,8 @@ class AddDayOff extends Component {
               <Input
                 type={'date'}
                 value={date}
-                min={dateValue}
-                onChange={this.handleDateChange}
+                min={minDate}
+                onChange={this.handleChange}
               />
             </Table.Cell>
           </Table.Row>
@@ -57,55 +90,91 @@ class AddDayOff extends Component {
   };
 
   renderDayOffsTable = () => {
-    const { dayOffDates } = this.state;
+    const { dayoffsList, deleteDayoff } = this.props;
 
     return (
-      <Table striped celled collapsing className={'driverDayOffDate'}>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell width={4}>Day Off Date</Table.HeaderCell>
-            <Table.HeaderCell width={4}>Delete</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {dayOffDates.map((item) => {
-            return (
+      <Segment basic textAlign='center'>
+        { (dayoffsList && dayoffsList.length > 0) ?
+          <Table striped celled collapsing className={'driverDayOffDate'}>
+            <Table.Header>
               <Table.Row>
-                <Table.Cell width={4}> {item.day_off_date && item.day_off_date} </Table.Cell>
-                <Table.Cell width={4}>
-                  <Button basic circular color={'red'} size='medium' icon='delete'></Button>
-                </Table.Cell>
+                <Table.HeaderCell width={4}>Day Off Date</Table.HeaderCell>
+                <Table.HeaderCell width={4}>Delete</Table.HeaderCell>
               </Table.Row>
-            )
-            })
-          }
-        </Table.Body>
-      </Table>
+            </Table.Header>
+            <Table.Body>
+              { dayoffsList.map((dayoff, i) => {
+                return (
+                  <Table.Row key={i + 1}>
+                    <Table.Cell width={4}> { dayoff.day_off_date } </Table.Cell>
+                    <Table.Cell width={4}>
+                      <Button
+                        basic
+                        circular
+                        color={'red'}
+                        size='medium'
+                        icon='delete'
+                        onClick={() => deleteDayoff(dayoff.id)}
+                      />
+                    </Table.Cell>
+                  </Table.Row>
+                )
+                })
+              }
+            </Table.Body>
+          </Table> : (<h4>No dayoffs to display.</h4>)
+        }
+      </Segment>
     );
   };
 
   render() {
+    const { dayoffSaved, dayoffErrors } = this.props;
 
     return (
-      <div className="Driver">
-        <Segment>
-          <Segment padded basic>
-            <Header as='h1' textAlign='left'> Add Day Off </Header>
-            <Button floated='right' color='green'> Done </Button>
-          </Segment>
-          <Segment basic textAlign='center'>
-            {this.renderDateTable()}
-          </Segment>
-          <Segment basic textAlign='center'>
-            <Header as='h2' textAlign='center'>Delivery (Pickup / Dropoff) has been disabled for the following days.</Header>
-          </Segment>
-          <Segment basic textAlign='center'>
-            {this.renderDayOffsTable()}
-          </Segment>
+      <Segment className="Driver">
+        <Segment padded basic>
+          <Header as='h1' textAlign='left'> Add Day Off </Header>
+          <Button floated='right' color='green' onClick={() => this.onSaveDayoff()}> Done </Button>
         </Segment>
-      </div>
+        <Segment basic textAlign='center'>
+          <DisplayMessage message={dayoffSaved} errors={dayoffErrors} />
+
+          {this.renderDateTable()}
+        </Segment>
+        <hr/>
+        <Segment basic textAlign='center'>
+          <Header as='h2' textAlign='center'>Delivery (Pickup / Dropoff) has been disabled for the following days.</Header>
+        </Segment>
+        <Segment basic textAlign='center'>
+          {this.renderDayOffsTable()}
+        </Segment>
+      </Segment>
     );
   }
 }
 
-export default AddDayOff;
+
+const mapStateToProps = (state) => ({
+  dayoffSaved: driverSelector.dayoffSaved(state),
+  dayoffErrors: driverSelector.getDayoffErrors(state),
+  dayoffsList: driverSelector.getDayoffsList(state),
+  reloadDayoffs: driverSelector.reloadDayoffs(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getDayoffs: async () => {
+    return dispatch(GET_DAYOFFS());
+  },
+  saveDayoff: async (data) => {
+    return dispatch(SAVE_DAYOFF(data));
+  },
+  deleteDayoff:  async (id) => {
+    return dispatch(DELETE_DAYOFF(id));
+  },
+  resetData: async (type, data) => {
+    return dispatch({ type, data });
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AddDayOff));

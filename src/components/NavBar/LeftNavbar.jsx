@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+
 import { NavLink } from 'react-router-dom';
 import { Container, Sidebar, Segment, Button, Menu, Image, Icon, Header, Accordion } from 'semantic-ui-react'; //eslint-disable-line
 
@@ -35,8 +35,8 @@ class LeftNavbar extends Component {
                 <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick}>
                   <Menu.Item as={NavLink} to={'/orders/waitingOrders/'}>
                     <Button icon labelPosition='left'>
-                        <Icon name='pause' />
-                        Orders
+                        <span><Image src={'/imgs/order_icon.png'} className="NavbarIcons" />
+                        Orders</span>
                     </Button>
                   </Menu.Item>
                 </Accordion.Title>
@@ -62,15 +62,15 @@ class LeftNavbar extends Component {
                 </Accordion.Content>
 
                 <Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick}>
-                    <Menu.Item as={NavLink} to={'/drivers/'}>
+                    <Menu.Item as={NavLink} to={'/drivers/driversList/'}>
                         <Button icon labelPosition='left'>
-                            <Icon name='folder' />
-                            Drivers
+                            <span><Image src={'/imgs/drivers_icon.png'} className="NavbarIcons" />
+                            Drivers</span>
                         </Button>
                     </Menu.Item>
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 1}>
-                    <Menu.Item as={NavLink} to={'/drivers/'}>
+                    <Menu.Item as={NavLink} to={'/drivers/driversList/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Drivers
@@ -97,21 +97,21 @@ class LeftNavbar extends Component {
                 </Accordion.Content>
 
                 <Accordion.Title active={activeIndex === 2} index={2} onClick={this.handleClick}>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/customers/'}>
                         <Button icon labelPosition='left'>
-                            <Icon name='folder' />
-                            Customers
+                            <span><Image src={'/imgs/customers_icon.png'} className="NavbarIcons" />
+                            Customers</span>
                         </Button>
                     </Menu.Item>
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 2}>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/notifications/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Notifications
                         </Button>
                     </Menu.Item>
-                    <Menu.Item as={NavLink} to={'/orders/all/'}>
+                    <Menu.Item as={NavLink} to={'/customers/'}>
                         <Button icon labelPosition='left'>
                             <Icon name='arrow right' />
                             Customers List
@@ -122,8 +122,8 @@ class LeftNavbar extends Component {
                 <Accordion.Title active={activeIndex === 3} index={3} onClick={this.handleClick}>
                     <Menu.Item as={NavLink} to={'/promotions/'}>
                         <Button icon labelPosition='left'>
-                            <Icon name='folder' />
-                            Promotions
+                            <span><Image src={'/imgs/promotions_icon.png'} className="NavbarIcons" />
+                            Promotions</span>
                         </Button>
                     </Menu.Item>
                 </Accordion.Title>
@@ -139,8 +139,8 @@ class LeftNavbar extends Component {
                 <Accordion.Title active={activeIndex === 4} index={4} onClick={this.handleClick}>
                     <Menu.Item as={NavLink} to={'/items/price-list/'}>
                         <Button icon labelPosition='left'>
-                            <Icon name='folder' />
-                            Items
+                            <span><Image src={'/imgs/items_icon.png'} className="NavbarIcons" />
+                            Items</span>
                         </Button>
                     </Menu.Item>
                 </Accordion.Title>

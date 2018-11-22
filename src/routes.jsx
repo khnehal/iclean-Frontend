@@ -1,10 +1,11 @@
 import React from 'react';
-import {
-  // BrowserRouter,
-  Switch,
-  Route,
-  Redirect
-} from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
+
+// Route Container
+import RouteContainer from './components/RouteContainer/index.jsx';
+
+// Login Page
+import Login from './components/Login/index.jsx';
 
 // Homepage App
 import App from './components/App/index.jsx';
@@ -13,42 +14,68 @@ import App from './components/App/index.jsx';
 import Orders from './components/Orders/index.jsx';
 import CleaningOrders from './components/Orders/CleaningOrders.jsx';
 import AllOrders from './components/Orders/AllOrders.jsx';
+import OrderDetails from './components/Orders/OrderDetails.jsx';
+import AddOrderItems from './components/AddOrderItems/index.jsx';
+
+import PastOrders from './components/PastOrders/index.jsx';
+import RatingDetails from './components/RatingDetails/index.jsx';
 
 // Drivers Landing Page and Sub Page
 import Drivers from './components/Drivers/index.jsx';
 import Areas from './components/Drivers/Areas.jsx';
 import AddDrivers from './components/Drivers/AddDrivers.jsx';
 import AddDayOff from './components/Drivers/AddDayOff.jsx';
+import EditDriver from './components/Drivers/EditDriver.jsx';
 
 // Items Landing Page and Sub Page
 import Items from './components/Items/index.jsx';
 import AddItem from './components/Items/AddItem.jsx';
 import Promotions from './components/Promotions/index.jsx';
 
+// Customers Page and Sub page
+import Customers from './components/Customers/index.jsx';
+import Noifications from './components/Customers/Notifications.jsx';
 
-const RedirectToDashboard = () => <Redirect to={'/homepage/'} />;
+// Wash Settings
+import CustomerWashSettings from './components/Customers/CustomerWashSettings.jsx';
+
+
+const RedirectToDashboard = () => <Redirect to={'/orders/waitingOrders/'} />;
 
 const AppRoutes = () => (
     <Switch>
       <App>
         <Switch>
-          <Route exact path={'/homepage/'} component={App} />
+          <Route exact path={'/login/'} component={Login} />
 
-          <Route exact path={'/orders/waitingOrders/'} component={Orders} />
-          <Route exact path={'/orders/cleaning/'} component={CleaningOrders} />
-          <Route exact path={'/orders/all/'} component={AllOrders} />
+          <RouteContainer path={'/homepage/'} componentToUse={Orders} />
 
-          <Route exact path={'/drivers/'} component={Drivers} />
-          <Route exact path={'/drivers/areas/'} component={Areas} />
-          <Route exact path={'/drivers/addDrivers/'} component={AddDrivers} />
-          <Route exact path={'/drivers/addDayOff/'} component={AddDayOff} />
+          <RouteContainer path={'/orders/waitingOrders/'} componentToUse={Orders} />
+          <RouteContainer path={'/orders/cleaning/'} componentToUse={CleaningOrders} />
+          <RouteContainer path={'/orders/all/'} componentToUse={AllOrders} />
+          <RouteContainer path={'/orders/:uid/:oid/'} componentToUse={OrderDetails} />
 
-          <Route exact path={'/items/price-list/'} component={Items} />
-          <Route exact path={'/items/add-item/'} component={AddItem} />
+          <RouteContainer path={'/:oid/addOrderItems/'} componentToUse={AddOrderItems} />
+          <RouteContainer path={'/ratingDetails/:customerId/:orderId/'} componentToUse={RatingDetails} />
 
-          <Route exact path={'/promotions/'} component={Promotions} />
+          <RouteContainer path={'/pastOrders/:customerId/'} componentToUse={PastOrders} />
 
-          <Route path={'/*'} component={RedirectToDashboard} />
+          <RouteContainer path={'/drivers/driversList/'} componentToUse={Drivers} />
+          <RouteContainer path={'/drivers/areas/'} componentToUse={Areas} />
+          <RouteContainer path={'/drivers/addDrivers/'} componentToUse={AddDrivers} />
+          <RouteContainer path={'/drivers/addDayOff/'} componentToUse={AddDayOff} />
+          <RouteContainer path={'/drivers/editDriver/'} componentToUse={EditDriver} />
+
+          <RouteContainer path={'/customers/'} componentToUse={Customers} />
+          <RouteContainer path={'/washSettings/:uid/'} componentToUse={CustomerWashSettings} />
+          <RouteContainer path={'/notifications/'} componentToUse={Noifications} />
+
+          <RouteContainer path={'/items/price-list/'} componentToUse={Items} />
+          <RouteContainer path={'/items/add-item/'} componentToUse={AddItem} />
+
+          <RouteContainer path={'/promotions/'} componentToUse={Promotions} />
+
+          <RouteContainer path={'/*'} componentToUse={RedirectToDashboard} />
         </Switch>
       </App>
     </Switch>

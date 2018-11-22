@@ -6,7 +6,6 @@ import { Provider } from 'react-redux';
 import AppRoutes from './routes';
 import configureStore from './store/configure';
 import * as serviceWorker from './serviceWorker';
-import NavBar from './components/NavBar/NavBar.jsx';
 
 const history = createBrowserHistory();
 
@@ -18,10 +17,7 @@ const renderApp = () => (
   <Provider store={store} key={Math.random()}>
     <ConnectedRouter history={history} key={Math.random()}>
       <div>
-        <NavBar />
-        <div className="container iCleanContainer">
-          <AppRoutes />
-        </div>
+        <AppRoutes />
       </div>
     </ConnectedRouter>
   </Provider>

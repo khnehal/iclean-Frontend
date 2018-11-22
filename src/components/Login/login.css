@@ -1,0 +1,40 @@
+.login-main {
+  text-align: center;
+}
+.login-main .login-inputs {
+  width: 500px;
+  position: absolute;
+  transform: translate3d(-50%, -50%, 0);
+  top: 55%;
+  left: 50%;
+}
+.login-main img {
+  height: 90vh;
+}
+.login-main .login-inputs .ui.input {
+  margin: 20px;
+  width: 90%;
+  height: 55px;
+}
+.login-inputs .ui.input.error>input {
+  background-color: #f7e6e6;
+  border-color: #e66c6c;
+}
+.login-inputs .ui.message {
+  background-color: #f7e6e6;
+  box-shadow: 0 0 0 1px #e66c6c inset, 0 0 0 0 transparent;
+}
+.login-main .login-inputs .login-checkbox-button-container {
+  margin: 0 10px;
+}
+.login-button .ui.button {
+  font-size: 20px;
+  margin: 0;
+  width: 120px;
+  background-color: rgb(52, 123, 13);
+}
+.login-checkbox .ui.checkbox label {
+  font-size: 20px;
+  color: white;
+  font-family: SourceSansPro-Regular;
+}
