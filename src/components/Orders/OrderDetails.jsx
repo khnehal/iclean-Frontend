@@ -4,20 +4,22 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import moment from 'moment';
-import { find } from 'lodash';
-import { Segment, Header, Grid, Button, TextArea, Table } from 'semantic-ui-react';
+import { find, capitalize } from 'lodash';
+import { Segment, Header, Grid, Button, TextArea, Table, Message } from 'semantic-ui-react';
 
 import {
   GET_USER_DETAILS,
   EXPORT_ORDER_PDF,
   EXPORT_ORDER_XLSX,
-  GET_ORDERS_LIST
+  GET_ORDERS_LIST,
+  DELETE_ORDER,
 } from '../../store/actions';
 
 import { userSelector, landingContainerSelector, orderSelector } from '../../store/selectors';
 import WashSettings from '../../components/WashSettings/index.jsx';
 
-import './orders.css'
+import './orders.css';
+import './print.css';
 
 class OrderDetails extends Component {
 
@@ -33,6 +35,8 @@ class OrderDetails extends Component {
     orderPdf: PropTypes.any,
     orderXlsx: PropTypes.any,
     getAllOrdersOnRefresh: PropTypes.func,
+    deleteOrder: PropTypes.func,
+    deletedStatus: PropTypes.any,
   };
 
   constructor() {
@@ -43,7 +47,7 @@ class OrderDetails extends Component {
 
   componentDidMount() {
     const { getUserInfo, match, getAllOrdersOnRefresh, ordersList } = this.props;
-    // console.log('uid', match.params.uid);
+
     getUserInfo(match.params.uid);
     if (ordersList === undefined) {
       getAllOrdersOnRefresh();
@@ -131,49 +135,118 @@ class OrderDetails extends Component {
   };
 
   render() {
-    const { customerInfo, ordersList, userOrderId } = this.props;
+    const { customerInfo, ordersList, userOrderId, deletedStatus } = this.props;
     const orderDetails = find(ordersList, { id: userOrderId });
 
-    return (
-      <Segment className="OrdersSection">
-        <Segment.Group horizontal className="OrdersHeaderSection">
-          <Segment className="OrdersTitle">
-            <Header as='h1'> Orders </Header>
-            <h4> Below you can view all the details of order. </h4>
-          </Segment>
-          <Segment.Group horizontal>
-            <Segment basic>
-              <Header as='h2'>
-                Status: {orderDetails ? (orderDetails.status_admin).replace(/_/g, " ") : ''}
-              </Header>
+    let ele = null;
+
+    if (deletedStatus === 204 || deletedStatus === 200 || deletedStatus === 0) {
+      ele = (
+        <Segment padded='very' className="OrdersSection">
+            <Message positive>
+              <Message.Header>This order is now deleted.</Message.Header>
+            </Message>
+        </Segment>
+      );
+    } else if (orderDetails && orderDetails.id === userOrderId) {
+      ele = (
+        <Segment className="OrdersSection">
+          <Segment.Group horizontal className="OrdersHeaderSection">
+            <Segment className="OrdersTitle">
+              <Header as='h1'> Orders </Header>
+              <h4> Below you can view all the details of order. </h4>
             </Segment>
-            <Segment basic>
-              <Button color={'red'} size="large"> Cancel Order </Button>
-            </Segment>
+            <Segment.Group horizontal>
+              <Segment basic>
+                <Header as='h2'>
+                  Status: {orderDetails ? capitalize((orderDetails.status_admin).replace(/_/g, " ")) : ''}
+                </Header>
+              </Segment>
+              <Segment basic>
+                <Button color={'red'} size="large" onClick={() => { this.props.deleteOrder(userOrderId); }}> Cancel Order </Button>
+              </Segment>
+            </Segment.Group>
           </Segment.Group>
-        </Segment.Group>
-        <Segment>
-          <Grid>
-            <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
-              {
-                orderDetails &&
-                <Segment basic>
-                  <Header as='h1'> {customerInfo.name ? customerInfo.name : ''} </Header>
-                  <Header as='h3'> {customerInfo.phone_number ? customerInfo.phone_number : ''} </Header>
-                  <Header as='h3'> {customerInfo.email ? customerInfo.email : ''} </Header>
-                </Segment>
-              }
-              {
-                orderDetails &&
-                <Segment basic>
-                  <Header as='h3'> Pick up Address: {orderDetails.pickup_location && orderDetails.pickup_location.address_1} </Header>
-                  <Header as='h3'> Drop Off Address: {customerInfo.drop_off_location && customerInfo.drop_off_location.address_1} </Header>
-                </Segment>
-              }
-              {<Button color="grey" size="large" onClick={() => this.handlePastOrderRedirection(orderDetails.user_id)}> Past Orders </Button>}
-              <Button color="grey" size="large" onClick={this.handleOrderRedirection}> Add Items </Button>
-            </Grid.Column>
-            <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
+          <Segment>
+            <Grid>
+              <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
+                {
+                  orderDetails &&
+                  <Segment basic>
+                    <Header as='h1'> {customerInfo.name ? customerInfo.name : ''} </Header>
+                    <Header as='h3'> {customerInfo.phone_number ? customerInfo.phone_number : ''} </Header>
+                    <Header as='h3'> {customerInfo.email ? customerInfo.email : ''} </Header>
+                  </Segment>
+                }
+                {
+                  orderDetails &&
+                  <Segment basic>
+                    <Header as='h3'> Pick up Address: {orderDetails.pickup_location && orderDetails.pickup_location.address_1} </Header>
+                    <Header as='h3'> Drop Off Address: {customerInfo.drop_off_location && customerInfo.drop_off_location.address_1} </Header>
+                  </Segment>
+                }
+                {<Button color="grey" size="large" onClick={() => this.handlePastOrderRedirection(orderDetails.user_id)}> Past Orders </Button>}
+                <Button color="grey" size="large" onClick={this.handleOrderRedirection}> Add Items </Button>
+              </Grid.Column>
+              <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
+                { orderDetails &&
+                  <div className="countOrderDetails">
+                    <Header as='h2' color="green"> Count Order </Header>
+                    <Table basic>
+                      <Table.Body>
+                        { orderDetails.items && (orderDetails.items.length > 0)
+                          && orderDetails.items.map((item, i) => {
+                            return (
+                              <Table.Row key={i + 1}>
+                                <Table.Cell textAlign='left'>{item.item_name}</Table.Cell>
+                                <Table.Cell textAlign='right'>{item.price}</Table.Cell>
+                              </Table.Row>
+                            )
+                          })
+                        }
+                        { orderDetails.items &&
+                          <Table.Row>
+                              <Table.Cell textAlign='left'><b> Total </b></Table.Cell>
+                              <Table.Cell textAlign='right'>
+                                { (orderDetails.tip_amount > 0)
+                                  ?
+                                    <b> {orderDetails.amount} </b>
+                                  :
+                                    <b> {(orderDetails.amount + orderDetails.tip_amount)} </b>
+                                }
+                              </Table.Cell>
+                          </Table.Row>
+                        }
+                      </Table.Body>
+                    </Table>
+                  </div>
+                }
+              </Grid.Column>
+            </Grid>
+            <Grid>
+              <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
+                {
+                  (customerInfo && Object.keys(customerInfo).length > 0 &&
+                    <WashSettings
+                      isOrders={true}
+                      data={customerInfo.wash_settings}
+                      getpdf={this.handlePDFDownload}
+                      getXLSX={this.handleXLSXDownload}
+                    />
+                  )
+                }
+              </Grid.Column>
+              <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
+                {
+                  (orderDetails && Object.keys(orderDetails).length > 0 &&
+                    <div>
+                      {this.renderPickUpDropDetails(orderDetails)}
+                    </div>
+                  )
+                }
+              </Grid.Column>
+            </Grid>
+            <Segment className="countOrderDetailsForPrint">
               { orderDetails &&
                 <div>
                   <Header as='h2' color="green"> Count Order </Header>
@@ -189,49 +262,40 @@ class OrderDetails extends Component {
                           )
                         })
                       }
-                      <Table.Row>
-                          <Table.Cell textAlign='left'><b> Total </b></Table.Cell>
-                          <Table.Cell textAlign='right'>
-                            { (orderDetails.tip_amount > 0)
-                              ?
-                                <b> {orderDetails.amount} </b>
-                              :
-                                <b> {(orderDetails.amount + orderDetails.tip_amount)} </b>
-                            }
-                          </Table.Cell>
-                      </Table.Row>
+                      { orderDetails.items &&
+                        <Table.Row>
+                            <Table.Cell textAlign='left'><b> Total </b></Table.Cell>
+                            <Table.Cell textAlign='right'>
+                              { (orderDetails.tip_amount > 0)
+                                ?
+                                  <b> {orderDetails.amount} </b>
+                                :
+                                  <b> {(orderDetails.amount + orderDetails.tip_amount)} </b>
+                              }
+                            </Table.Cell>
+                        </Table.Row>
+                      }
                     </Table.Body>
                   </Table>
                 </div>
               }
-            </Grid.Column>
-          </Grid>
-          <Grid>
-            <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
-              {
-                (customerInfo && Object.keys(customerInfo).length > 0 &&
-                  <WashSettings
-                    isOrders={true}
-                    data={customerInfo.wash_settings}
-                    getpdf={this.handlePDFDownload}
-                    getXLSX={this.handleXLSXDownload}
-                  />
-                )
-              }
-            </Grid.Column>
-            <Grid.Column textAlign='left' mobile={16} tablet={16} computer={8}>
-              {
-                (orderDetails && Object.keys(orderDetails).length > 0 &&
-                  <div>
-                    {this.renderPickUpDropDetails(orderDetails)}
-                  </div>
-                )
-              }
-            </Grid.Column>
-          </Grid>
+            </Segment>
+          </Segment>
         </Segment>
-      </Segment>
-    );
+      );
+    } else {
+      ele = (
+        <Segment padded className="OrdersSection">
+            <Segment padded className="OrdersTitle">
+              <h3> Something Went Wrong. </h3>
+              <br />
+              <h4> Either this order is deleted or its an invalid order. Please return to All Orders section.</h4>
+            </Segment>
+        </Segment>
+      )
+    }
+
+    return ele;
   }
 }
 
@@ -240,6 +304,7 @@ const mapStateToProps = (state) => ({
   ordersList: orderSelector.getOrdersList(state),
   orderPdf: orderSelector.getOrderPDF(state),
   orderXlsx: orderSelector.getOrderXLSX(state),
+  deletedStatus: orderSelector.getDeletedStatus(state),
   userOrderId: landingContainerSelector.getUserOrderId(state),
 });
 
@@ -255,6 +320,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   getXLSX: async(orderID) => {
     return dispatch(EXPORT_ORDER_XLSX(orderID));
+  },
+  deleteOrder: async(orderID) => {
+    return dispatch(DELETE_ORDER(orderID));
   },
 });
 

@@ -94,8 +94,8 @@ class DisplayMessage extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-});
+// const mapStateToProps = (state) => ({
+// });
 
 const mapDispatchToProps = (dispatch) => ({
   resetData: async () => {
@@ -111,4 +111,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(DisplayMessage));
+export default connect(null, mapDispatchToProps)(withRouter(DisplayMessage));

@@ -1,0 +1,31 @@
+@media print {
+
+    .NavBar,
+    .ui.button,
+    .top-header,
+    .WashSettings,
+    .countOrderDetails,
+    .disabled.checkbox:not(.checked),
+    .ui.horizontal.segments.OrdersHeaderSection {
+        display: none;
+    }
+    .countOrderDetailsForPrint {
+        display: block;
+    }
+    .countOrderDetailsForPrint .ui.header {
+        text-align: left;
+    }
+    .ui.segment.OrdersSection {
+        width: 100%;
+        padding: 0;
+        border: 0;
+    }
+    .ui.center.aligned.header {
+        text-align: left;
+    }
+    .ui[class*="left aligned"].segment {
+        padding: 0;
+        border: 0;
+    }
+
+}

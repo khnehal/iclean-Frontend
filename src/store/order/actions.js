@@ -6,6 +6,7 @@ import {
   getOrderAsXLSX,
   getDateBasedOrders,
   getCustomerPastOrders,
+  deleteOrder,
 } from './../../api/orders.js';
 
 import {
@@ -24,6 +25,7 @@ export const ORDER_AS_PDF = 'ORDER_AS_PDF';
 export const ORDER_AS_XLSX = 'ORDER_AS_XLSX';
 export const ORDER_ITEMS = 'ORDER_ITEMS';
 export const SAVE_ORDER_ITEMS = 'SAVE_ORDER_ITEMS';
+export const DELETE_STATUS = 'DELETE_STATUS';
 
 function responseData(result, dispatch, type, data) {
   if (!resultOK(result)) {
@@ -93,5 +95,12 @@ export function GET_CUSTOMER_PAST_ORDER(customerId) {
   return async (dispatch) => {
     const result = await getCustomerPastOrders(customerId);
     responseData(result, dispatch, GET_ORDERS, result.data.data.orders);
+  }
+}
+
+export function DELETE_ORDER(orderId) {
+  return async (dispatch) => {
+    const result = await deleteOrder(orderId);
+    responseData(result, dispatch, DELETE_STATUS, result.status);
   }
 }
